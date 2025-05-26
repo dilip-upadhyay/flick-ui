@@ -5,143 +5,206 @@
     <p *ngIf="config.description" class="form-description">{{ config.description }}</p>
   </div>
 
-  <!-- Form -->
+  <!-- Material Form -->
   <form [formGroup]="form" (ngSubmit)="onSubmit()" [class]="getFormLayoutClasses()">
     
     <!-- Form Fields -->
     <div 
       *ngFor="let field of config.fields" 
       [class]="getFieldWrapperClasses(field)">
-      
-      <!-- Field Label -->
-      <label 
-        [for]="field.id" 
-        class="form-label"
-        [class.required]="field.required">
-        {{ field.label }}
-        <span *ngIf="field.required" class="required-indicator">*</span>
-      </label>
 
-      <!-- Text Input (includes tel type) -->
-      <input 
+      <!-- Text Input (text, email, password, tel) -->
+      <mat-form-field 
         *ngIf="field.type === 'text' || field.type === 'email' || field.type === 'password' || field.type === 'tel'"
-        [type]="field.type"
-        [id]="field.id"
-        [formControlName]="field.id"
-        [placeholder]="field.placeholder || ''"
-        [class]="getFormControlClasses(field)">
+        appearance="outline"
+        class="full-width">
+        <mat-label>{{ field.label }}
+          <span *ngIf="field.required" class="required-indicator">*</span>
+        </mat-label>
+        <input 
+          matInput
+          [type]="field.type"
+          [id]="field.id"
+          [formControlName]="field.id"
+          [placeholder]="field.placeholder || ''"
+          [required]="field.required || false">
+        <mat-icon matSuffix *ngIf="field.type === 'email'">email</mat-icon>
+        <mat-icon matSuffix *ngIf="field.type === 'tel'">phone</mat-icon>
+        <mat-icon matSuffix *ngIf="field.type === 'password'">lock</mat-icon>
+        <mat-hint *ngIf="field.helpText">{{ field.helpText }}</mat-hint>
+        <mat-error *ngFor="let error of getFieldErrors(field.id)">{{ error }}</mat-error>
+      </mat-form-field>
 
       <!-- Number Input -->
-      <input 
+      <mat-form-field 
         *ngIf="field.type === 'number'"
-        type="number"
-        [id]="field.id"
-        [formControlName]="field.id"
-        [placeholder]="field.placeholder || ''"
-        [class]="getFormControlClasses(field)">
+        appearance="outline"
+        class="full-width">
+        <mat-label>{{ field.label }}
+          <span *ngIf="field.required" class="required-indicator">*</span>
+        </mat-label>
+        <input 
+          matInput
+          type="number"
+          [id]="field.id"
+          [formControlName]="field.id"
+          [placeholder]="field.placeholder || ''"
+          [required]="field.required || false">
+        <mat-icon matSuffix>tag</mat-icon>
+        <mat-hint *ngIf="field.helpText">{{ field.helpText }}</mat-hint>
+        <mat-error *ngFor="let error of getFieldErrors(field.id)">{{ error }}</mat-error>
+      </mat-form-field>
 
       <!-- Date Input -->
-      <input 
+      <mat-form-field 
         *ngIf="field.type === 'date'"
-        type="date"
-        [id]="field.id"
-        [formControlName]="field.id"
-        [class]="getFormControlClasses(field)">
+        appearance="outline"
+        class="full-width">
+        <mat-label>{{ field.label }}
+          <span *ngIf="field.required" class="required-indicator">*</span>
+        </mat-label>
+        <input 
+          matInput
+          [matDatepicker]="picker"
+          [id]="field.id"
+          [formControlName]="field.id"
+          [required]="field.required || false">
+        <mat-hint *ngIf="field.helpText">{{ field.helpText }}</mat-hint>
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+        <mat-error *ngFor="let error of getFieldErrors(field.id)">{{ error }}</mat-error>
+      </mat-form-field>
 
       <!-- Textarea -->
-      <textarea 
+      <mat-form-field 
         *ngIf="field.type === 'textarea'"
-        [id]="field.id"
-        [formControlName]="field.id"
-        [placeholder]="field.placeholder || ''"
-        [class]="getFormControlClasses(field)"
-        rows="4">
-      </textarea>
+        appearance="outline"
+        class="full-width">
+        <mat-label>{{ field.label }}
+          <span *ngIf="field.required" class="required-indicator">*</span>
+        </mat-label>
+        <textarea 
+          matInput
+          [id]="field.id"
+          [formControlName]="field.id"
+          [placeholder]="field.placeholder || ''"
+          [required]="field.required || false"
+          rows="4">
+        </textarea>
+        <mat-hint *ngIf="field.helpText">{{ field.helpText }}</mat-hint>
+        <mat-error *ngFor="let error of getFieldErrors(field.id)">{{ error }}</mat-error>
+      </mat-form-field>
 
       <!-- Select Dropdown -->
-      <select 
+      <mat-form-field 
         *ngIf="field.type === 'select'"
-        [id]="field.id"
-        [formControlName]="field.id"
-        [class]="getFormControlClasses(field)">
-        <option value="" disabled>{{ field.placeholder || 'Select an option' }}</option>
-        <option 
-          *ngFor="let option of field.options"
-          [value]="option.value"
-          [disabled]="option.disabled">
-          {{ option.label }}
-        </option>
-      </select>
+        appearance="outline"
+        class="full-width">
+        <mat-label>{{ field.label }}
+          <span *ngIf="field.required" class="required-indicator">*</span>
+        </mat-label>
+        <mat-select 
+          [id]="field.id"
+          [formControlName]="field.id"
+          [required]="field.required || false">
+          <mat-option value="" disabled>{{ field.placeholder || 'Select an option' }}</mat-option>
+          <mat-option 
+            *ngFor="let option of field.options"
+            [value]="option.value"
+            [disabled]="option.disabled">
+            {{ option.label }}
+          </mat-option>
+        </mat-select>
+        <mat-hint *ngIf="field.helpText">{{ field.helpText }}</mat-hint>
+        <mat-error *ngFor="let error of getFieldErrors(field.id)">{{ error }}</mat-error>
+      </mat-form-field>
 
       <!-- Checkbox -->
-      <div *ngIf="field.type === 'checkbox'" class="checkbox-wrapper">
-        <!-- Single checkbox (no options) -->
-        <div *ngIf="!field.options || field.options.length === 0" class="checkbox-item">
-          <input 
-            type="checkbox"
-            [id]="field.id"
-            [formControlName]="field.id"
-            class="form-check-input">
-          <label [for]="field.id" class="form-check-label">
-            {{ field.placeholder || field.label }}
-          </label>
+      <div *ngIf="field.type === 'checkbox'" class="checkbox-field">
+        <div class="field-label">
+          {{ field.label }}
+          <span *ngIf="field.required" class="required-indicator">*</span>
         </div>
+        
+        <!-- Single checkbox (no options) -->
+        <mat-checkbox 
+          *ngIf="!field.options || field.options.length === 0"
+          [id]="field.id"
+          [formControlName]="field.id"
+          class="checkbox-item">
+          {{ field.placeholder || field.label }}
+        </mat-checkbox>
         
         <!-- Multiple checkboxes (with options) -->
         <div *ngIf="field.options && field.options.length > 0" class="checkbox-group">
-          <div 
-            *ngFor="let option of field.options; let i = index" 
+          <mat-checkbox 
+            *ngFor="let option of field.options; let i = index"
+            [id]="field.id + '_' + i"
+            [value]="option.value"
+            [checked]="isCheckboxChecked(field.id, option.value)"
+            (change)="onCheckboxChange(field.id, option.value, $event)"
             class="checkbox-item">
-            <input 
-              type="checkbox"
-              [id]="field.id + '_' + i"
-              [value]="option.value"
-              (change)="onCheckboxChange(field.id, option.value, $event)"
-              class="form-check-input">
-            <label [for]="field.id + '_' + i" class="form-check-label">
-              {{ option.label }}
-            </label>
-          </div>
+            {{ option.label }}
+          </mat-checkbox>
+        </div>
+        
+        <mat-hint *ngIf="field.helpText" class="field-hint">{{ field.helpText }}</mat-hint>
+        <div *ngIf="hasFieldError(field.id)" class="field-errors">
+          <mat-error *ngFor="let error of getFieldErrors(field.id)">{{ error }}</mat-error>
         </div>
       </div>
 
       <!-- Radio Buttons -->
-      <div *ngIf="field.type === 'radio'" class="radio-group">
-        <div 
-          *ngFor="let option of field.options" 
-          class="radio-wrapper">
-          <input 
-            type="radio"
-            [id]="field.id + '_' + option.value"
-            [formControlName]="field.id"
+      <div *ngIf="field.type === 'radio'" class="radio-field">
+        <div class="field-label">
+          {{ field.label }}
+          <span *ngIf="field.required" class="required-indicator">*</span>
+        </div>
+        
+        <mat-radio-group 
+          [formControlName]="field.id"
+          class="radio-group">
+          <mat-radio-button 
+            *ngFor="let option of field.options"
             [value]="option.value"
             [disabled]="option.disabled || false"
-            class="form-check-input">
-          <label 
-            [for]="field.id + '_' + option.value" 
-            class="form-check-label">
+            class="radio-option">
             {{ option.label }}
-          </label>
+          </mat-radio-button>
+        </mat-radio-group>
+        
+        <mat-hint *ngIf="field.helpText" class="field-hint">{{ field.helpText }}</mat-hint>
+        <div *ngIf="hasFieldError(field.id)" class="field-errors">
+          <mat-error *ngFor="let error of getFieldErrors(field.id)">{{ error }}</mat-error>
         </div>
       </div>
 
       <!-- File Input -->
-      <input 
-        *ngIf="field.type === 'file'"
-        type="file"
-        [id]="field.id"
-        [class]="getFormControlClasses(field)"
-        (change)="event.emit({ type: 'fileChange', fieldId: field.id, data: $event })">
-
-      <!-- Help Text -->
-      <small *ngIf="field.helpText" class="form-help-text">
-        {{ field.helpText }}
-      </small>
-
-      <!-- Field Errors -->
-      <div *ngIf="hasFieldError(field.id)" class="field-errors">
-        <div *ngFor="let error of getFieldErrors(field.id)" class="error-message">
-          {{ error }}
+      <div *ngIf="field.type === 'file'" class="file-field">
+        <div class="field-label">
+          {{ field.label }}
+          <span *ngIf="field.required" class="required-indicator">*</span>
+        </div>
+        
+        <button 
+          type="button" 
+          mat-raised-button 
+          color="primary"
+          (click)="fileInput.click()">
+          <mat-icon>upload</mat-icon>
+          Choose File
+        </button>
+        
+        <input 
+          #fileInput
+          type="file"
+          [id]="field.id"
+          style="display: none"
+          (change)="event.emit({ type: 'fileChange', fieldId: field.id, data: $event })">
+        
+        <mat-hint *ngIf="field.helpText" class="field-hint">{{ field.helpText }}</mat-hint>
+        <div *ngIf="hasFieldError(field.id)" class="field-errors">
+          <mat-error *ngFor="let error of getFieldErrors(field.id)">{{ error }}</mat-error>
         </div>
       </div>
     </div>
@@ -150,12 +213,16 @@
     <div class="form-actions" *ngIf="config.actions && config.actions.length > 0">
       <button 
         *ngFor="let action of config.actions"
+        mat-raised-button
         [type]="action.type"
-        [class]="'btn btn-' + (action.variant || 'primary')"
+        [color]="getButtonColor(action.variant)"
         [disabled]="action.disabled || (action.type === 'submit' && (form.invalid || isSubmitting))"
-        (click)="action.type === 'reset' ? onReset() : action.type === 'button' ? onButtonAction(action) : null">
+        (click)="action.type === 'reset' ? onReset() : action.type === 'button' ? onButtonAction(action) : null"
+        class="action-button">
         
-        <span *ngIf="action.type === 'submit' && isSubmitting" class="spinner"></span>
+        <mat-icon *ngIf="action.type === 'submit' && isSubmitting">hourglass_empty</mat-icon>
+        <mat-icon *ngIf="action.type === 'submit' && !isSubmitting">send</mat-icon>
+        <mat-icon *ngIf="action.type === 'reset'">refresh</mat-icon>
         {{ action.label }}
       </button>
     </div>

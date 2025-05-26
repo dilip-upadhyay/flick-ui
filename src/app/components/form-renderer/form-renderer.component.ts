@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FormConfig, FormField, FieldValidation } from '../../models/ui-config.interface';
 import { RendererService } from '../../services/renderer.service';
+import { MaterialModule } from '../../shared/material.module';
 
 @Component({
   selector: 'app-form-renderer',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, MaterialModule],
   templateUrl: './form-renderer.component.html',
   styleUrl: './form-renderer.component.css'
 })
@@ -318,5 +319,41 @@ export class FormRendererComponent implements OnInit {
     }
     
     return classes.join(' ');
+  }
+
+  /**
+   * Check if a checkbox option is checked (for multiple checkbox fields)
+   */
+  isCheckboxChecked(fieldId: string, value: any): boolean {
+    const control = this.form.get(fieldId);
+    if (!control || !control.value) {
+      return false;
+    }
+
+    if (Array.isArray(control.value)) {
+      return control.value.includes(value);
+    }
+
+    return control.value === value;
+  }
+
+  /**
+   * Get Material button color based on variant
+   */
+  getButtonColor(variant?: string): string {
+    switch (variant) {
+      case 'primary':
+        return 'primary';
+      case 'secondary':
+        return 'accent';
+      case 'danger':
+        return 'warn';
+      case 'success':
+        return 'primary';
+      case 'warning':
+        return 'accent';
+      default:
+        return 'primary';
+    }
   }
 }
