@@ -317,51 +317,6 @@
                   "target": 0.95,
                   "format": "percentage"
                 }
-              },
-              {
-                "id": "recent-activity",
-                "type": "table",
-                "title": "Recent Activity",
-                "span": 12,
-                "table": {
-                  "columns": [
-                    { "key": "timestamp", "label": "Time", "format": "datetime", "width": "150px" },
-                    { "key": "user", "label": "User", "format": "text" },
-                    { "key": "action", "label": "Action", "format": "text" },
-                    { "key": "resource", "label": "Resource", "format": "text" },
-                    { "key": "status", "label": "Status", "format": "text", "width": "100px" }
-                  ],
-                  "data": [
-                    {
-                      "timestamp": "2024-01-15T10:30:15Z",
-                      "user": "john.doe@example.com",
-                      "action": "Created Order",
-                      "resource": "Order #12345",
-                      "status": "Success"
-                    },
-                    {
-                      "timestamp": "2024-01-15T10:28:42Z",
-                      "user": "jane.smith@example.com",
-                      "action": "Updated Product",
-                      "resource": "Premium Widget",
-                      "status": "Success"
-                    },
-                    {
-                      "timestamp": "2024-01-15T10:25:33Z",
-                      "user": "bob.johnson@example.com",
-                      "action": "Deleted User",
-                      "resource": "test.user@example.com",
-                      "status": "Success"
-                    },
-                    {
-                      "timestamp": "2024-01-15T10:22:18Z",
-                      "user": "admin@example.com",
-                      "action": "System Backup",
-                      "resource": "Database",
-                      "status": "Completed"
-                    }
-                  ]
-                }
               }
             ]
           }

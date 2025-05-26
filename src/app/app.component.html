@@ -1,30 +1,52 @@
 <!-- Dynamic UI Renderer Application -->
 <div class="app-container">
-  <!-- Demo Configuration Selector -->
-  <div class="demo-selector">
-    <h1>Dynamic UI Renderer</h1>
-    <p>Select a demo configuration to see the dynamic UI renderer in action:</p>
-    
-    <div class="demo-buttons">
-      @for (demo of availableDemos; track demo.key) {
-        <button 
-          (click)="loadDemo(demo.key)"
-          [class.active]="currentDemo === demo.key"
-          class="demo-btn">
-          {{ demo.name }}
-        </button>
+  <!-- Material Toolbar Header -->
+  <mat-toolbar color="primary" class="app-header">
+    <mat-icon>dashboard</mat-icon>
+    <span class="app-title">Dynamic UI Renderer</span>
+    <span class="spacer"></span>
+    <mat-icon>settings</mat-icon>
+  </mat-toolbar>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Demo Configuration Selector -->
+    <mat-card class="demo-selector-card">
+      <mat-card-header>
+        <mat-card-title>Demo Configurations</mat-card-title>
+        <mat-card-subtitle>Select a demo configuration to see the dynamic UI renderer in action</mat-card-subtitle>
+      </mat-card-header>
+      
+      <mat-card-content>
+        <div class="demo-buttons">
+          @for (demo of availableDemos; track demo.key) {
+            <button 
+              mat-raised-button
+              [color]="currentDemo === demo.key ? 'primary' : 'basic'"
+              (click)="loadDemo(demo.key)"
+              class="demo-btn">
+              <mat-icon>{{getDemoIcon(demo.key)}}</mat-icon>
+              {{ demo.name }}
+            </button>
+          }
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Dynamic UI Renderer -->
+    <div class="renderer-container">
+      @if (currentConfig) {
+        <app-dynamic-renderer [config]="currentConfig"></app-dynamic-renderer>
+      } @else {
+        <mat-card class="loading-card">
+          <mat-card-content>
+            <div class="loading-state">
+              <mat-icon>info</mat-icon>
+              <p>Select a demo configuration to begin...</p>
+            </div>
+          </mat-card-content>
+        </mat-card>
       }
     </div>
-  </div>
-
-  <!-- Dynamic UI Renderer -->
-  <div class="renderer-container">
-    @if (currentConfig) {
-      <app-dynamic-renderer [config]="currentConfig"></app-dynamic-renderer>
-    } @else {
-      <div class="loading-state">
-        <p>Select a demo configuration to begin...</p>
-      </div>
-    }
   </div>
 </div>

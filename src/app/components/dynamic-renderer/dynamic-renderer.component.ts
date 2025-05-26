@@ -7,7 +7,6 @@ import { RendererService } from '../../services/renderer.service';
 
 // Import all renderer components
 import { FormRendererComponent } from '../form-renderer/form-renderer.component';
-import { TableRendererComponent } from '../table-renderer/table-renderer.component';
 import { HeaderRendererComponent } from '../header-renderer/header-renderer.component';
 import { NavigationRendererComponent } from '../navigation-renderer/navigation-renderer.component';
 import { DashboardRendererComponent } from '../dashboard-renderer/dashboard-renderer.component';
@@ -18,7 +17,6 @@ import { DashboardRendererComponent } from '../dashboard-renderer/dashboard-rend
   imports: [
     CommonModule,
     FormRendererComponent,
-    TableRendererComponent,
     HeaderRendererComponent,
     NavigationRendererComponent,
     DashboardRendererComponent

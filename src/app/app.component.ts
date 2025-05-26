@@ -2,10 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { DynamicRendererComponent } from './components/dynamic-renderer/dynamic-renderer.component';
 import { UIConfig } from './models/ui-config.interface';
+import { MaterialModule } from './shared/material.module';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-root',
-  imports: [DynamicRendererComponent],
+  imports: [CommonModule, MaterialModule, DynamicRendererComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
@@ -17,7 +19,6 @@ export class AppComponent implements OnInit {
   availableDemos = [
     { key: 'dashboard', name: 'Dashboard Demo', configPath: 'assets/configs/dashboard-demo.json' },
     { key: 'form', name: 'Form Demo', configPath: 'assets/configs/form-demo.json' },
-    { key: 'table', name: 'Table Demo', configPath: 'assets/configs/table-demo.json' },
     { key: 'complete', name: 'Complete Demo', configPath: 'assets/configs/complete-demo.json' }
   ];
 
@@ -26,6 +27,16 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     // Initialize with dashboard demo
     this.loadDemo('dashboard');
+  }
+  
+  getDemoIcon(demoKey: string): string {
+    const iconMap: { [key: string]: string } = {
+      'dashboard': 'dashboard',
+      'form': 'assignment',
+      'table': 'table_chart',
+      'complete': 'view_comfy'
+    };
+    return iconMap[demoKey] || 'settings';
   }
   
   loadDemo(demoKey: string) {

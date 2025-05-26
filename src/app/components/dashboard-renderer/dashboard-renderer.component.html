@@ -64,30 +64,6 @@
           </div>
         </div>
 
-        <!-- Table Widget -->
-        <div *ngIf="widget.type === 'table'" class="table-widget">
-          <div class="table-container">
-            <table class="widget-table">
-              <thead *ngIf="widget.table?.columns">
-                <tr>
-                  <th *ngFor="let col of widget.table?.columns">{{ col.label }}</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let row of widget.table?.data; let i = index">
-                  <td *ngFor="let col of widget.table?.columns">
-                    {{ formatValue(row[col.key], col.format) }}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div *ngIf="(widget.table?.data?.length || 0) === 0" class="empty-state">
-            <i class="fas fa-table"></i>
-            <p>No data available</p>
-          </div>
-        </div>
-
         <!-- Progress Widget -->
         <div *ngIf="widget.type === 'progress'" class="progress-widget">
           <div class="progress-info">

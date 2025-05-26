@@ -35,7 +35,6 @@ export class TableRendererComponent implements OnInit, OnDestroy {
   // Filtering
   globalFilter = '';
   columnFilters: { [key: string]: string } = {};
-  filterValues: { [key: string]: string } = {};
 
   // Sorting
   sortState: SortState = { column: '', direction: '' };
@@ -48,13 +47,10 @@ export class TableRendererComponent implements OnInit, OnDestroy {
 
   // Selection
   selectedItems: Set<any> = new Set();
-  selectedRows: Set<any> = new Set();
+  isAllSelected = false;
 
   // Material Table
   displayedColumns: string[] = [];
-
-  // Math for template
-  Math = Math;
 
   private destroy$ = new Subject<void>();
 
@@ -78,7 +74,7 @@ export class TableRendererComponent implements OnInit, OnDestroy {
     }
     
     this.config.columns.forEach(column => {
-      this.displayedColumns.push(column.key);
+      this.displayedColumns.push(column.field);
     });
     
     if (this.config.rowActions && this.config.rowActions.length > 0) {
@@ -116,12 +112,11 @@ export class TableRendererComponent implements OnInit, OnDestroy {
     this.applyFiltersAndPagination();
   }
 
-  onSort(column: TableColumn | string): void {
-    const columnKey = typeof column === 'string' ? column : column.key;
-    if (this.sortState.column === columnKey) {
+  onSort(column: string): void {
+    if (this.sortState.column === column) {
       this.sortState.direction = this.sortState.direction === 'asc' ? 'desc' : 'asc';
     } else {
-      this.sortState.column = columnKey;
+      this.sortState.column = column;
       this.sortState.direction = 'asc';
     }
     this.applyFiltersAndPagination();
@@ -150,21 +145,16 @@ export class TableRendererComponent implements OnInit, OnDestroy {
 
   onSelectAll(event: MatCheckboxChange): void {
     if (event.checked) {
-      this.paginatedData.forEach((item, index) => {
-        this.selectedItems.add(item);
-        this.selectedRows.add(index);
-      });
+      this.paginatedData.forEach(item => this.selectedItems.add(item));
     } else {
-      this.paginatedData.forEach((item, index) => {
-        this.selectedItems.delete(item);
-        this.selectedRows.delete(index);
-      });
+      this.paginatedData.forEach(item => this.selectedItems.delete(item));
     }
+    this.updateSelectAllState();
     this.emitEvent('selection-changed', Array.from(this.selectedItems));
   }
 
-  onRowAction(action: any, item: any, index: number): void {
-    this.emitEvent('row-action', { action, item, index });
+  onRowAction(action: any, item: any): void {
+    this.emitEvent('row-action', { action, item });
   }
 
   onTableAction(action: any): void {
@@ -175,50 +165,8 @@ export class TableRendererComponent implements OnInit, OnDestroy {
     return this.selectedItems.has(item);
   }
 
-  getSortDirection(column: TableColumn | string): string {
-    const columnKey = typeof column === 'string' ? column : column.key;
-    return this.sortState.column === columnKey ? this.sortState.direction : '';
-  }
-
-  isSomeSelected(): boolean {
-    return this.selectedRows.size > 0 && this.selectedRows.size < this.paginatedData.length;
-  }
-
-  isAllSelected(): boolean {
-    return this.paginatedData.length > 0 && this.selectedRows.size === this.paginatedData.length;
-  }
-
-  onRowSelect(index: number, event: MatCheckboxChange): void {
-    const row = this.paginatedData[index];
-    if (event.checked) {
-      this.selectedRows.add(index);
-      this.selectedItems.add(row);
-    } else {
-      this.selectedRows.delete(index);
-      this.selectedItems.delete(row);
-    }
-    this.updateSelectAllState();
-    this.emitEvent('selection-changed', Array.from(this.selectedItems));
-  }
-
-  formatCellValue(value: any, column: TableColumn): string {
-    if (value == null) return '';
-    
-    switch (column.type) {
-      case 'currency':
-        return new Intl.NumberFormat('en-US', {
-          style: 'currency',
-          currency: 'USD'
-        }).format(value);
-      case 'percentage':
-        return (value * 100).toFixed(2) + '%';
-      case 'date':
-        return new Date(value).toLocaleDateString();
-      case 'number':
-        return Number(value).toLocaleString();
-      default:
-        return String(value);
-    }
+  getSortDirection(column: string): string {
+    return this.sortState.column === column ? this.sortState.direction : '';
   }
 
   private applyFiltersAndPagination(): void {
@@ -272,13 +220,8 @@ export class TableRendererComponent implements OnInit, OnDestroy {
   }
 
   private updateSelectAllState(): void {
-    // Sync selectedRows with selectedItems for indices
-    this.selectedRows.clear();
-    this.paginatedData.forEach((item, index) => {
-      if (this.selectedItems.has(item)) {
-        this.selectedRows.add(index);
-      }
-    });
+    const selectedInPage = this.paginatedData.filter(item => this.selectedItems.has(item));
+    this.isAllSelected = this.paginatedData.length > 0 && selectedInPage.length === this.paginatedData.length;
   }
 
   private emitEvent(eventType: string, data: any): void {

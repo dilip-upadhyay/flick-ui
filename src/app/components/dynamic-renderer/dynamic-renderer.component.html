@@ -53,13 +53,6 @@
           (event)="onComponentEvent($event, component)">
         </app-form-renderer>
 
-        <!-- Table Component -->
-        <app-table-renderer 
-          *ngIf="component.type === 'table'"
-          [config]="component.props"
-          (event)="onComponentEvent($event, component)">
-        </app-table-renderer>
-
         <!-- Dashboard Component -->
         <app-dashboard-renderer 
           *ngIf="component.type === 'dashboard'"

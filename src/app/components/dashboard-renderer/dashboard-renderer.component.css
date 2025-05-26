@@ -168,43 +168,6 @@
   display: block;
 }
 
-/* Table Widget */
-.table-widget {
-  height: 100%;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
-.table-container {
-  flex: 1;
-  overflow: auto;
-}
-
-.widget-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.widget-table th,
-.widget-table td {
-  padding: 12px;
-  text-align: left;
-  border-bottom: 1px solid #e9ecef;
-}
-
-.widget-table th {
-  background: #f8f9fa;
-  font-weight: 600;
-  color: #495057;
-  position: sticky;
-  top: 0;
-}
-
-.widget-table tbody tr:hover {
-  background: #f8f9fa;
-}
-
 /* Progress Widget */
 .progress-widget {
   display: flex;

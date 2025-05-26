@@ -18,7 +18,6 @@ export type ComponentType =
   | 'header'
   | 'navigation'
   | 'form'
-  | 'table'
   | 'dashboard'
   | 'card'
   | 'button'
@@ -153,33 +152,6 @@ export interface FormValidation {
   customValidators?: any[];
 }
 
-// Table specific interfaces
-export interface TableConfig {
-  title?: string;
-  columns: TableColumn[];
-  data?: any[];
-  dataSource?: DataSourceConfig;
-  pagination?: PaginationConfig;
-  sorting?: boolean;
-  filtering?: boolean;
-  actions?: TableAction[];
-  rowActions?: RowAction[];
-  selectable?: boolean;
-  responsive?: boolean;
-}
-
-export interface TableColumn {
-  key: string;
-  title: string;
-  type?: 'text' | 'number' | 'date' | 'boolean' | 'custom';
-  sortable?: boolean;
-  filterable?: boolean;
-  width?: string;
-  align?: 'left' | 'center' | 'right';
-  format?: string;
-  template?: string;
-}
-
 export interface DataSourceConfig {
   type: 'api' | 'static';
   url?: string;
@@ -187,29 +159,6 @@ export interface DataSourceConfig {
   headers?: { [key: string]: string };
   params?: { [key: string]: any };
   transformResponse?: string;
-}
-
-export interface PaginationConfig {
-  enabled: boolean;
-  pageSize: number;
-  showSizeOptions?: boolean;
-  sizeOptions?: number[];
-  showTotal?: boolean;
-}
-
-export interface TableAction {
-  type: 'create' | 'export' | 'import' | 'refresh' | 'custom';
-  label: string;
-  icon?: string;
-  action: string;
-}
-
-export interface RowAction {
-  type: 'edit' | 'delete' | 'view' | 'custom';
-  label: string;
-  icon?: string;
-  action: string;
-  condition?: string;
 }
 
 // Dashboard specific interfaces
@@ -231,7 +180,7 @@ export interface DashboardConfig {
 
 export interface DashboardWidget {
   id: string;
-  type: 'chart' | 'metric' | 'table' | 'text' | 'progress' | 'list';
+  type: 'chart' | 'metric' | 'text' | 'progress' | 'list';
   title: string;
   position: WidgetPosition;
   config: any;
@@ -246,7 +195,7 @@ export interface DashboardWidget {
 
 export interface WidgetConfig {
   id: string;
-  type: 'chart' | 'metric' | 'table' | 'text' | 'progress' | 'list' | 'custom';
+  type: 'chart' | 'metric' | 'text' | 'progress' | 'list' | 'custom';
   title?: string;
   span?: number;
   rowSpan?: number;
