@@ -1,59 +1,31 @@
-import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { DynamicRendererComponent } from './components/dynamic-renderer/dynamic-renderer.component';
-import { UIConfig } from './models/ui-config.interface';
-import { MaterialModule } from './shared/material.module';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule, Router } from '@angular/router';
+import { MaterialModule } from './shared/material.module';
 
 @Component({
   selector: 'app-root',
-  imports: [CommonModule, MaterialModule, DynamicRendererComponent],
+  imports: [CommonModule, MaterialModule, RouterModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
-export class AppComponent implements OnInit {
-  title = 'flick-ui';
-  currentDemo = '';
-  currentConfig: UIConfig | null = null;
+export class AppComponent {
+  title = 'Dynamic UI Renderer';
   
-  availableDemos = [
-    { key: 'dashboard', name: 'Dashboard Demo', configPath: 'assets/configs/dashboard-demo.json' },
-    { key: 'five-part', name: 'Five-Part Dashboard', configPath: 'assets/configs/five-part-dashboard-demo.json' },
-    { key: 'form', name: 'Form Demo', configPath: 'assets/configs/form-demo.json' },
-    { key: 'complete', name: 'Complete Demo', configPath: 'assets/configs/complete-demo.json' }
+  navigationItems = [
+    { path: '/home', name: 'Home', icon: 'home' },
+    { path: '/dashboard', name: 'Dashboard', icon: 'dashboard' },
+    { path: '/form', name: 'Forms', icon: 'assignment' },
+    { path: '/complete', name: 'Complete Demo', icon: 'view_comfy' }
   ];
 
-  constructor(private http: HttpClient) {}
+  constructor(private router: Router) {}
   
-  ngOnInit() {
-    // Initialize with dashboard demo
-    this.loadDemo('dashboard');
+  navigateTo(path: string) {
+    this.router.navigate([path]);
   }
   
-  getDemoIcon(demoKey: string): string {
-    const iconMap: { [key: string]: string } = {
-      'dashboard': 'dashboard',
-      'form': 'assignment',
-      'table': 'table_chart',
-      'complete': 'view_comfy'
-    };
-    return iconMap[demoKey] || 'settings';
-  }
-  
-  loadDemo(demoKey: string) {
-    this.currentDemo = demoKey;
-    const demo = this.availableDemos.find(d => d.key === demoKey);
-    
-    if (demo) {
-      this.http.get<UIConfig>(demo.configPath).subscribe({
-        next: (config) => {
-          this.currentConfig = config;
-        },
-        error: (error) => {
-          console.error(`Failed to load demo configuration: ${demo.name}`, error);
-          this.currentConfig = null;
-        }
-      });
-    }
+  isActiveRoute(path: string): boolean {
+    return this.router.url === path;
   }
 }

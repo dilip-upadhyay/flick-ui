@@ -1,52 +1,39 @@
-<!-- Dynamic UI Renderer Application -->
+<!-- Dynamic UI Renderer Application with Routing -->
 <div class="app-container">
   <!-- Material Toolbar Header -->
   <mat-toolbar color="primary" class="app-header">
-    <mat-icon>dashboard</mat-icon>
-    <span class="app-title">Dynamic UI Renderer</span>
+    <mat-icon routerLink="/home" class="logo-icon">dynamic_feed</mat-icon>
+    <span class="app-title" routerLink="/home">{{ title }}</span>
+    
+    <!-- Navigation Menu -->
+    <div class="nav-menu">
+      @for (item of navigationItems; track item.path) {
+        <button 
+          mat-button
+          [class.active-nav]="isActiveRoute(item.path)"
+          (click)="navigateTo(item.path)"
+          class="nav-button">
+          <mat-icon>{{ item.icon }}</mat-icon>
+          <span>{{ item.name }}</span>
+        </button>
+      }
+    </div>
+    
     <span class="spacer"></span>
     <mat-icon>settings</mat-icon>
   </mat-toolbar>
 
-  <!-- Main Content -->
-  <div class="main-content">
-    <!-- Demo Configuration Selector -->
-    <mat-card class="demo-selector-card">
-      <mat-card-header>
-        <mat-card-title>Demo Configurations</mat-card-title>
-        <mat-card-subtitle>Select a demo configuration to see the dynamic UI renderer in action</mat-card-subtitle>
-      </mat-card-header>
-      
-      <mat-card-content>
-        <div class="demo-buttons">
-          @for (demo of availableDemos; track demo.key) {
-            <button 
-              mat-raised-button
-              [color]="currentDemo === demo.key ? 'primary' : 'basic'"
-              (click)="loadDemo(demo.key)"
-              class="demo-btn">
-              <mat-icon>{{getDemoIcon(demo.key)}}</mat-icon>
-              {{ demo.name }}
-            </button>
-          }
-        </div>
-      </mat-card-content>
-    </mat-card>
-
-    <!-- Dynamic UI Renderer -->
-    <div class="renderer-container">
-      @if (currentConfig) {
-        <app-dynamic-renderer [config]="currentConfig"></app-dynamic-renderer>
-      } @else {
-        <mat-card class="loading-card">
-          <mat-card-content>
-            <div class="loading-state">
-              <mat-icon>info</mat-icon>
-              <p>Select a demo configuration to begin...</p>
-            </div>
-          </mat-card-content>
-        </mat-card>
-      }
-    </div>
-  </div>
+  <!-- Router Outlet for Page Content -->
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+  
+  <!-- Footer -->
+  <footer class="app-footer">
+    <mat-toolbar color="accent" class="footer-toolbar">
+      <span class="footer-text">Dynamic UI Renderer - Powered by Angular Material</span>
+      <span class="spacer"></span>
+      <span class="version">v1.0.0</span>
+    </mat-toolbar>
+  </footer>
 </div>

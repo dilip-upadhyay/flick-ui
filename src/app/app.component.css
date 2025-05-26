@@ -10,12 +10,66 @@
   top: 0;
   z-index: 1000;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  display: flex;
+  align-items: center;
+}
+
+.logo-icon {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.logo-icon:hover {
+  transform: scale(1.1);
 }
 
 .app-title {
   margin-left: 16px;
   font-size: 1.5rem;
   font-weight: 500;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.app-title:hover {
+  color: #e3f2fd;
+}
+
+.nav-menu {
+  display: flex;
+  gap: 8px;
+  margin-left: 24px;
+}
+
+.nav-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.nav-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.nav-button.active-nav {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+  font-weight: 500;
+}
+
+.nav-button mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+.nav-button span {
+  font-size: 14px;
 }
 
 .spacer {
@@ -24,81 +78,63 @@
 
 .main-content {
   flex: 1;
-  padding: 24px;
-  max-width: 1200px;
-  margin: 0 auto;
-  width: 100%;
+  min-height: calc(100vh - 128px); /* Account for header and footer */
+  background: transparent;
 }
 
-.demo-selector-card {
-  margin-bottom: 24px;
+.app-footer {
+  margin-top: auto;
 }
 
-.demo-buttons {
-  display: flex;
-  gap: 16px;
-  justify-content: center;
-  flex-wrap: wrap;
-  margin-top: 16px;
-}
-
-.demo-btn {
-  min-width: 160px;
+.footer-toolbar {
   height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
+  min-height: 48px;
+  background-color: #424242 !important;
 }
 
-.demo-btn mat-icon {
-  font-size: 20px;
-  width: 20px;
-  height: 20px;
+.footer-text {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
 }
 
-.renderer-container {
-  margin-top: 24px;
-}
-
-.loading-card {
-  text-align: center;
-}
-
-.loading-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 48px;
-  color: #666;
-}
-
-.loading-state mat-icon {
-  font-size: 48px;
-  width: 48px;
-  height: 48px;
-  margin-bottom: 16px;
-  color: #999;
-}
-
-.loading-state p {
-  margin: 0;
-  font-size: 1.1rem;
+.version {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
 }
 
 /* Responsive design */
 @media (max-width: 768px) {
+  .nav-menu {
+    display: none; /* Hide navigation on mobile - could be replaced with menu button */
+  }
+  
+  .app-title {
+    font-size: 1.2rem;
+  }
+  
+  .nav-button span {
+    display: none; /* Hide text on smaller screens, show only icons */
+  }
+  
+  .nav-button {
+    padding: 8px;
+    min-width: 40px;
+  }
+}
+
+@media (max-width: 480px) {
   .main-content {
-    padding: 16px;
+    min-height: calc(100vh - 112px);
   }
   
-  .demo-buttons {
-    flex-direction: column;
-    align-items: stretch;
+  .footer-text {
+    font-size: 10px;
   }
   
-  .demo-btn {
+  .version {
+    display: none;
+  }
+}
     min-width: auto;
   }
 }

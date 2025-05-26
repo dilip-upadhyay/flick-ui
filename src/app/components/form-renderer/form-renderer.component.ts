@@ -65,7 +65,7 @@ export class FormRendererComponent implements OnInit {
       validators.push(Validators.required);
     }
 
-    if (field.validation) {
+    if (field.validation && Array.isArray(field.validation)) {
       field.validation.forEach(validation => {
         switch (validation.type) {
           case 'minLength':
@@ -110,11 +110,13 @@ export class FormRendererComponent implements OnInit {
     const errors: string[] = [];
     const controlErrors = control.errors;
 
-    field.validation.forEach(validation => {
-      if (controlErrors[validation.type]) {
-        errors.push(validation.message);
-      }
-    });
+    if (field.validation && Array.isArray(field.validation)) {
+      field.validation.forEach(validation => {
+        if (controlErrors[validation.type]) {
+          errors.push(validation.message);
+        }
+      });
+    }
 
     // Handle built-in validators
     if (controlErrors['required'] && field.required) {
@@ -136,27 +138,26 @@ export class FormRendererComponent implements OnInit {
    * Handle form submission
    */
   onSubmit(): void {
-    if (this.form.invalid) {
-      // Mark all fields as touched to show errors
+    if (this.form.valid) {
+      this.isSubmitting = true;
+      const formData = this.form.value;
+      
+      this.event.emit({
+        type: 'submit',
+        action: 'submit',
+        data: formData
+      });
+
+      // Reset submitting state after a delay (would normally be done after API response)
+      setTimeout(() => {
+        this.isSubmitting = false;
+      }, 2000);
+    } else {
+      // Mark all fields as touched to show validation errors
       Object.keys(this.form.controls).forEach(key => {
         this.form.get(key)?.markAsTouched();
       });
-      return;
     }
-
-    this.isSubmitting = true;
-    const formData = this.form.value;
-
-    this.event.emit({
-      type: 'submit',
-      action: 'submit',
-      data: formData
-    });
-
-    // Reset submitting state after a delay (would normally be done after API response)
-    setTimeout(() => {
-      this.isSubmitting = false;
-    }, 1000);
   }
 
   /**
@@ -164,8 +165,6 @@ export class FormRendererComponent implements OnInit {
    */
   onReset(): void {
     this.form.reset();
-    this.formErrors = {};
-    
     this.event.emit({
       type: 'reset',
       action: 'reset',
@@ -174,15 +173,14 @@ export class FormRendererComponent implements OnInit {
   }
 
   /**
-   * Handle custom button actions
+   * Handle button actions
    */
   onButtonAction(action: any): void {
     this.event.emit({
       type: 'action',
-      action: action.action,
       data: {
-        formData: this.form.value,
-        action: action
+        action: action,
+        formData: this.form.value
       }
     });
   }
@@ -197,10 +195,10 @@ export class FormRendererComponent implements OnInit {
       classes.push(`form-layout-${this.config.layout}`);
     }
     
-    if (this.config.columns && this.config.layout === 'grid') {
+    if (this.config.columns) {
       classes.push(`form-columns-${this.config.columns}`);
     }
-
+    
     return classes.join(' ');
   }
 
@@ -217,7 +215,7 @@ export class FormRendererComponent implements OnInit {
     if (this.hasFieldError(field.id)) {
       classes.push('has-error');
     }
-
+    
     return classes.join(' ');
   }
 
@@ -230,7 +228,7 @@ export class FormRendererComponent implements OnInit {
     if (this.hasFieldError(field.id)) {
       classes.push('is-invalid');
     }
-
+    
     return classes.join(' ');
   }
 }
