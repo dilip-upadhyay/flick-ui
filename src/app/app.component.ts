@@ -18,6 +18,7 @@ export class AppComponent implements OnInit {
   
   availableDemos = [
     { key: 'dashboard', name: 'Dashboard Demo', configPath: 'assets/configs/dashboard-demo.json' },
+    { key: 'five-part', name: 'Five-Part Dashboard', configPath: 'assets/configs/five-part-dashboard-demo.json' },
     { key: 'form', name: 'Form Demo', configPath: 'assets/configs/form-demo.json' },
     { key: 'complete', name: 'Complete Demo', configPath: 'assets/configs/complete-demo.json' }
   ];

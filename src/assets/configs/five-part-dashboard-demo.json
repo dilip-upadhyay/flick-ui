@@ -1,0 +1,302 @@
+{
+  "type": "layout",
+  "version": "1.0",
+  "theme": "default",
+  "layout": {
+    "direction": "column",
+    "gap": "none",
+    "padding": "none"
+  },
+  "components": [
+    {
+      "id": "main-header",
+      "type": "header",
+      "props": {
+        "title": "Five-Part Dashboard Layout",
+        "subtitle": "Advanced dashboard with header, footer, left panel, right panel, and body",
+        "logo": {
+          "src": "assets/logo.png",
+          "alt": "Company Logo",
+          "width": 40,
+          "height": 40
+        },
+        "actions": [
+          {
+            "type": "button",
+            "label": "Settings",
+            "icon": "fas fa-cog",
+            "variant": "secondary"
+          },
+          {
+            "type": "button",
+            "label": "Profile",
+            "icon": "fas fa-user",
+            "variant": "primary"
+          }
+        ],
+        "className": "main-header"
+      }
+    },
+    {
+      "id": "five-part-dashboard",
+      "type": "dashboard",
+      "props": {
+        "title": "Advanced Analytics Dashboard",
+        "subtitle": "Comprehensive overview with multi-section layout",
+        "layoutConfig": {
+          "type": "five-part",
+          "header": {
+            "enabled": true,
+            "title": "Dashboard Header",
+            "className": "dashboard-top-section",
+            "widgets": [
+              {
+                "id": "current-time",
+                "type": "text",
+                "title": "Current Time",
+                "text": {
+                  "content": "<div style='text-align: center; font-size: 18px; font-weight: bold;'>Live Dashboard Status</div>"
+                }
+              },
+              {
+                "id": "system-status",
+                "type": "metric",
+                "title": "System Status",
+                "metric": {
+                  "value": 99.9,
+                  "label": "Uptime %",
+                  "format": "percentage",
+                  "change": 0.1
+                }
+              }
+            ]
+          },
+          "leftPanel": {
+            "enabled": true,
+            "title": "Navigation & Tools",
+            "width": "280px",
+            "collapsible": true,
+            "collapsed": false,
+            "className": "dashboard-sidebar",
+            "widgets": [
+              {
+                "id": "quick-stats",
+                "type": "metric",
+                "title": "Quick Stats",
+                "metric": {
+                  "value": 1247,
+                  "label": "Active Sessions",
+                  "format": "number",
+                  "change": 5.2
+                }
+              },
+              {
+                "id": "navigation-menu",
+                "type": "list",
+                "title": "Quick Links",
+                "list": {
+                  "items": [
+                    {
+                      "primary": "User Management",
+                      "secondary": "Manage users and roles"
+                    },
+                    {
+                      "primary": "System Settings",
+                      "secondary": "Configure system parameters"
+                    },
+                    {
+                      "primary": "Reports",
+                      "secondary": "View and generate reports"
+                    },
+                    {
+                      "primary": "Help & Support",
+                      "secondary": "Get assistance"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "rightPanel": {
+            "enabled": true,
+            "title": "Activity & Alerts",
+            "width": "300px",
+            "collapsible": true,
+            "collapsed": false,
+            "className": "dashboard-activity-panel",
+            "widgets": [
+              {
+                "id": "recent-alerts",
+                "type": "list",
+                "title": "Recent Alerts",
+                "list": {
+                  "items": [
+                    {
+                      "primary": "High CPU Usage",
+                      "secondary": "Server-01 at 85%",
+                      "value": "Critical"
+                    },
+                    {
+                      "primary": "Low Disk Space",
+                      "secondary": "Database server",
+                      "value": "Warning"
+                    },
+                    {
+                      "primary": "Network Latency",
+                      "secondary": "Increased response time",
+                      "value": "Info"
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "performance-summary",
+                "type": "progress",
+                "title": "Performance Overview",
+                "progress": {
+                  "label": "Overall Performance",
+                  "current": 0.82,
+                  "target": 1.0,
+                  "format": "percentage"
+                }
+              }
+            ]
+          },
+          "body": {
+            "enabled": true,
+            "title": "Main Analytics",
+            "className": "dashboard-main-content",
+            "widgets": [
+              {
+                "id": "total-users",
+                "type": "metric",
+                "title": "Total Users",
+                "span": 3,
+                "metric": {
+                  "value": 15847,
+                  "label": "Active Users",
+                  "format": "number",
+                  "change": 12.5
+                }
+              },
+              {
+                "id": "revenue",
+                "type": "metric",
+                "title": "Revenue",
+                "span": 3,
+                "metric": {
+                  "value": 156847.50,
+                  "label": "Monthly Revenue",
+                  "format": "currency",
+                  "change": 8.2
+                }
+              },
+              {
+                "id": "conversion-rate",
+                "type": "metric",
+                "title": "Conversion Rate",
+                "span": 3,
+                "metric": {
+                  "value": 0.0345,
+                  "label": "This Month",
+                  "format": "percentage",
+                  "change": -2.1
+                }
+              },
+              {
+                "id": "satisfaction",
+                "type": "metric",
+                "title": "Satisfaction",
+                "span": 3,
+                "metric": {
+                  "value": 4.8,
+                  "label": "Average Rating",
+                  "format": "number",
+                  "change": 5.3
+                }
+              },
+              {
+                "id": "sales-chart",
+                "type": "chart",
+                "title": "Sales Trend",
+                "span": 8,
+                "chart": {
+                  "type": "line",
+                  "data": {
+                    "labels": ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+                    "datasets": [{
+                      "label": "Sales",
+                      "data": [12000, 15000, 18000, 16000, 22000, 25000]
+                    }]
+                  },
+                  "options": {
+                    "responsive": true,
+                    "maintainAspectRatio": false
+                  }
+                }
+              },
+              {
+                "id": "progress-goals",
+                "type": "progress",
+                "title": "Monthly Goals",
+                "span": 4,
+                "progress": {
+                  "label": "Sales Target",
+                  "current": 18500,
+                  "target": 25000,
+                  "format": "currency"
+                }
+              }
+            ]
+          },
+          "footer": {
+            "enabled": true,
+            "title": "Footer Information",
+            "height": "auto",
+            "className": "dashboard-footer-info",
+            "widgets": [
+              {
+                "id": "footer-stats",
+                "type": "metric",
+                "title": "Today's Summary",
+                "metric": {
+                  "value": 342,
+                  "label": "Transactions Today",
+                  "format": "number",
+                  "change": 15.8
+                }
+              },
+              {
+                "id": "footer-info",
+                "type": "text",
+                "title": "System Info",
+                "text": {
+                  "content": "<div style='text-align: center; color: #6c757d;'>Last Updated: 2 minutes ago | Version 2.4.1 | © 2025 Your Company</div>"
+                }
+              }
+            ]
+          }
+        },
+        "grid": {
+          "columns": 12,
+          "gap": "medium"
+        },
+        "actions": [
+          {
+            "type": "refresh",
+            "label": "Refresh",
+            "icon": "fas fa-sync-alt",
+            "variant": "secondary"
+          },
+          {
+            "type": "export",
+            "label": "Export",
+            "icon": "fas fa-download",
+            "variant": "primary"
+          }
+        ],
+        "widgets": []
+      }
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subject, takeUntil } from 'rxjs';
-import { DashboardConfig, WidgetConfig, ChartConfig, ActionConfig } from '../../models/ui-config.interface';
+import { DashboardConfig, WidgetConfig, ChartConfig, ActionConfig, DashboardSection } from '../../models/ui-config.interface';
 import { ConfigService } from '../../services/config.service';
 
 @Component({
@@ -38,6 +38,15 @@ export class DashboardRendererComponent implements OnInit, OnDestroy {
     
     // In a real implementation, you would load widgets from data source
     // For now, we'll just use the configured widgets
+  }
+
+  toggleSection(sectionName: 'leftPanel' | 'rightPanel' | 'header' | 'footer' | 'body') {
+    if (this.config.layoutConfig) {
+      const section = this.config.layoutConfig[sectionName];
+      if (section && section.collapsible) {
+        section.collapsed = !section.collapsed;
+      }
+    }
   }
   
   getGridClass(): string {

@@ -176,6 +176,26 @@ export interface DashboardConfig {
     columns?: number;
     gap?: string;
   };
+  // New 5-part layout configuration
+  layoutConfig?: {
+    type: 'five-part' | 'grid';
+    header?: DashboardSection;
+    footer?: DashboardSection;
+    leftPanel?: DashboardSection;
+    rightPanel?: DashboardSection;
+    body?: DashboardSection;
+  };
+}
+
+export interface DashboardSection {
+  enabled: boolean;
+  widgets?: WidgetConfig[];
+  height?: string;
+  width?: string;
+  className?: string;
+  title?: string;
+  collapsible?: boolean;
+  collapsed?: boolean;
 }
 
 export interface DashboardWidget {
