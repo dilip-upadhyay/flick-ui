@@ -22,9 +22,9 @@
         <span *ngIf="field.required" class="required-indicator">*</span>
       </label>
 
-      <!-- Text Input -->
+      <!-- Text Input (includes tel type) -->
       <input 
-        *ngIf="field.type === 'text' || field.type === 'email' || field.type === 'password'"
+        *ngIf="field.type === 'text' || field.type === 'email' || field.type === 'password' || field.type === 'tel'"
         [type]="field.type"
         [id]="field.id"
         [formControlName]="field.id"
@@ -75,14 +75,34 @@
 
       <!-- Checkbox -->
       <div *ngIf="field.type === 'checkbox'" class="checkbox-wrapper">
-        <input 
-          type="checkbox"
-          [id]="field.id"
-          [formControlName]="field.id"
-          class="form-check-input">
-        <label [for]="field.id" class="form-check-label">
-          {{ field.placeholder || field.label }}
-        </label>
+        <!-- Single checkbox (no options) -->
+        <div *ngIf="!field.options || field.options.length === 0" class="checkbox-item">
+          <input 
+            type="checkbox"
+            [id]="field.id"
+            [formControlName]="field.id"
+            class="form-check-input">
+          <label [for]="field.id" class="form-check-label">
+            {{ field.placeholder || field.label }}
+          </label>
+        </div>
+        
+        <!-- Multiple checkboxes (with options) -->
+        <div *ngIf="field.options && field.options.length > 0" class="checkbox-group">
+          <div 
+            *ngFor="let option of field.options; let i = index" 
+            class="checkbox-item">
+            <input 
+              type="checkbox"
+              [id]="field.id + '_' + i"
+              [value]="option.value"
+              (change)="onCheckboxChange(field.id, option.value, $event)"
+              class="form-check-input">
+            <label [for]="field.id + '_' + i" class="form-check-label">
+              {{ option.label }}
+            </label>
+          </div>
+        </div>
       </div>
 
       <!-- Radio Buttons -->

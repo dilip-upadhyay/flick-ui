@@ -2,13 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { MaterialModule } from '../../shared/material.module';
-import { DynamicRendererComponent } from '../../components/dynamic-renderer/dynamic-renderer.component';
-import { UIConfig } from '../../models/ui-config.interface';
+import { FormRendererComponent } from '../../components/form-renderer/form-renderer.component';
+import { FormConfig } from '../../models/ui-config.interface';
 
 @Component({
   selector: 'app-form',
   standalone: true,
-  imports: [CommonModule, MaterialModule, DynamicRendererComponent],
+  imports: [CommonModule, MaterialModule, FormRendererComponent],
   template: `
     <div class="page-container">
       <mat-card class="page-card">
@@ -23,7 +23,10 @@ import { UIConfig } from '../../models/ui-config.interface';
         <mat-card-content>
           @if (currentConfig) {
             <div class="renderer-container">
-              <app-dynamic-renderer [config]="currentConfig"></app-dynamic-renderer>
+              <app-form-renderer 
+                [config]="currentConfig"
+                (event)="onFormEvent($event)">
+              </app-form-renderer>
             </div>
           } @else {
             <div class="loading-container">
@@ -70,13 +73,13 @@ import { UIConfig } from '../../models/ui-config.interface';
   `]
 })
 export class FormComponent implements OnInit {
-  currentConfig: UIConfig | null = null;
+  currentConfig: FormConfig | null = null;
 
   constructor(private http: HttpClient) {}
   
   ngOnInit() {
     // Load form demo configuration
-    this.http.get<UIConfig>('assets/configs/form-demo.json').subscribe({
+    this.http.get<FormConfig>('assets/configs/form-config.json').subscribe({
       next: (config) => {
         this.currentConfig = config;
       },
@@ -84,5 +87,22 @@ export class FormComponent implements OnInit {
         console.error('Error loading form configuration:', error);
       }
     });
+  }
+
+  onFormEvent(event: any) {
+    console.log('Form event:', event);
+    
+    switch (event.type) {
+      case 'submit':
+        console.log('Form submitted with data:', event.data);
+        // Handle form submission here
+        break;
+      case 'reset':
+        console.log('Form reset');
+        break;
+      case 'formChange':
+        console.log('Form values changed:', event.data);
+        break;
+    }
   }
 }

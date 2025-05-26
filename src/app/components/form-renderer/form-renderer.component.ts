@@ -36,7 +36,16 @@ export class FormRendererComponent implements OnInit {
 
     this.config.fields.forEach(field => {
       const validators = this.buildValidators(field);
-      const defaultValue = field.defaultValue || '';
+      let defaultValue = field.defaultValue;
+      
+      // Handle checkbox arrays (multiple options)
+      if (field.type === 'checkbox' && field.options && field.options.length > 0) {
+        defaultValue = defaultValue || [];
+      } else if (field.type === 'checkbox') {
+        defaultValue = defaultValue || false;
+      } else {
+        defaultValue = defaultValue || '';
+      }
       
       formControls[field.id] = [
         { value: defaultValue, disabled: field.disabled || false },
@@ -65,8 +74,10 @@ export class FormRendererComponent implements OnInit {
       validators.push(Validators.required);
     }
 
-    if (field.validation && Array.isArray(field.validation)) {
-      field.validation.forEach(validation => {
+    if (field.validation) {
+      const validations = Array.isArray(field.validation) ? field.validation : [field.validation];
+      
+      validations.forEach(validation => {
         switch (validation.type) {
           case 'minLength':
             validators.push(Validators.minLength(validation.value));
@@ -86,11 +97,37 @@ export class FormRendererComponent implements OnInit {
           case 'max':
             validators.push(Validators.max(validation.value));
             break;
+          case 'confirmField':
+            // Custom validator for password confirmation
+            validators.push(this.createConfirmValidator(validation.confirmField!));
+            break;
         }
       });
     }
 
     return validators;
+  }
+
+  /**
+   * Create custom validator for password confirmation
+   */
+  private createConfirmValidator(confirmFieldId: string) {
+    return (control: any) => {
+      if (!control.value || !this.form) {
+        return null;
+      }
+      
+      const confirmControl = this.form.get(confirmFieldId);
+      if (!confirmControl) {
+        return null;
+      }
+      
+      if (control.value !== confirmControl.value) {
+        return { confirmField: true };
+      }
+      
+      return null;
+    };
   }
 
   /**
@@ -103,15 +140,18 @@ export class FormRendererComponent implements OnInit {
     }
 
     const field = this.config.fields.find(f => f.id === fieldId);
-    if (!field || !field.validation) {
+    if (!field) {
       return [];
     }
 
     const errors: string[] = [];
     const controlErrors = control.errors;
 
-    if (field.validation && Array.isArray(field.validation)) {
-      field.validation.forEach(validation => {
+    // Handle validation messages from field configuration
+    if (field.validation) {
+      const validations = Array.isArray(field.validation) ? field.validation : [field.validation];
+      
+      validations.forEach(validation => {
         if (controlErrors[validation.type]) {
           errors.push(validation.message);
         }
@@ -121,6 +161,26 @@ export class FormRendererComponent implements OnInit {
     // Handle built-in validators
     if (controlErrors['required'] && field.required) {
       errors.push(`${field.label} is required`);
+    }
+
+    if (controlErrors['email']) {
+      errors.push(`Please enter a valid email address`);
+    }
+
+    if (controlErrors['minlength']) {
+      errors.push(`${field.label} must be at least ${controlErrors['minlength'].requiredLength} characters`);
+    }
+
+    if (controlErrors['maxlength']) {
+      errors.push(`${field.label} must be no more than ${controlErrors['maxlength'].requiredLength} characters`);
+    }
+
+    if (controlErrors['pattern']) {
+      errors.push(`${field.label} format is invalid`);
+    }
+
+    if (controlErrors['confirmField']) {
+      errors.push(`Passwords do not match`);
     }
 
     return errors;
@@ -183,6 +243,34 @@ export class FormRendererComponent implements OnInit {
         formData: this.form.value
       }
     });
+  }
+
+  /**
+   * Handle checkbox changes for multiple checkbox fields
+   */
+  onCheckboxChange(fieldId: string, value: any, event: any): void {
+    const control = this.form.get(fieldId);
+    if (!control) return;
+
+    let currentValue = control.value || [];
+    if (!Array.isArray(currentValue)) {
+      currentValue = [];
+    }
+
+    if (event.target.checked) {
+      // Add value if checked
+      if (!currentValue.includes(value)) {
+        currentValue.push(value);
+      }
+    } else {
+      // Remove value if unchecked
+      const index = currentValue.indexOf(value);
+      if (index > -1) {
+        currentValue.splice(index, 1);
+      }
+    }
+
+    control.setValue(currentValue);
   }
 
   /**

@@ -114,13 +114,13 @@ export interface FormConfig {
 
 export interface FormField {
   id: string;
-  type: 'text' | 'email' | 'password' | 'number' | 'textarea' | 'select' | 'checkbox' | 'radio' | 'date' | 'file';
+  type: 'text' | 'email' | 'password' | 'tel' | 'number' | 'textarea' | 'select' | 'checkbox' | 'radio' | 'date' | 'file';
   label: string;
   placeholder?: string;
   required?: boolean;
   disabled?: boolean;
   options?: SelectOption[];
-  validation?: FieldValidation[];
+  validation?: FieldValidation | FieldValidation[];
   defaultValue?: any;
   helpText?: string;
   gridColumn?: string;
@@ -133,9 +133,10 @@ export interface SelectOption {
 }
 
 export interface FieldValidation {
-  type: 'required' | 'minLength' | 'maxLength' | 'pattern' | 'email' | 'min' | 'max';
+  type: 'required' | 'minLength' | 'maxLength' | 'pattern' | 'email' | 'min' | 'max' | 'confirmField';
   value?: any;
   message: string;
+  confirmField?: string; // For password confirmation
 }
 
 export interface FormAction {
