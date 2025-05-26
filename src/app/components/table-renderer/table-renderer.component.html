@@ -1,0 +1,207 @@
+<div class="table-renderer">
+  <!-- Table Header -->
+  <div class="table-header" *ngIf="config.title || config.actions">
+    <div class="table-title-section">
+      <h3 *ngIf="config.title" class="table-title">{{ config.title }}</h3>
+    </div>
+    
+    <div class="table-actions" *ngIf="config.actions">
+      <button 
+        *ngFor="let action of config.actions"
+        type="button"
+        [class]="'btn btn-' + (action.type === 'create' ? 'primary' : 'secondary')"
+        (click)="onTableAction(action)">
+        <span *ngIf="action.icon" class="action-icon">{{ action.icon }}</span>
+        {{ action.label }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Table Filters -->
+  <div class="table-filters" *ngIf="config.filtering">
+    <div class="global-filter">
+      <input 
+        type="text" 
+        class="form-control" 
+        placeholder="Search all columns..."
+        [(ngModel)]="globalFilter"
+        (input)="onFilter()">
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="table-loading">
+    <div class="loading-spinner"></div>
+    <p>Loading data...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error" class="table-error">
+    <p class="error-message">{{ error }}</p>
+    <button type="button" class="btn btn-primary" (click)="refresh()">
+      Retry
+    </button>
+  </div>
+
+  <!-- Table Content -->
+  <div *ngIf="!isLoading && !error" class="table-content">
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <!-- Selection Column -->
+            <th *ngIf="config.selectable" class="selection-column">
+              <input 
+                type="checkbox"
+                class="form-check-input"
+                [checked]="isAllSelected()"
+                [indeterminate]="isSomeSelected()"
+                (change)="onSelectAll($event)">
+            </th>
+
+            <!-- Data Columns -->
+            <th 
+              *ngFor="let column of config.columns"
+              [class]="getColumnAlignClass(column)"
+              [style.width]="column.width"
+              [class.sortable]="column.sortable"
+              (click)="onSort(column)">
+              
+              <div class="column-header">
+                <span class="column-title">{{ column.title }}</span>
+                <span *ngIf="column.sortable" [class]="getSortIconClass(column)">
+                  ↕️
+                </span>
+              </div>
+
+              <!-- Column Filter -->
+              <div *ngIf="column.filterable" class="column-filter">
+                <input 
+                  type="text" 
+                  class="form-control form-control-sm" 
+                  [placeholder]="'Filter ' + column.title"
+                  [(ngModel)]="filterValues[column.key]"
+                  (input)="onFilter()">
+              </div>
+            </th>
+
+            <!-- Row Actions Column -->
+            <th *ngIf="config.rowActions && config.rowActions.length > 0" class="actions-column">
+              Actions
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let row of paginatedData; let i = index" class="table-row">
+            <!-- Selection Cell -->
+            <td *ngIf="config.selectable" class="selection-cell">
+              <input 
+                type="checkbox"
+                class="form-check-input"
+                [checked]="selectedRows.has(i)"
+                (change)="onRowSelect(i, $event)">
+            </td>
+
+            <!-- Data Cells -->
+            <td 
+              *ngFor="let column of config.columns"
+              [class]="getColumnAlignClass(column)">
+              
+              <!-- Regular Cell Content -->
+              <span *ngIf="column.type !== 'custom'">
+                {{ formatCellValue(row[column.key], column) }}
+              </span>
+
+              <!-- Custom Cell Content -->
+              <div *ngIf="column.type === 'custom'" class="custom-cell">
+                <!-- You can extend this for custom cell templates -->
+                {{ row[column.key] }}
+              </div>
+            </td>
+
+            <!-- Row Actions Cell -->
+            <td *ngIf="config.rowActions && config.rowActions.length > 0" class="actions-cell">
+              <div class="row-actions">
+                <button 
+                  *ngFor="let action of config.rowActions"
+                  type="button"
+                  class="btn btn-sm btn-outline-secondary"
+                  [title]="action.label"
+                  (click)="onRowAction(action, row, i)">
+                  <span *ngIf="action.icon">{{ action.icon }}</span>
+                  <span *ngIf="!action.icon">{{ action.label }}</span>
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <!-- No Data Row -->
+          <tr *ngIf="paginatedData.length === 0">
+            <td [colSpan]="getColumnCount()" class="no-data">
+              <div class="no-data-message">
+                <p>No data available</p>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Table Footer / Pagination -->
+    <div class="table-footer" *ngIf="config.pagination?.enabled">
+      <div class="pagination-info">
+        <span *ngIf="config.pagination?.showTotal">
+          Showing {{ (currentPage - 1) * pageSize + 1 }} to 
+          {{ Math.min(currentPage * pageSize, totalItems) }} of 
+          {{ totalItems }} entries
+        </span>
+      </div>
+
+      <div class="pagination-controls">
+        <!-- Page Size Selector -->
+        <div class="page-size-selector" *ngIf="config.pagination?.showSizeOptions">
+          <label>Show:</label>
+          <select 
+            class="form-control form-control-sm"
+            [(ngModel)]="pageSize"
+            (change)="onPageSizeChange(pageSize)">
+            <option 
+              *ngFor="let size of config.pagination?.sizeOptions || [10, 25, 50, 100]"
+              [value]="size">
+              {{ size }}
+            </option>
+          </select>
+          <label>entries</label>
+        </div>
+
+        <!-- Pagination Buttons -->
+        <div class="pagination">
+          <button 
+            type="button"
+            class="btn btn-sm btn-outline-secondary"
+            [disabled]="currentPage <= 1"
+            (click)="onPageChange(currentPage - 1)">
+            Previous
+          </button>
+
+          <button 
+            *ngFor="let page of getPageNumbers()"
+            type="button"
+            [class]="'btn btn-sm ' + (page === currentPage ? 'btn-primary' : 'btn-outline-secondary')"
+            (click)="onPageChange(page)">
+            {{ page }}
+          </button>
+
+          <button 
+            type="button"
+            class="btn btn-sm btn-outline-secondary"
+            [disabled]="currentPage >= totalPages"
+            (click)="onPageChange(currentPage + 1)">
+            Next
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,26 @@
+<div [class]="getHeaderClasses()">
+  <div class="header-content">
+    <!-- Logo Section -->
+    <div class="header-logo" *ngIf="config.logo">
+      <img [src]="config.logo" alt="Logo" class="logo-image">
+    </div>
+
+    <!-- Title Section -->
+    <div class="header-title-section">
+      <h1 *ngIf="config.title" class="header-title">{{ config.title }}</h1>
+      <p *ngIf="config.subtitle" class="header-subtitle">{{ config.subtitle }}</p>
+    </div>
+
+    <!-- Actions Section -->
+    <div class="header-actions" *ngIf="config.actions && config.actions.length > 0">
+      <button 
+        *ngFor="let action of config.actions"
+        type="button"
+        [class]="'btn btn-' + (action.variant || 'primary')"
+        (click)="onActionClick(action)">
+        <span *ngIf="action.icon" class="action-icon">{{ action.icon }}</span>
+        {{ action.label }}
+      </button>
+    </div>
+  </div>
+</div>

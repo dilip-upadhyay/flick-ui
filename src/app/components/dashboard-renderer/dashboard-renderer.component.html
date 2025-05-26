@@ -1,0 +1,154 @@
+<div class="dashboard-container" [class]="config.className">
+  <!-- Dashboard Header -->
+  <div class="dashboard-header" *ngIf="config.title || config.subtitle || config.actions">
+    <div class="header-content">
+      <h1 *ngIf="config.title" class="dashboard-title">{{ config.title }}</h1>
+      <p *ngIf="config.subtitle" class="dashboard-subtitle">{{ config.subtitle }}</p>
+    </div>
+    <div class="header-actions" *ngIf="config.actions">
+      <button 
+        *ngFor="let action of config.actions"
+        [class]="'btn btn-' + (action.variant || 'primary')"
+        [disabled]="action.disabled"
+        (click)="executeAction(action)">
+        <i *ngIf="action.icon" [class]="action.icon"></i>
+        {{ action.label }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Dashboard Grid -->
+  <div [class]="getGridClass()">
+    <div 
+      *ngFor="let widget of widgets"
+      [class]="getWidgetClass(widget)"
+      [attr.data-widget-id]="widget.id">
+      
+      <!-- Widget Header -->
+      <div class="widget-header" *ngIf="widget.title || widget.actions">
+        <h3 class="widget-title">{{ widget.title }}</h3>
+        <div class="widget-actions" *ngIf="widget.actions">
+          <button 
+            *ngFor="let action of widget.actions"
+            class="btn btn-sm btn-ghost"
+            [title]="action.label"
+            (click)="onWidgetAction(widget, action.type)">
+            <i [class]="action.icon"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Widget Content -->
+      <div class="widget-content">
+        
+        <!-- Metric Widget -->
+        <div *ngIf="widget.type === 'metric'" class="metric-widget">
+          <div class="metric-value">
+            {{ formatValue(widget.metric?.value, widget.metric?.format) }}
+          </div>
+          <div class="metric-label">{{ widget.metric?.label }}</div>
+          <div 
+            *ngIf="widget.metric?.change !== undefined"
+            [class]="'metric-change ' + ((widget.metric?.change || 0) >= 0 ? 'positive' : 'negative')">
+            <i [class]="(widget.metric?.change || 0) >= 0 ? 'fas fa-arrow-up' : 'fas fa-arrow-down'"></i>
+            {{ Math.abs(widget.metric?.change || 0) }}%
+          </div>
+        </div>
+
+        <!-- Chart Widget -->
+        <div *ngIf="widget.type === 'chart'" class="chart-widget">
+          <div class="chart-placeholder">
+            <i class="fas fa-chart-bar"></i>
+            <p>Chart: {{ widget.chart?.type }}</p>
+            <small>Chart integration required (Chart.js, D3, etc.)</small>
+          </div>
+        </div>
+
+        <!-- Table Widget -->
+        <div *ngIf="widget.type === 'table'" class="table-widget">
+          <div class="table-container">
+            <table class="widget-table">
+              <thead *ngIf="widget.table?.columns">
+                <tr>
+                  <th *ngFor="let col of widget.table?.columns">{{ col.label }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of widget.table?.data; let i = index">
+                  <td *ngFor="let col of widget.table?.columns">
+                    {{ formatValue(row[col.key], col.format) }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div *ngIf="(widget.table?.data?.length || 0) === 0" class="empty-state">
+            <i class="fas fa-table"></i>
+            <p>No data available</p>
+          </div>
+        </div>
+
+        <!-- Progress Widget -->
+        <div *ngIf="widget.type === 'progress'" class="progress-widget">
+          <div class="progress-info">
+            <span class="progress-label">{{ widget.progress?.label }}</span>
+            <span class="progress-value">
+              {{ formatValue(widget.progress?.current, widget.progress?.format) }} / 
+              {{ formatValue(widget.progress?.target, widget.progress?.format) }}
+            </span>
+          </div>
+          <div class="progress-bar">
+            <div 
+              class="progress-fill"
+              [style.width.%]="getProgressPercentage(widget)">
+            </div>
+          </div>
+          <div class="progress-percentage">
+            {{ getProgressPercentage(widget).toFixed(0) }}%
+          </div>
+        </div>
+
+        <!-- List Widget -->
+        <div *ngIf="widget.type === 'list'" class="list-widget">
+          <ul class="widget-list">
+            <li *ngFor="let item of getListItems(widget)" class="list-item">
+              <div class="item-content">
+                <div class="item-primary">{{ item.primary }}</div>
+                <div *ngIf="item.secondary" class="item-secondary">{{ item.secondary }}</div>
+              </div>
+              <div *ngIf="item.value" class="item-value">
+                {{ formatValue(item.value, item.format) }}
+              </div>
+            </li>
+          </ul>
+          <div *ngIf="getListItems(widget).length === 0" class="empty-state">
+            <i class="fas fa-list"></i>
+            <p>No items available</p>
+          </div>
+        </div>
+
+        <!-- Text Widget -->
+        <div *ngIf="widget.type === 'text'" class="text-widget">
+          <div [innerHTML]="widget.text?.content"></div>
+        </div>
+
+        <!-- Custom Widget -->
+        <div *ngIf="widget.type === 'custom'" class="custom-widget">
+          <div class="custom-placeholder">
+            <i class="fas fa-puzzle-piece"></i>
+            <p>Custom Widget: {{ widget.custom?.component }}</p>
+            <small>Custom component integration required</small>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="widgets.length === 0" class="empty-dashboard">
+    <i class="fas fa-tachometer-alt"></i>
+    <h3>No widgets configured</h3>
+    <p>Add widgets to your dashboard configuration to get started.</p>
+  </div>
+</div>

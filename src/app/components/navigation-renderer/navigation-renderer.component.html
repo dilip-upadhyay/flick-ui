@@ -1,0 +1,118 @@
+<div [class]="getNavigationClasses()">
+  
+  <!-- Mobile Menu Toggle (for sidebar and vertical navigation) -->
+  <button 
+    *ngIf="config.type === 'sidebar' || config.type === 'vertical'"
+    type="button"
+    class="mobile-menu-toggle d-md-none"
+    (click)="toggleMobileMenu()">
+    <span class="hamburger-icon">☰</span>
+  </button>
+
+  <!-- Navigation Menu -->
+  <nav class="navigation-menu" [class.mobile-open]="isMobileMenuOpen">
+    
+    <!-- Horizontal Navigation -->
+    <ul *ngIf="config.type === 'horizontal'" class="nav-list nav-horizontal">
+      <li *ngFor="let item of config.items" [class]="getItemClasses(item)">
+        <a 
+          href="#" 
+          class="nav-link"
+          [class.disabled]="item.disabled"
+          (click)="$event.preventDefault(); onItemClick(item)">
+          
+          <span *ngIf="item.icon" class="nav-icon">{{ item.icon }}</span>
+          <span class="nav-label">{{ item.label }}</span>
+          <span *ngIf="item.badge" class="nav-badge">{{ item.badge }}</span>
+          <span *ngIf="item.children && item.children.length > 0" class="nav-arrow">
+            {{ isCollapsed(item.id) ? '▶' : '▼' }}
+          </span>
+        </a>
+
+        <!-- Dropdown for horizontal navigation -->
+        <ul *ngIf="item.children && item.children.length > 0 && !isCollapsed(item.id)" 
+            class="nav-dropdown">
+          <li *ngFor="let child of item.children" [class]="getItemClasses(child)">
+            <a 
+              href="#" 
+              class="nav-link"
+              [class.disabled]="child.disabled"
+              (click)="$event.preventDefault(); onItemClick(child)">
+              
+              <span *ngIf="child.icon" class="nav-icon">{{ child.icon }}</span>
+              <span class="nav-label">{{ child.label }}</span>
+              <span *ngIf="child.badge" class="nav-badge">{{ child.badge }}</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+
+    <!-- Vertical/Sidebar Navigation -->
+    <ul *ngIf="config.type === 'vertical' || config.type === 'sidebar'" class="nav-list nav-vertical">
+      <li *ngFor="let item of config.items" [class]="getItemClasses(item)">
+        <a 
+          href="#" 
+          class="nav-link"
+          [class.disabled]="item.disabled"
+          (click)="$event.preventDefault(); onItemClick(item)">
+          
+          <span *ngIf="item.icon" class="nav-icon">{{ item.icon }}</span>
+          <span class="nav-label">{{ item.label }}</span>
+          <span *ngIf="item.badge" class="nav-badge">{{ item.badge }}</span>
+          <span *ngIf="item.children && item.children.length > 0" class="nav-arrow">
+            {{ isCollapsed(item.id) ? '▶' : '▼' }}
+          </span>
+        </a>
+
+        <!-- Nested items for vertical navigation -->
+        <ul *ngIf="item.children && item.children.length > 0 && !isCollapsed(item.id)" 
+            class="nav-submenu">
+          <li *ngFor="let child of item.children" [class]="getItemClasses(child)">
+            <a 
+              href="#" 
+              class="nav-link nav-sublink"
+              [class.disabled]="child.disabled"
+              (click)="$event.preventDefault(); onItemClick(child)">
+              
+              <span *ngIf="child.icon" class="nav-icon">{{ child.icon }}</span>
+              <span class="nav-label">{{ child.label }}</span>
+              <span *ngIf="child.badge" class="nav-badge">{{ child.badge }}</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+
+    <!-- Breadcrumb Navigation -->
+    <nav *ngIf="config.type === 'breadcrumb'" class="breadcrumb-nav">
+      <ol class="breadcrumb">
+        <li *ngFor="let item of config.items; let last = last" 
+            class="breadcrumb-item"
+            [class.active]="last || isActive(item)">
+          
+          <a 
+            *ngIf="!last && !isActive(item) && !item.disabled"
+            href="#"
+            (click)="$event.preventDefault(); onItemClick(item)">
+            <span *ngIf="item.icon" class="nav-icon">{{ item.icon }}</span>
+            {{ item.label }}
+          </a>
+          
+          <span *ngIf="last || isActive(item) || item.disabled">
+            <span *ngIf="item.icon" class="nav-icon">{{ item.icon }}</span>
+            {{ item.label }}
+          </span>
+        </li>
+      </ol>
+    </nav>
+
+  </nav>
+
+  <!-- Mobile Menu Overlay -->
+  <div 
+    *ngIf="isMobileMenuOpen" 
+    class="mobile-menu-overlay d-md-none"
+    (click)="toggleMobileMenu()">
+  </div>
+</div>

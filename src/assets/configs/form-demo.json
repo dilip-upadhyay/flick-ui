@@ -1,0 +1,184 @@
+{
+  "type": "layout",
+  "version": "1.0",
+  "theme": "default",
+  "layout": {
+    "direction": "column",
+    "gap": "medium",
+    "padding": "medium"
+  },
+  "components": [
+    {
+      "id": "page-header",
+      "type": "header",
+      "props": {
+        "title": "User Registration Form",
+        "subtitle": "Create your account to get started",
+        "className": "form-header"
+      }
+    },
+    {
+      "id": "registration-form",
+      "type": "form",
+      "props": {
+        "title": "Sign Up",
+        "submitText": "Create Account",
+        "layout": "vertical",
+        "validation": {
+          "showErrors": true,
+          "validateOnBlur": true
+        },
+        "actions": [
+          {
+            "type": "submit",
+            "label": "Create Account",
+            "variant": "primary",
+            "icon": "fas fa-user-plus"
+          },
+          {
+            "type": "reset",
+            "label": "Clear Form",
+            "variant": "secondary",
+            "icon": "fas fa-undo"
+          }
+        ],
+        "fields": [
+          {
+            "id": "firstName",
+            "type": "text",
+            "label": "First Name",
+            "placeholder": "Enter your first name",
+            "required": true,
+            "validation": {
+              "minLength": 2,
+              "maxLength": 50,
+              "pattern": "^[A-Za-z\\s]+$",
+              "message": "First name must contain only letters and spaces"
+            }
+          },
+          {
+            "id": "lastName",
+            "type": "text",
+            "label": "Last Name",
+            "placeholder": "Enter your last name",
+            "required": true,
+            "validation": {
+              "minLength": 2,
+              "maxLength": 50,
+              "pattern": "^[A-Za-z\\s]+$",
+              "message": "Last name must contain only letters and spaces"
+            }
+          },
+          {
+            "id": "email",
+            "type": "email",
+            "label": "Email Address",
+            "placeholder": "Enter your email address",
+            "required": true,
+            "validation": {
+              "pattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
+              "message": "Please enter a valid email address"
+            }
+          },
+          {
+            "id": "phone",
+            "type": "tel",
+            "label": "Phone Number",
+            "placeholder": "(555) 123-4567",
+            "required": false,
+            "validation": {
+              "pattern": "^\\(?([0-9]{3})\\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$",
+              "message": "Please enter a valid phone number"
+            }
+          },
+          {
+            "id": "password",
+            "type": "password",
+            "label": "Password",
+            "placeholder": "Create a strong password",
+            "required": true,
+            "validation": {
+              "minLength": 8,
+              "pattern": "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$",
+              "message": "Password must be at least 8 characters with uppercase, lowercase, number and special character"
+            }
+          },
+          {
+            "id": "confirmPassword",
+            "type": "password",
+            "label": "Confirm Password",
+            "placeholder": "Confirm your password",
+            "required": true,
+            "validation": {
+              "confirmField": "password",
+              "message": "Passwords do not match"
+            }
+          },
+          {
+            "id": "dateOfBirth",
+            "type": "date",
+            "label": "Date of Birth",
+            "required": true,
+            "validation": {
+              "max": "2006-01-01",
+              "message": "You must be at least 18 years old"
+            }
+          },
+          {
+            "id": "gender",
+            "type": "select",
+            "label": "Gender",
+            "required": false,
+            "options": [
+              { "value": "", "label": "Select Gender" },
+              { "value": "male", "label": "Male" },
+              { "value": "female", "label": "Female" },
+              { "value": "other", "label": "Other" },
+              { "value": "prefer-not-to-say", "label": "Prefer not to say" }
+            ]
+          },
+          {
+            "id": "interests",
+            "type": "checkbox",
+            "label": "Interests",
+            "options": [
+              { "value": "technology", "label": "Technology" },
+              { "value": "sports", "label": "Sports" },
+              { "value": "music", "label": "Music" },
+              { "value": "travel", "label": "Travel" },
+              { "value": "reading", "label": "Reading" },
+              { "value": "cooking", "label": "Cooking" }
+            ]
+          },
+          {
+            "id": "newsletter",
+            "type": "checkbox",
+            "label": "Subscribe to Newsletter",
+            "options": [
+              { "value": "subscribe", "label": "Yes, I want to receive updates and newsletters" }
+            ]
+          },
+          {
+            "id": "terms",
+            "type": "checkbox",
+            "label": "Terms and Conditions",
+            "required": true,
+            "options": [
+              { "value": "accepted", "label": "I agree to the Terms and Conditions and Privacy Policy" }
+            ],
+            "validation": {
+              "required": true,
+              "message": "You must accept the terms and conditions to continue"
+            }
+          }
+        ],
+        "dataSource": {
+          "type": "api",
+          "endpoint": "/api/users/register",
+          "method": "POST"
+        },
+        "className": "registration-form"
+      }
+    }
+  ]
+}

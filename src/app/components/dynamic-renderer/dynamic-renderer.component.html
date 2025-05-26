@@ -1,0 +1,200 @@
+<div class="dynamic-renderer" [ngStyle]="getLayoutStyles()">
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="loading-spinner"></div>
+    <p>Loading configuration...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error" class="error-container">
+    <div class="error-message">
+      <h3>Configuration Error</h3>
+      <p>{{ error }}</p>
+      <button 
+        type="button" 
+        class="btn btn-primary" 
+        (click)="reloadConfig()"
+        *ngIf="configSource">
+        Retry
+      </button>
+    </div>
+  </div>
+
+  <!-- Render Components -->
+  <ng-container *ngIf="currentConfig && !isLoading && !error">
+    <div 
+      *ngFor="let component of currentConfig.components" 
+      class="component-wrapper"
+      [ngStyle]="getComponentStyles(component)"
+      [attr.data-component-id]="component.id"
+      [attr.data-component-type]="component.type">
+      
+      <!-- Conditional Rendering -->
+      <ng-container *ngIf="shouldRenderComponent(component)">
+        
+        <!-- Header Component -->
+        <app-header-renderer 
+          *ngIf="component.type === 'header'"
+          [config]="component.props"
+          (event)="onComponentEvent($event, component)">
+        </app-header-renderer>
+
+        <!-- Navigation Component -->
+        <app-navigation-renderer 
+          *ngIf="component.type === 'navigation'"
+          [config]="component.props"
+          (event)="onComponentEvent($event, component)">
+        </app-navigation-renderer>
+
+        <!-- Form Component -->
+        <app-form-renderer 
+          *ngIf="component.type === 'form'"
+          [config]="component.props"
+          (event)="onComponentEvent($event, component)">
+        </app-form-renderer>
+
+        <!-- Table Component -->
+        <app-table-renderer 
+          *ngIf="component.type === 'table'"
+          [config]="component.props"
+          (event)="onComponentEvent($event, component)">
+        </app-table-renderer>
+
+        <!-- Dashboard Component -->
+        <app-dashboard-renderer 
+          *ngIf="component.type === 'dashboard'"
+          [config]="component.props"
+          (event)="onComponentEvent($event, component)">
+        </app-dashboard-renderer>
+
+        <!-- Card Component -->
+        <div *ngIf="component.type === 'card'" class="card">
+          <div class="card-header" *ngIf="component.props.title">
+            <h3>{{ component.props.title }}</h3>
+          </div>
+          <div class="card-body">
+            <p *ngIf="component.props.content">{{ component.props.content }}</p>
+            
+            <!-- Render child components if any -->
+            <div *ngIf="component.children" class="card-children">
+              <app-dynamic-renderer [config]="{ type: 'layout', components: component.children }">
+              </app-dynamic-renderer>
+            </div>
+          </div>
+        </div>
+
+        <!-- Container Component -->
+        <div *ngIf="component.type === 'container'" class="container">
+          <div *ngIf="component.children" class="container-children">
+            <app-dynamic-renderer [config]="{ type: 'layout', components: component.children }">
+            </app-dynamic-renderer>
+          </div>
+        </div>
+
+        <!-- Text Component -->
+        <div *ngIf="component.type === 'text'" class="text-component">
+          <h1 *ngIf="component.props.variant === 'h1'">{{ component.props.content }}</h1>
+          <h2 *ngIf="component.props.variant === 'h2'">{{ component.props.content }}</h2>
+          <h3 *ngIf="component.props.variant === 'h3'">{{ component.props.content }}</h3>
+          <h4 *ngIf="component.props.variant === 'h4'">{{ component.props.content }}</h4>
+          <h5 *ngIf="component.props.variant === 'h5'">{{ component.props.content }}</h5>
+          <h6 *ngIf="component.props.variant === 'h6'">{{ component.props.content }}</h6>
+          <p *ngIf="!component.props.variant || component.props.variant === 'p'">
+            {{ component.props.content }}
+          </p>
+        </div>
+
+        <!-- Button Component -->
+        <button 
+          *ngIf="component.type === 'button'"
+          type="button"
+          [class]="'btn btn-' + (component.props.variant || 'primary')"
+          [disabled]="component.props.disabled"
+          (click)="onComponentEvent({ action: component.props.action, data: component.props }, component)">
+          {{ component.props.label }}
+        </button>
+
+        <!-- Image Component -->
+        <img 
+          *ngIf="component.type === 'image'"
+          [src]="component.props.src"
+          [alt]="component.props.alt || ''"
+          [class]="component.props.class || 'responsive-image'"
+          [style.width]="component.props.width"
+          [style.height]="component.props.height">
+
+        <!-- Grid Component -->
+        <div *ngIf="component.type === 'grid'" 
+             class="grid"
+             [style.grid-template-columns]="'repeat(' + (component.props.columns || 12) + ', 1fr)'">
+          <div *ngIf="component.children" class="grid-children">
+            <app-dynamic-renderer [config]="{ type: 'layout', components: component.children }">
+            </app-dynamic-renderer>
+          </div>
+        </div>
+
+        <!-- Modal Component -->
+        <div *ngIf="component.type === 'modal'" class="modal" [class.show]="component.props.isOpen">
+          <div class="modal-backdrop" (click)="onComponentEvent({ action: 'close' }, component)"></div>
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header" *ngIf="component.props.title">
+                <h4 class="modal-title">{{ component.props.title }}</h4>
+                <button type="button" class="close" (click)="onComponentEvent({ action: 'close' }, component)">
+                  &times;
+                </button>
+              </div>
+              <div class="modal-body">
+                <div *ngIf="component.children">
+                  <app-dynamic-renderer [config]="{ type: 'layout', components: component.children }">
+                  </app-dynamic-renderer>
+                </div>
+              </div>
+              <div class="modal-footer" *ngIf="component.props.actions">
+                <button 
+                  *ngFor="let action of component.props.actions"
+                  type="button"
+                  [class]="'btn btn-' + (action.variant || 'secondary')"
+                  (click)="onComponentEvent({ action: action.action, data: action }, component)">
+                  {{ action.label }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tabs Component -->
+        <div *ngIf="component.type === 'tabs'" class="tabs">
+          <div class="tab-nav">
+            <button 
+              *ngFor="let tab of component.props.tabs; let i = index"
+              type="button"
+              class="tab-button"
+              [class.active]="i === (component.props.activeTab || 0)"
+              (click)="onComponentEvent({ action: 'selectTab', data: { index: i } }, component)">
+              {{ tab.label }}
+            </button>
+          </div>
+          <div class="tab-content">
+            <div 
+              *ngFor="let tab of component.props.tabs; let i = index"
+              class="tab-pane"
+              [class.active]="i === (component.props.activeTab || 0)">
+              <div *ngIf="tab.children">
+                <app-dynamic-renderer [config]="{ type: 'layout', components: tab.children }">
+                </app-dynamic-renderer>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Unknown Component Type -->
+        <div *ngIf="!['header', 'navigation', 'form', 'table', 'dashboard', 'card', 'container', 'text', 'button', 'image', 'grid', 'modal', 'tabs'].includes(component.type)" 
+             class="unknown-component">
+          <p class="error">Unknown component type: {{ component.type }}</p>
+        </div>
+
+      </ng-container>
+    </div>
+  </ng-container>
+</div>

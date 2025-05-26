@@ -1,0 +1,143 @@
+<div class="form-renderer">
+  <!-- Form Header -->
+  <div class="form-header" *ngIf="config.title || config.description">
+    <h2 *ngIf="config.title" class="form-title">{{ config.title }}</h2>
+    <p *ngIf="config.description" class="form-description">{{ config.description }}</p>
+  </div>
+
+  <!-- Form -->
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" [class]="getFormLayoutClasses()">
+    
+    <!-- Form Fields -->
+    <div 
+      *ngFor="let field of config.fields" 
+      [class]="getFieldWrapperClasses(field)">
+      
+      <!-- Field Label -->
+      <label 
+        [for]="field.id" 
+        class="form-label"
+        [class.required]="field.required">
+        {{ field.label }}
+        <span *ngIf="field.required" class="required-indicator">*</span>
+      </label>
+
+      <!-- Text Input -->
+      <input 
+        *ngIf="field.type === 'text' || field.type === 'email' || field.type === 'password'"
+        [type]="field.type"
+        [id]="field.id"
+        [formControlName]="field.id"
+        [placeholder]="field.placeholder || ''"
+        [class]="getFormControlClasses(field)">
+
+      <!-- Number Input -->
+      <input 
+        *ngIf="field.type === 'number'"
+        type="number"
+        [id]="field.id"
+        [formControlName]="field.id"
+        [placeholder]="field.placeholder || ''"
+        [class]="getFormControlClasses(field)">
+
+      <!-- Date Input -->
+      <input 
+        *ngIf="field.type === 'date'"
+        type="date"
+        [id]="field.id"
+        [formControlName]="field.id"
+        [class]="getFormControlClasses(field)">
+
+      <!-- Textarea -->
+      <textarea 
+        *ngIf="field.type === 'textarea'"
+        [id]="field.id"
+        [formControlName]="field.id"
+        [placeholder]="field.placeholder || ''"
+        [class]="getFormControlClasses(field)"
+        rows="4">
+      </textarea>
+
+      <!-- Select Dropdown -->
+      <select 
+        *ngIf="field.type === 'select'"
+        [id]="field.id"
+        [formControlName]="field.id"
+        [class]="getFormControlClasses(field)">
+        <option value="" disabled>{{ field.placeholder || 'Select an option' }}</option>
+        <option 
+          *ngFor="let option of field.options"
+          [value]="option.value"
+          [disabled]="option.disabled">
+          {{ option.label }}
+        </option>
+      </select>
+
+      <!-- Checkbox -->
+      <div *ngIf="field.type === 'checkbox'" class="checkbox-wrapper">
+        <input 
+          type="checkbox"
+          [id]="field.id"
+          [formControlName]="field.id"
+          class="form-check-input">
+        <label [for]="field.id" class="form-check-label">
+          {{ field.placeholder || field.label }}
+        </label>
+      </div>
+
+      <!-- Radio Buttons -->
+      <div *ngIf="field.type === 'radio'" class="radio-group">
+        <div 
+          *ngFor="let option of field.options" 
+          class="radio-wrapper">
+          <input 
+            type="radio"
+            [id]="field.id + '_' + option.value"
+            [formControlName]="field.id"
+            [value]="option.value"
+            [disabled]="option.disabled || false"
+            class="form-check-input">
+          <label 
+            [for]="field.id + '_' + option.value" 
+            class="form-check-label">
+            {{ option.label }}
+          </label>
+        </div>
+      </div>
+
+      <!-- File Input -->
+      <input 
+        *ngIf="field.type === 'file'"
+        type="file"
+        [id]="field.id"
+        [class]="getFormControlClasses(field)"
+        (change)="event.emit({ type: 'fileChange', fieldId: field.id, data: $event })">
+
+      <!-- Help Text -->
+      <small *ngIf="field.helpText" class="form-help-text">
+        {{ field.helpText }}
+      </small>
+
+      <!-- Field Errors -->
+      <div *ngIf="hasFieldError(field.id)" class="field-errors">
+        <div *ngFor="let error of getFieldErrors(field.id)" class="error-message">
+          {{ error }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Form Actions -->
+    <div class="form-actions" *ngIf="config.actions && config.actions.length > 0">
+      <button 
+        *ngFor="let action of config.actions"
+        [type]="action.type"
+        [class]="'btn btn-' + (action.variant || 'primary')"
+        [disabled]="action.disabled || (action.type === 'submit' && (form.invalid || isSubmitting))"
+        (click)="action.type === 'reset' ? onReset() : action.type === 'button' ? onButtonAction(action) : null">
+        
+        <span *ngIf="action.type === 'submit' && isSubmitting" class="spinner"></span>
+        {{ action.label }}
+      </button>
+    </div>
+  </form>
+</div>

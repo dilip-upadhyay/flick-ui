@@ -1,0 +1,372 @@
+{
+  "type": "layout",
+  "version": "1.0",
+  "theme": "default",
+  "layout": {
+    "direction": "column",
+    "gap": "none",
+    "padding": "none"
+  },
+  "components": [
+    {
+      "id": "main-header",
+      "type": "header",
+      "props": {
+        "title": "Enterprise Dashboard",
+        "subtitle": "Real-time business intelligence and analytics",
+        "logo": {
+          "src": "assets/logo.png",
+          "alt": "Company Logo",
+          "width": 32,
+          "height": 32
+        },
+        "actions": [
+          {
+            "type": "button",
+            "label": "Notifications",
+            "icon": "fas fa-bell",
+            "variant": "ghost",
+            "badge": 3
+          },
+          {
+            "type": "button",
+            "label": "Settings",
+            "icon": "fas fa-cog",
+            "variant": "ghost"
+          },
+          {
+            "type": "dropdown",
+            "label": "John Doe",
+            "icon": "fas fa-user-circle",
+            "variant": "ghost",
+            "items": [
+              { "label": "Profile", "icon": "fas fa-user", "action": "profile" },
+              { "label": "Settings", "icon": "fas fa-cog", "action": "settings" },
+              { "label": "Logout", "icon": "fas fa-sign-out-alt", "action": "logout" }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "sidebar-navigation",
+      "type": "navigation",
+      "props": {
+        "type": "sidebar",
+        "collapsed": false,
+        "items": [
+          {
+            "id": "dashboard",
+            "label": "Dashboard",
+            "icon": "fas fa-tachometer-alt",
+            "href": "/dashboard",
+            "active": true
+          },
+          {
+            "id": "analytics",
+            "label": "Analytics",
+            "icon": "fas fa-chart-line",
+            "children": [
+              {
+                "id": "sales-analytics",
+                "label": "Sales Analytics",
+                "href": "/analytics/sales"
+              },
+              {
+                "id": "user-analytics",
+                "label": "User Analytics",
+                "href": "/analytics/users"
+              },
+              {
+                "id": "performance",
+                "label": "Performance",
+                "href": "/analytics/performance"
+              }
+            ]
+          },
+          {
+            "id": "users",
+            "label": "User Management",
+            "icon": "fas fa-users",
+            "href": "/users"
+          },
+          {
+            "id": "orders",
+            "label": "Orders",
+            "icon": "fas fa-shopping-cart",
+            "href": "/orders",
+            "badge": "12"
+          },
+          {
+            "id": "products",
+            "label": "Products",
+            "icon": "fas fa-box",
+            "children": [
+              {
+                "id": "product-list",
+                "label": "All Products",
+                "href": "/products"
+              },
+              {
+                "id": "categories",
+                "label": "Categories",
+                "href": "/products/categories"
+              },
+              {
+                "id": "inventory",
+                "label": "Inventory",
+                "href": "/products/inventory"
+              }
+            ]
+          },
+          {
+            "id": "reports",
+            "label": "Reports",
+            "icon": "fas fa-file-alt",
+            "href": "/reports"
+          },
+          {
+            "id": "settings",
+            "label": "Settings",
+            "icon": "fas fa-cog",
+            "children": [
+              {
+                "id": "general",
+                "label": "General",
+                "href": "/settings/general"
+              },
+              {
+                "id": "security",
+                "label": "Security",
+                "href": "/settings/security"
+              },
+              {
+                "id": "integrations",
+                "label": "Integrations",
+                "href": "/settings/integrations"
+              }
+            ]
+          }
+        ],
+        "responsive": true,
+        "className": "main-sidebar"
+      }
+    },
+    {
+      "id": "breadcrumb-nav",
+      "type": "navigation",
+      "props": {
+        "type": "breadcrumb",
+        "items": [
+          {
+            "id": "home",
+            "label": "Home",
+            "href": "/"
+          },
+          {
+            "id": "dashboard",
+            "label": "Dashboard",
+            "href": "/dashboard",
+            "active": true
+          }
+        ],
+        "className": "breadcrumb-nav"
+      }
+    },
+    {
+      "id": "main-content",
+      "type": "container",
+      "props": {
+        "className": "main-content"
+      },
+      "children": [
+        {
+          "id": "kpi-dashboard",
+          "type": "dashboard",
+          "props": {
+            "grid": {
+              "columns": 12,
+              "gap": "medium"
+            },
+            "widgets": [
+              {
+                "id": "total-revenue",
+                "type": "metric",
+                "title": "Total Revenue",
+                "span": 3,
+                "metric": {
+                  "value": 2456789.50,
+                  "label": "This Month",
+                  "format": "currency",
+                  "change": 15.8
+                },
+                "actions": [
+                  {
+                    "type": "details",
+                    "label": "View Details",
+                    "icon": "fas fa-external-link-alt"
+                  }
+                ]
+              },
+              {
+                "id": "new-customers",
+                "type": "metric",
+                "title": "New Customers",
+                "span": 3,
+                "metric": {
+                  "value": 1847,
+                  "label": "This Month",
+                  "format": "number",
+                  "change": 23.2
+                }
+              },
+              {
+                "id": "order-count",
+                "type": "metric",
+                "title": "Total Orders",
+                "span": 3,
+                "metric": {
+                  "value": 8965,
+                  "label": "This Month",
+                  "format": "number",
+                  "change": 12.1
+                }
+              },
+              {
+                "id": "avg-order-value",
+                "type": "metric",
+                "title": "Avg Order Value",
+                "span": 3,
+                "metric": {
+                  "value": 274.15,
+                  "label": "This Month",
+                  "format": "currency",
+                  "change": -3.5
+                }
+              },
+              {
+                "id": "revenue-chart",
+                "type": "chart",
+                "title": "Revenue Trend",
+                "span": 8,
+                "chart": {
+                  "type": "area",
+                  "data": {
+                    "labels": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+                    "datasets": [{
+                      "label": "Revenue",
+                      "data": [120000, 135000, 148000, 162000, 175000, 189000, 201000, 218000, 235000, 248000, 261000, 275000]
+                    }]
+                  }
+                }
+              },
+              {
+                "id": "top-regions",
+                "type": "list",
+                "title": "Top Regions",
+                "span": 4,
+                "list": {
+                  "items": [
+                    {
+                      "primary": "North America",
+                      "secondary": "45% of total sales",
+                      "value": 1105455.25,
+                      "format": "currency"
+                    },
+                    {
+                      "primary": "Europe",
+                      "secondary": "32% of total sales",
+                      "value": 786172.64,
+                      "format": "currency"
+                    },
+                    {
+                      "primary": "Asia Pacific",
+                      "secondary": "18% of total sales",
+                      "value": 442422.01,
+                      "format": "currency"
+                    },
+                    {
+                      "primary": "Other",
+                      "secondary": "5% of total sales",
+                      "value": 122739.60,
+                      "format": "currency"
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "monthly-goals",
+                "type": "progress",
+                "title": "Monthly Goals",
+                "span": 6,
+                "progress": {
+                  "label": "Revenue Target",
+                  "current": 2456789.50,
+                  "target": 3000000,
+                  "format": "currency"
+                }
+              },
+              {
+                "id": "customer-satisfaction",
+                "type": "progress",
+                "title": "Customer Satisfaction",
+                "span": 6,
+                "progress": {
+                  "label": "Target: 95%",
+                  "current": 0.928,
+                  "target": 0.95,
+                  "format": "percentage"
+                }
+              },
+              {
+                "id": "recent-activity",
+                "type": "table",
+                "title": "Recent Activity",
+                "span": 12,
+                "table": {
+                  "columns": [
+                    { "key": "timestamp", "label": "Time", "format": "datetime", "width": "150px" },
+                    { "key": "user", "label": "User", "format": "text" },
+                    { "key": "action", "label": "Action", "format": "text" },
+                    { "key": "resource", "label": "Resource", "format": "text" },
+                    { "key": "status", "label": "Status", "format": "text", "width": "100px" }
+                  ],
+                  "data": [
+                    {
+                      "timestamp": "2024-01-15T10:30:15Z",
+                      "user": "john.doe@example.com",
+                      "action": "Created Order",
+                      "resource": "Order #12345",
+                      "status": "Success"
+                    },
+                    {
+                      "timestamp": "2024-01-15T10:28:42Z",
+                      "user": "jane.smith@example.com",
+                      "action": "Updated Product",
+                      "resource": "Premium Widget",
+                      "status": "Success"
+                    },
+                    {
+                      "timestamp": "2024-01-15T10:25:33Z",
+                      "user": "bob.johnson@example.com",
+                      "action": "Deleted User",
+                      "resource": "test.user@example.com",
+                      "status": "Success"
+                    },
+                    {
+                      "timestamp": "2024-01-15T10:22:18Z",
+                      "user": "admin@example.com",
+                      "action": "System Backup",
+                      "resource": "Database",
+                      "status": "Completed"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

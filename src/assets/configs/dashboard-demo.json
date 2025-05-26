@@ -1,0 +1,257 @@
+{
+  "type": "layout",
+  "version": "1.0",
+  "theme": "default",
+  "layout": {
+    "direction": "column",
+    "gap": "medium",
+    "padding": "none"
+  },
+  "components": [
+    {
+      "id": "main-header",
+      "type": "header",
+      "props": {
+        "title": "Dynamic UI Renderer Demo",
+        "subtitle": "Complete user interface rendering from JSON configuration",
+        "logo": {
+          "src": "assets/logo.png",
+          "alt": "Company Logo",
+          "width": 40,
+          "height": 40
+        },
+        "actions": [
+          {
+            "type": "button",
+            "label": "Settings",
+            "icon": "fas fa-cog",
+            "variant": "secondary"
+          },
+          {
+            "type": "button",
+            "label": "Profile",
+            "icon": "fas fa-user",
+            "variant": "primary"
+          }
+        ],
+        "className": "main-header"
+      }
+    },
+    {
+      "id": "main-navigation",
+      "type": "navigation",
+      "props": {
+        "type": "horizontal",
+        "items": [
+          {
+            "id": "dashboard",
+            "label": "Dashboard",
+            "icon": "fas fa-tachometer-alt",
+            "href": "/dashboard",
+            "active": true
+          },
+          {
+            "id": "forms",
+            "label": "Forms",
+            "icon": "fas fa-edit",
+            "href": "/forms"
+          },
+          {
+            "id": "tables",
+            "label": "Tables",
+            "icon": "fas fa-table",
+            "href": "/tables"
+          },
+          {
+            "id": "reports",
+            "label": "Reports",
+            "icon": "fas fa-chart-bar",
+            "href": "/reports"
+          }
+        ],
+        "responsive": true,
+        "className": "main-nav"
+      }
+    },
+    {
+      "id": "dashboard-content",
+      "type": "dashboard",
+      "props": {
+        "title": "Analytics Dashboard",
+        "subtitle": "Overview of key metrics and performance indicators",
+        "grid": {
+          "columns": 12,
+          "gap": "medium"
+        },
+        "actions": [
+          {
+            "type": "refresh",
+            "label": "Refresh",
+            "icon": "fas fa-sync-alt",
+            "variant": "secondary"
+          },
+          {
+            "type": "export",
+            "label": "Export",
+            "icon": "fas fa-download",
+            "variant": "primary"
+          }
+        ],
+        "widgets": [
+          {
+            "id": "total-users",
+            "type": "metric",
+            "title": "Total Users",
+            "span": 3,
+            "metric": {
+              "value": 15847,
+              "label": "Active Users",
+              "format": "number",
+              "change": 12.5
+            }
+          },
+          {
+            "id": "revenue",
+            "type": "metric",
+            "title": "Revenue",
+            "span": 3,
+            "metric": {
+              "value": 156847.50,
+              "label": "Monthly Revenue",
+              "format": "currency",
+              "change": 8.2
+            }
+          },
+          {
+            "id": "conversion-rate",
+            "type": "metric",
+            "title": "Conversion Rate",
+            "span": 3,
+            "metric": {
+              "value": 0.0345,
+              "label": "This Month",
+              "format": "percentage",
+              "change": -2.1
+            }
+          },
+          {
+            "id": "satisfaction",
+            "type": "metric",
+            "title": "Satisfaction",
+            "span": 3,
+            "metric": {
+              "value": 4.8,
+              "label": "Average Rating",
+              "format": "number",
+              "change": 5.3
+            }
+          },
+          {
+            "id": "sales-chart",
+            "type": "chart",
+            "title": "Sales Trend",
+            "span": 6,
+            "chart": {
+              "type": "line",
+              "data": {
+                "labels": ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+                "datasets": [{
+                  "label": "Sales",
+                  "data": [12000, 15000, 18000, 16000, 22000, 25000]
+                }]
+              },
+              "options": {
+                "responsive": true,
+                "maintainAspectRatio": false
+              }
+            }
+          },
+          {
+            "id": "progress-goals",
+            "type": "progress",
+            "title": "Monthly Goals",
+            "span": 6,
+            "progress": {
+              "label": "Sales Target",
+              "current": 18500,
+              "target": 25000,
+              "format": "currency"
+            }
+          },
+          {
+            "id": "recent-orders",
+            "type": "table",
+            "title": "Recent Orders",
+            "span": 8,
+            "table": {
+              "columns": [
+                { "key": "id", "label": "Order ID", "format": "text" },
+                { "key": "customer", "label": "Customer", "format": "text" },
+                { "key": "amount", "label": "Amount", "format": "currency" },
+                { "key": "status", "label": "Status", "format": "text" },
+                { "key": "date", "label": "Date", "format": "date" }
+              ],
+              "data": [
+                {
+                  "id": "ORD-001",
+                  "customer": "John Doe",
+                  "amount": 299.99,
+                  "status": "Completed",
+                  "date": "2024-01-15"
+                },
+                {
+                  "id": "ORD-002",
+                  "customer": "Jane Smith",
+                  "amount": 159.50,
+                  "status": "Processing",
+                  "date": "2024-01-14"
+                },
+                {
+                  "id": "ORD-003",
+                  "customer": "Bob Johnson",
+                  "amount": 89.99,
+                  "status": "Shipped",
+                  "date": "2024-01-13"
+                }
+              ]
+            }
+          },
+          {
+            "id": "top-products",
+            "type": "list",
+            "title": "Top Products",
+            "span": 4,
+            "list": {
+              "items": [
+                {
+                  "primary": "Premium Widget",
+                  "secondary": "Electronics",
+                  "value": 1250,
+                  "format": "number"
+                },
+                {
+                  "primary": "Standard Tool",
+                  "secondary": "Tools & Hardware",
+                  "value": 890,
+                  "format": "number"
+                },
+                {
+                  "primary": "Deluxe Package",
+                  "secondary": "Software",
+                  "value": 650,
+                  "format": "number"
+                },
+                {
+                  "primary": "Basic Kit",
+                  "secondary": "Starter Kits",
+                  "value": 420,
+                  "format": "number"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
