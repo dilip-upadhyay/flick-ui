@@ -5,9 +5,9 @@
   </div>
 
   <form [formGroup]="formGroup" (ngSubmit)="onSubmit()" class="dynamic-form">
-    <div class="form-fields">
+    <div class="form-fields" [ngClass]="{'form-fields-grid': shouldUseGridLayout()}">
       @for (field of config.fields; track field.id) {
-        <div class="field-container">
+        <div class="field-container" [ngClass]="getFieldContainerClass(field)">
           <!-- Text Input Fields -->
           @if (field.type === 'text' || field.type === 'email' || field.type === 'password' || field.type === 'tel') {
             <mat-form-field appearance="outline" class="full-width">
@@ -18,12 +18,19 @@
                 matInput
                 [type]="field.type"
                 [placeholder]="field.placeholder || ''"
-                [formControlName]="field.id">
+                [formControlName]="field.id"
+                [attr.autocomplete]="getAutocompleteValue(field.type)">
               <mat-error *ngIf="getFormControl(field.id)?.hasError('required')">
                 {{ field.label }} is required
               </mat-error>
               <mat-error *ngIf="getFormControl(field.id)?.hasError('email')">
                 Please enter a valid email address
+              </mat-error>
+              <mat-error *ngIf="getFormControl(field.id)?.hasError('minlength')">
+                {{ field.label }} must be at least {{ getFormControl(field.id)?.errors?.['minlength']?.requiredLength }} characters
+              </mat-error>
+              <mat-error *ngIf="getFormControl(field.id)?.hasError('passwordMismatch') && field.id === 'confirmPassword'">
+                Passwords do not match
               </mat-error>
             </mat-form-field>
           }
