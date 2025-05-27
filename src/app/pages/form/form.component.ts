@@ -2,13 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { MaterialModule } from '../../shared/material.module';
-import { FormRendererComponent } from '../../components/form-renderer/form-renderer.component';
+import { FormRendererSimpleComponent } from '../../components/form-renderer/form-renderer-simple.component';
 import { FormConfig } from '../../models/ui-config.interface';
 
 @Component({
   selector: 'app-form',
   standalone: true,
-  imports: [CommonModule, MaterialModule, FormRendererComponent],
+  imports: [CommonModule, MaterialModule, FormRendererSimpleComponent],
   template: `
     <div class="page-container">
       <mat-card class="page-card">
@@ -23,10 +23,10 @@ import { FormConfig } from '../../models/ui-config.interface';
         <mat-card-content>
           @if (currentConfig) {
             <div class="renderer-container">
-              <app-form-renderer 
+              <app-form-renderer-simple 
                 [config]="currentConfig"
                 (event)="onFormEvent($event)">
-              </app-form-renderer>
+              </app-form-renderer-simple>
             </div>
           } @else {
             <div class="loading-container">
@@ -80,19 +80,16 @@ export class FormComponent implements OnInit {
   ngOnInit() {
     console.log('FormComponent ngOnInit called');
     
-    // Add a timeout to see if there's a timing issue
-    setTimeout(() => {
-      console.log('Attempting to load form config...');
-      this.http.get<FormConfig>('assets/configs/form-config.json').subscribe({
-        next: (config) => {
-          console.log('Form config loaded successfully:', config);
-          this.currentConfig = config;
-        },
-        error: (error) => {
-          console.error('Error loading form configuration:', error);
-        }
-      });
-    }, 100);
+    // Load form configuration from JSON file
+    this.http.get<FormConfig>('assets/configs/form-config.json').subscribe({
+      next: (config) => {
+        console.log('Form config loaded successfully:', config);
+        this.currentConfig = config;
+      },
+      error: (error) => {
+        console.error('Error loading form configuration:', error);
+      }
+    });
   }
 
   onFormEvent(event: any) {
