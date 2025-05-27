@@ -70,6 +70,26 @@
   margin-left: 8px;
 }
 
+/* Ensure Material checkboxes are properly aligned */
+.field-id-interests .checkbox-option {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.field-id-interests .checkbox-option ::ng-deep .mat-mdc-checkbox {
+  margin: 0;
+  padding: 0;
+}
+
+.field-id-interests .checkbox-option ::ng-deep .mdc-form-field {
+  align-items: center;
+}
+
+.field-id-interests .checkbox-option ::ng-deep .mdc-checkbox {
+  margin: 0;
+  padding: 0;
+}
+
 .form-actions {
   display: flex;
   flex-direction: column;
@@ -112,6 +132,14 @@
     flex-direction: row;
     flex-wrap: wrap;
     gap: 16px;
+    max-width: 100%;
+  }
+
+  .field-id-interests .checkbox-option {
+    margin-left: 0;
+    margin-right: 0;
+    flex: 0 0 calc(50% - 8px); /* Force 2 items per row with gap consideration */
+    max-width: calc(50% - 8px);
   }
 
   .checkbox-option {
@@ -212,11 +240,16 @@
     flex-wrap: wrap;
     gap: 20px;
     justify-content: flex-start;
+    align-items: flex-start;
+    align-content: flex-start;
   }
 
   .field-id-interests .checkbox-option {
     margin-left: 0;
     margin-right: 0;
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
   }
 }
 
@@ -279,12 +312,16 @@
     flex-wrap: wrap;
     gap: 24px;
     justify-content: flex-start;
+    align-items: flex-start;
+    align-content: flex-start;
   }
 
   .field-id-interests .checkbox-option {
     margin-left: 0;
     margin-right: 0;
     flex: 0 0 auto;
+    display: flex;
+    align-items: center;
   }
 }
 
@@ -328,12 +365,16 @@
     flex-wrap: wrap;
     gap: 28px;
     justify-content: flex-start;
+    align-items: flex-start;
+    align-content: flex-start;
   }
 
   .field-id-interests .checkbox-option {
     margin-left: 0;
     margin-right: 0;
     flex: 0 0 auto;
+    display: flex;
+    align-items: center;
   }
 }
 
@@ -381,12 +422,16 @@
     flex-wrap: wrap;
     gap: 32px;
     justify-content: flex-start;
+    align-items: flex-start;
+    align-content: flex-start;
   }
 
   .field-id-interests .checkbox-option {
     margin-left: 0;
     margin-right: 0;
     flex: 0 0 auto;
+    display: flex;
+    align-items: center;
   }
 }
 
