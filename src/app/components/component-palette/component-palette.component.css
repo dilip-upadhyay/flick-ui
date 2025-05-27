@@ -1,0 +1,136 @@
+.palette-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.palette-header {
+  padding: 16px;
+  border-bottom: 1px solid #e0e0e0;
+  background: #f8f9fa;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.palette-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+}
+
+.search-container {
+  padding: 16px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.search-field {
+  width: 100%;
+}
+
+.components-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+}
+
+.component-category {
+  margin-bottom: 16px;
+}
+
+.category-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #666;
+  margin: 0 0 8px 0;
+  padding: 8px 12px;
+  background: #f5f5f5;
+  border-radius: 4px;
+}
+
+.component-item {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  margin: 4px 0;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  cursor: grab;
+  transition: all 0.2s ease;
+  background: white;
+}
+
+.component-item:hover {
+  background: #f0f7ff;
+  border-color: #2196f3;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(33, 150, 243, 0.2);
+}
+
+.component-item:active {
+  cursor: grabbing;
+  transform: scale(0.98);
+}
+
+.component-icon {
+  margin-right: 12px;
+  color: #2196f3;
+  font-size: 20px;
+}
+
+.component-details {
+  flex: 1;
+}
+
+.component-name {
+  font-weight: 500;
+  color: #333;
+  margin: 0 0 4px 0;
+  font-size: 14px;
+}
+
+.component-description {
+  font-size: 12px;
+  color: #666;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.drag-placeholder {
+  border: 2px dashed #2196f3;
+  background: rgba(33, 150, 243, 0.05);
+  color: #2196f3;
+  text-align: center;
+  padding: 20px;
+  border-radius: 6px;
+  margin: 4px 0;
+}
+
+.no-components {
+  text-align: center;
+  padding: 40px 20px;
+  color: #999;
+  font-style: italic;
+}
+
+/* Scrollbar styling */
+.components-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.components-list::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.components-list::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.components-list::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}

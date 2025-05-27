@@ -23,6 +23,10 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/complete-demo/complete-demo.component').then(m => m.CompleteDemoComponent)
   },
   {
+    path: 'designer',
+    loadComponent: () => import('./pages/designer/designer.component').then(m => m.DesignerComponent)
+  },
+  {
     path: '**',
     redirectTo: '/home'
   }

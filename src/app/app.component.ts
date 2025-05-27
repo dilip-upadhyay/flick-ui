@@ -16,6 +16,7 @@ export class AppComponent {
     { path: '/home', name: 'Home', icon: 'home' },
     { path: '/dashboard', name: 'Dashboard', icon: 'dashboard' },
     { path: '/form', name: 'Forms', icon: 'assignment' },
+    { path: '/designer', name: 'Designer', icon: 'design_services' },
     { path: '/complete', name: 'Complete Demo', icon: 'view_comfy' }
   ];
 
