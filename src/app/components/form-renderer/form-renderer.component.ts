@@ -6,7 +6,7 @@ import { FormConfig, FormField, FieldValidation } from '../../models/ui-config.i
 import { RendererService } from '../../services/renderer.service';
 
 @Component({
-  selector: 'app-form-renderer-simple',
+  selector: 'app-form-renderer',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, MaterialModule],
   template: `
@@ -180,7 +180,7 @@ import { RendererService } from '../../services/renderer.service';
     }
   `]
 })
-export class FormRendererSimpleComponent implements OnInit, OnChanges {
+export class FormRendererComponent implements OnInit, OnChanges {
   @Input() config: FormConfig | null = null;
   @Output() event = new EventEmitter<any>();
 

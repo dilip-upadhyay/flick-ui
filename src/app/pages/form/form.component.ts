@@ -2,13 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { MaterialModule } from '../../shared/material.module';
-import { FormRendererSimpleComponent } from '../../components/form-renderer/form-renderer-simple.component';
 import { FormConfig } from '../../models/ui-config.interface';
+import { FormRendererComponent } from '../../components/form-renderer/form-renderer.component';
 
 @Component({
   selector: 'app-form',
   standalone: true,
-  imports: [CommonModule, MaterialModule, FormRendererSimpleComponent],
+  imports: [CommonModule, MaterialModule, FormRendererComponent],
   template: `
     <div class="page-container">
       <mat-card class="page-card">
@@ -23,10 +23,10 @@ import { FormConfig } from '../../models/ui-config.interface';
         <mat-card-content>
           @if (currentConfig) {
             <div class="renderer-container">
-              <app-form-renderer-simple 
+              <app-form-renderer 
                 [config]="currentConfig"
                 (event)="onFormEvent($event)">
-              </app-form-renderer-simple>
+              </app-form-renderer>
             </div>
           } @else {
             <div class="loading-container">

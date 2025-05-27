@@ -47,11 +47,11 @@
         </app-navigation-renderer>
 
         <!-- Form Component -->
-        <app-form-renderer-simple 
+        <app-form-renderer 
           *ngIf="component.type === 'form'"
           [config]="component.props"
           (event)="onComponentEvent($event, component)">
-        </app-form-renderer-simple>
+        </app-form-renderer>
 
         <!-- Dashboard Component -->
         <app-dashboard-renderer 

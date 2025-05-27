@@ -9,7 +9,7 @@ import { RendererService } from '../../services/renderer.service';
 import { HeaderRendererComponent } from '../header-renderer/header-renderer.component';
 import { NavigationRendererComponent } from '../navigation-renderer/navigation-renderer.component';
 import { DashboardRendererComponent } from '../dashboard-renderer/dashboard-renderer.component';
-import { FormRendererSimpleComponent } from '../form-renderer/form-renderer-simple.component';
+import { FormRendererComponent } from '../form-renderer/form-renderer.component';
 
 @Component({
   selector: 'app-dynamic-renderer',
@@ -19,7 +19,7 @@ import { FormRendererSimpleComponent } from '../form-renderer/form-renderer-simp
     HeaderRendererComponent,
     NavigationRendererComponent,
     DashboardRendererComponent,
-    FormRendererSimpleComponent
+    FormRendererComponent
   ],
   templateUrl: './dynamic-renderer.component.html',
   styleUrl: './dynamic-renderer.component.css'
