@@ -327,7 +327,8 @@ export class DesignerService {
       },
       navigation: {
         type: 'horizontal',
-        items: []
+        items: [],
+        position: 'top'
       },
       form: {
         title: 'Form Title',

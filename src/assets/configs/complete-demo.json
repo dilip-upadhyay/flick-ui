@@ -53,6 +53,7 @@
       "type": "navigation",
       "props": {
         "type": "sidebar",
+        "position": "left",
         "collapsed": false,
         "items": [
           {

@@ -88,6 +88,7 @@ export interface NavigationConfig {
   items: NavigationItem[];
   collapsible?: boolean;
   activeItem?: string;
+  position?: 'left' | 'right' | 'top' | 'bottom';
 }
 
 export interface NavigationItem {

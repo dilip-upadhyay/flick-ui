@@ -78,6 +78,10 @@ export class NavigationRendererComponent {
       classes.push(`navigation-${this.config.type}`);
     }
 
+    if (this.config.position) {
+      classes.push(`navigation-position-${this.config.position}`);
+    }
+
     if (this.config.collapsible) {
       classes.push('navigation-collapsible');
     }

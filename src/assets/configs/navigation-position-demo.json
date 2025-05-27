@@ -1,0 +1,86 @@
+{
+  "type": "layout",
+  "components": [
+    {
+      "id": "top-navigation",
+      "type": "navigation",
+      "props": {
+        "type": "horizontal",
+        "position": "top",
+        "items": [
+          {
+            "id": "home",
+            "label": "Home",
+            "icon": "🏠",
+            "route": "/home"
+          },
+          {
+            "id": "about",
+            "label": "About",
+            "icon": "ℹ️",
+            "route": "/about"
+          },
+          {
+            "id": "contact",
+            "label": "Contact",
+            "icon": "📞",
+            "route": "/contact"
+          }
+        ]
+      }
+    },
+    {
+      "id": "main-content",
+      "type": "container",
+      "props": {
+        "title": "Navigation Position Demo",
+        "content": "This demo shows navigation components positioned at different locations."
+      },
+      "children": [
+        {
+          "id": "demo-text",
+          "type": "text",
+          "props": {
+            "content": "Use the designer to change the navigation position property and see how it affects the layout.",
+            "variant": "body1"
+          }
+        }
+      ]
+    },
+    {
+      "id": "bottom-navigation",
+      "type": "navigation",
+      "props": {
+        "type": "horizontal",
+        "position": "bottom",
+        "items": [
+          {
+            "id": "settings",
+            "label": "Settings",
+            "icon": "⚙️",
+            "route": "/settings"
+          },
+          {
+            "id": "help",
+            "label": "Help",
+            "icon": "❓",
+            "route": "/help"
+          },
+          {
+            "id": "logout",
+            "label": "Logout",
+            "icon": "🚪",
+            "route": "/logout"
+          }
+        ]
+      }
+    }
+  ],
+  "layout": {
+    "type": "stack",
+    "direction": "column"
+  },
+  "metadata": {
+    "title": "Navigation Positioning Demo"
+  }
+}

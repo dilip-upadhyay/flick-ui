@@ -472,6 +472,14 @@ export class PropertyEditorComponent implements OnInit, OnDestroy, OnChanges {
         return [
           { key: 'brand', label: 'Brand Name', type: 'text', description: 'Brand/logo text' },
           { key: 'items', label: 'Navigation Items', type: 'array', description: 'Configure navigation links' },
+          { key: 'position', label: 'Position', type: 'select', description: 'Navigation panel position',
+            options: [
+              { value: 'left', label: 'Left Side' },
+              { value: 'right', label: 'Right Side' },
+              { value: 'top', label: 'Top' },
+              { value: 'bottom', label: 'Bottom' }
+            ]
+          },
           { key: 'color', label: 'Color Theme', type: 'select',
             options: [
               { value: 'primary', label: 'Primary' },
@@ -586,7 +594,7 @@ export class PropertyEditorComponent implements OnInit, OnDestroy, OnChanges {
           // Update component properties
           this.propertyChanged.emit({
             component: this.selectedComponent!,
-            property: `properties.${key}`,
+            property: `props.${key}`,
             value: value
           });
         }
