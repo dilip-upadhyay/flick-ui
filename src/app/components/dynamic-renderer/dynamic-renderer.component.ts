@@ -6,20 +6,20 @@ import { ConfigService } from '../../services/config.service';
 import { RendererService } from '../../services/renderer.service';
 
 // Import all renderer components
-import { FormRendererComponent } from '../form-renderer/form-renderer.component';
 import { HeaderRendererComponent } from '../header-renderer/header-renderer.component';
 import { NavigationRendererComponent } from '../navigation-renderer/navigation-renderer.component';
 import { DashboardRendererComponent } from '../dashboard-renderer/dashboard-renderer.component';
+import { FormRendererSimpleComponent } from '../form-renderer/form-renderer-simple.component';
 
 @Component({
   selector: 'app-dynamic-renderer',
   standalone: true,
   imports: [
     CommonModule,
-    FormRendererComponent,
     HeaderRendererComponent,
     NavigationRendererComponent,
-    DashboardRendererComponent
+    DashboardRendererComponent,
+    FormRendererSimpleComponent
   ],
   templateUrl: './dynamic-renderer.component.html',
   styleUrl: './dynamic-renderer.component.css'
