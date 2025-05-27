@@ -1,0 +1,45 @@
+.checkbox-field {
+  margin-bottom: 1.5rem;
+}
+
+.field-label {
+  font-weight: 500;
+  margin-bottom: 0.75rem;
+  color: rgba(0, 0, 0, 0.87);
+  font-size: 1rem;
+}
+
+.required-indicator {
+  color: #f44336;
+  margin-left: 0.25rem;
+}
+
+.checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.checkbox-item {
+  margin-bottom: 0.5rem;
+}
+
+.checkbox-item:last-child {
+  margin-bottom: 0;
+}
+
+.field-hint {
+  margin-top: 0.5rem;
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 0.75rem;
+}
+
+.field-errors {
+  margin-top: 0.5rem;
+}
+
+.error-message {
+  color: #f44336;
+  font-size: 0.75rem;
+  margin-bottom: 0.25rem;
+}

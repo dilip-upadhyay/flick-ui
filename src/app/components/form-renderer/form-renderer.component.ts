@@ -3,12 +3,35 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FormConfig, FormField, FieldValidation } from '../../models/ui-config.interface';
 import { RendererService } from '../../services/renderer.service';
-import { MaterialModule } from '../../shared/material.module';
+import { 
+  UiInputComponent, 
+  UiTextareaComponent, 
+  UiSelectComponent, 
+  UiCheckboxComponent, 
+  UiRadioComponent, 
+  UiDatepickerComponent, 
+  UiFileUploadComponent, 
+  UiButtonComponent,
+  SelectOption,
+  CheckboxOption,
+  RadioOption
+} from '../../shared/ui-components';
 
 @Component({
   selector: 'app-form-renderer',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MaterialModule],
+  imports: [
+    CommonModule, 
+    ReactiveFormsModule,
+    UiInputComponent,
+    UiTextareaComponent,
+    UiSelectComponent,
+    UiCheckboxComponent,
+    UiRadioComponent,
+    UiDatepickerComponent,
+    UiFileUploadComponent,
+    UiButtonComponent
+  ],
   templateUrl: './form-renderer.component.html',
   styleUrl: './form-renderer.component.css'
 })
@@ -354,6 +377,102 @@ export class FormRendererComponent implements OnInit {
         return 'accent';
       default:
         return 'primary';
+    }
+  }
+
+  /**
+   * Get suffix icon for input fields based on type
+   */
+  getSuffixIcon(type: string): string {
+    switch (type) {
+      case 'email':
+        return 'email';
+      case 'tel':
+        return 'phone';
+      case 'password':
+        return 'lock';
+      case 'number':
+        return 'tag';
+      default:
+        return '';
+    }
+  }
+
+  /**
+   * Convert field options to SelectOption format
+   */
+  getSelectOptions(field: FormField): SelectOption[] {
+    if (!field.options) return [];
+    return field.options.map(option => ({
+      value: option.value,
+      label: option.label,
+      disabled: option.disabled || false
+    }));
+  }
+
+  /**
+   * Convert field options to CheckboxOption format
+   */
+  getCheckboxOptions(field: FormField): CheckboxOption[] {
+    if (!field.options) return [];
+    return field.options.map(option => ({
+      value: option.value,
+      label: option.label,
+      disabled: option.disabled || false
+    }));
+  }
+
+  /**
+   * Convert field options to RadioOption format
+   */
+  getRadioOptions(field: FormField): RadioOption[] {
+    if (!field.options) return [];
+    return field.options.map(option => ({
+      value: option.value,
+      label: option.label,
+      disabled: option.disabled || false
+    }));
+  }
+
+  /**
+   * Handle file change events
+   */
+  onFileChange(fieldId: string, files: File[]): void {
+    this.event.emit({
+      type: 'fileChange',
+      fieldId: fieldId,
+      data: files
+    });
+  }
+
+  /**
+   * Get icon for form actions
+   */
+  getActionIcon(actionType: string): string {
+    switch (actionType) {
+      case 'submit':
+        return 'send';
+      case 'reset':
+        return 'refresh';
+      default:
+        return '';
+    }
+  }
+
+  /**
+   * Handle action button clicks
+   */
+  handleActionClick(action: any): void {
+    switch (action.type) {
+      case 'submit':
+        this.onSubmit();
+        break;
+      case 'reset':
+        this.onReset();
+        break;
+      case 'button':
+        this.onButtonAction(action);
+        break;
     }
   }
 }

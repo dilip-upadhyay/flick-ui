@@ -78,15 +78,21 @@ export class FormComponent implements OnInit {
   constructor(private http: HttpClient) {}
   
   ngOnInit() {
-    // Load form demo configuration
-    this.http.get<FormConfig>('assets/configs/form-config.json').subscribe({
-      next: (config) => {
-        this.currentConfig = config;
-      },
-      error: (error) => {
-        console.error('Error loading form configuration:', error);
-      }
-    });
+    console.log('FormComponent ngOnInit called');
+    
+    // Add a timeout to see if there's a timing issue
+    setTimeout(() => {
+      console.log('Attempting to load form config...');
+      this.http.get<FormConfig>('assets/configs/form-config.json').subscribe({
+        next: (config) => {
+          console.log('Form config loaded successfully:', config);
+          this.currentConfig = config;
+        },
+        error: (error) => {
+          console.error('Error loading form configuration:', error);
+        }
+      });
+    }, 100);
   }
 
   onFormEvent(event: any) {

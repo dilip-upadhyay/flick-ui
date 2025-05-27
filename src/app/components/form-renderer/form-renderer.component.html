@@ -13,218 +13,111 @@
       *ngFor="let field of config.fields" 
       [class]="getFieldWrapperClasses(field)">
 
-      <!-- Text Input (text, email, password, tel) -->
-      <mat-form-field 
-        *ngIf="field.type === 'text' || field.type === 'email' || field.type === 'password' || field.type === 'tel'"
-        appearance="outline"
-        class="full-width">
-        <mat-label>{{ field.label }}
-          <span *ngIf="field.required" class="required-indicator">*</span>
-        </mat-label>
-        <input 
-          matInput
-          [type]="field.type"
-          [id]="field.id"
-          [formControlName]="field.id"
-          [placeholder]="field.placeholder || ''"
-          [required]="field.required || false">
-        <mat-icon matSuffix *ngIf="field.type === 'email'">email</mat-icon>
-        <mat-icon matSuffix *ngIf="field.type === 'tel'">phone</mat-icon>
-        <mat-icon matSuffix *ngIf="field.type === 'password'">lock</mat-icon>
-        <mat-hint *ngIf="field.helpText">{{ field.helpText }}</mat-hint>
-        <mat-error *ngFor="let error of getFieldErrors(field.id)">{{ error }}</mat-error>
-      </mat-form-field>
-
-      <!-- Number Input -->
-      <mat-form-field 
-        *ngIf="field.type === 'number'"
-        appearance="outline"
-        class="full-width">
-        <mat-label>{{ field.label }}
-          <span *ngIf="field.required" class="required-indicator">*</span>
-        </mat-label>
-        <input 
-          matInput
-          type="number"
-          [id]="field.id"
-          [formControlName]="field.id"
-          [placeholder]="field.placeholder || ''"
-          [required]="field.required || false">
-        <mat-icon matSuffix>tag</mat-icon>
-        <mat-hint *ngIf="field.helpText">{{ field.helpText }}</mat-hint>
-        <mat-error *ngFor="let error of getFieldErrors(field.id)">{{ error }}</mat-error>
-      </mat-form-field>
-
-      <!-- Date Input -->
-      <mat-form-field 
-        *ngIf="field.type === 'date'"
-        appearance="outline"
-        class="full-width">
-        <mat-label>{{ field.label }}
-          <span *ngIf="field.required" class="required-indicator">*</span>
-        </mat-label>
-        <input 
-          matInput
-          [matDatepicker]="picker"
-          [id]="field.id"
-          [formControlName]="field.id"
-          [required]="field.required || false">
-        <mat-hint *ngIf="field.helpText">{{ field.helpText }}</mat-hint>
-        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-datepicker #picker></mat-datepicker>
-        <mat-error *ngFor="let error of getFieldErrors(field.id)">{{ error }}</mat-error>
-      </mat-form-field>
+      <!-- Text Input (text, email, password, tel, number) -->
+      <ui-input
+        *ngIf="field.type === 'text' || field.type === 'email' || field.type === 'password' || field.type === 'tel' || field.type === 'number'"
+        [id]="field.id"
+        [label]="field.label"
+        [type]="field.type"
+        [placeholder]="field.placeholder || ''"
+        [required]="field.required || false"
+        [hint]="field.helpText || ''"
+        [errors]="getFieldErrors(field.id)"
+        [suffixIcon]="getSuffixIcon(field.type)"
+        [formControlName]="field.id">
+      </ui-input>
 
       <!-- Textarea -->
-      <mat-form-field 
+      <ui-textarea
         *ngIf="field.type === 'textarea'"
-        appearance="outline"
-        class="full-width">
-        <mat-label>{{ field.label }}
-          <span *ngIf="field.required" class="required-indicator">*</span>
-        </mat-label>
-        <textarea 
-          matInput
-          [id]="field.id"
-          [formControlName]="field.id"
-          [placeholder]="field.placeholder || ''"
-          [required]="field.required || false"
-          rows="4">
-        </textarea>
-        <mat-hint *ngIf="field.helpText">{{ field.helpText }}</mat-hint>
-        <mat-error *ngFor="let error of getFieldErrors(field.id)">{{ error }}</mat-error>
-      </mat-form-field>
+        [id]="field.id"
+        [label]="field.label"
+        [placeholder]="field.placeholder || ''"
+        [required]="field.required || false"
+        [hint]="field.helpText || ''"
+        [errors]="getFieldErrors(field.id)"
+        [rows]="4"
+        [formControlName]="field.id">
+      </ui-textarea>
+
+      <!-- Date Input -->
+      <ui-datepicker
+        *ngIf="field.type === 'date'"
+        [id]="field.id"
+        [label]="field.label"
+        [required]="field.required || false"
+        [hint]="field.helpText || ''"
+        [errors]="getFieldErrors(field.id)"
+        [formControlName]="field.id">
+      </ui-datepicker>
 
       <!-- Select Dropdown -->
-      <mat-form-field 
+      <ui-select
         *ngIf="field.type === 'select'"
-        appearance="outline"
-        class="full-width">
-        <mat-label>{{ field.label }}
-          <span *ngIf="field.required" class="required-indicator">*</span>
-        </mat-label>
-        <mat-select 
-          [id]="field.id"
-          [formControlName]="field.id"
-          [required]="field.required || false">
-          <mat-option value="" disabled>{{ field.placeholder || 'Select an option' }}</mat-option>
-          <mat-option 
-            *ngFor="let option of field.options"
-            [value]="option.value"
-            [disabled]="option.disabled">
-            {{ option.label }}
-          </mat-option>
-        </mat-select>
-        <mat-hint *ngIf="field.helpText">{{ field.helpText }}</mat-hint>
-        <mat-error *ngFor="let error of getFieldErrors(field.id)">{{ error }}</mat-error>
-      </mat-form-field>
+        [id]="field.id"
+        [label]="field.label"
+        [placeholder]="field.placeholder || 'Select an option'"
+        [required]="field.required || false"
+        [hint]="field.helpText || ''"
+        [errors]="getFieldErrors(field.id)"
+        [options]="getSelectOptions(field)"
+        [formControlName]="field.id">
+      </ui-select>
 
       <!-- Checkbox -->
-      <div *ngIf="field.type === 'checkbox'" class="checkbox-field">
-        <div class="field-label">
-          {{ field.label }}
-          <span *ngIf="field.required" class="required-indicator">*</span>
-        </div>
-        
-        <!-- Single checkbox (no options) -->
-        <mat-checkbox 
-          *ngIf="!field.options || field.options.length === 0"
-          [id]="field.id"
-          [formControlName]="field.id"
-          class="checkbox-item">
-          {{ field.placeholder || field.label }}
-        </mat-checkbox>
-        
-        <!-- Multiple checkboxes (with options) -->
-        <div *ngIf="field.options && field.options.length > 0" class="checkbox-group">
-          <mat-checkbox 
-            *ngFor="let option of field.options; let i = index"
-            [id]="field.id + '_' + i"
-            [value]="option.value"
-            [checked]="isCheckboxChecked(field.id, option.value)"
-            (change)="onCheckboxChange(field.id, option.value, $event)"
-            class="checkbox-item">
-            {{ option.label }}
-          </mat-checkbox>
-        </div>
-        
-        <mat-hint *ngIf="field.helpText" class="field-hint">{{ field.helpText }}</mat-hint>
-        <div *ngIf="hasFieldError(field.id)" class="field-errors">
-          <mat-error *ngFor="let error of getFieldErrors(field.id)">{{ error }}</mat-error>
-        </div>
-      </div>
+      <ui-checkbox
+        *ngIf="field.type === 'checkbox'"
+        [id]="field.id"
+        [label]="field.label"
+        [checkboxLabel]="field.placeholder || field.label"
+        [required]="field.required || false"
+        [hint]="field.helpText || ''"
+        [errors]="getFieldErrors(field.id)"
+        [options]="getCheckboxOptions(field)"
+        [formControlName]="field.id">
+      </ui-checkbox>
 
       <!-- Radio Buttons -->
-      <div *ngIf="field.type === 'radio'" class="radio-field">
-        <div class="field-label">
-          {{ field.label }}
-          <span *ngIf="field.required" class="required-indicator">*</span>
-        </div>
-        
-        <mat-radio-group 
-          [formControlName]="field.id"
-          class="radio-group">
-          <mat-radio-button 
-            *ngFor="let option of field.options"
-            [value]="option.value"
-            [disabled]="option.disabled || false"
-            class="radio-option">
-            {{ option.label }}
-          </mat-radio-button>
-        </mat-radio-group>
-        
-        <mat-hint *ngIf="field.helpText" class="field-hint">{{ field.helpText }}</mat-hint>
-        <div *ngIf="hasFieldError(field.id)" class="field-errors">
-          <mat-error *ngFor="let error of getFieldErrors(field.id)">{{ error }}</mat-error>
-        </div>
-      </div>
+      <ui-radio
+        *ngIf="field.type === 'radio'"
+        [id]="field.id"
+        [label]="field.label"
+        [required]="field.required || false"
+        [hint]="field.helpText || ''"
+        [errors]="getFieldErrors(field.id)"
+        [options]="getRadioOptions(field)"
+        [formControlName]="field.id">
+      </ui-radio>
 
       <!-- File Input -->
-      <div *ngIf="field.type === 'file'" class="file-field">
-        <div class="field-label">
-          {{ field.label }}
-          <span *ngIf="field.required" class="required-indicator">*</span>
-        </div>
-        
-        <button 
-          type="button" 
-          mat-raised-button 
-          color="primary"
-          (click)="fileInput.click()">
-          <mat-icon>upload</mat-icon>
-          Choose File
-        </button>
-        
-        <input 
-          #fileInput
-          type="file"
-          [id]="field.id"
-          style="display: none"
-          (change)="event.emit({ type: 'fileChange', fieldId: field.id, data: $event })">
-        
-        <mat-hint *ngIf="field.helpText" class="field-hint">{{ field.helpText }}</mat-hint>
-        <div *ngIf="hasFieldError(field.id)" class="field-errors">
-          <mat-error *ngFor="let error of getFieldErrors(field.id)">{{ error }}</mat-error>
-        </div>
-      </div>
+      <ui-file-upload
+        *ngIf="field.type === 'file'"
+        [id]="field.id"
+        [label]="field.label"
+        [buttonLabel]="field.placeholder || 'Choose File'"
+        [required]="field.required || false"
+        [disabled]="field.disabled || false"
+        [hint]="field.helpText || ''"
+        [errors]="getFieldErrors(field.id)"
+        [accept]="field.accept || ''"
+        [multiple]="field.multiple || false"
+        (fileChanged)="onFileChange(field.id, $event)">
+      </ui-file-upload>
     </div>
 
     <!-- Form Actions -->
     <div class="form-actions" *ngIf="config.actions && config.actions.length > 0">
-      <button 
+      <ui-button
         *ngFor="let action of config.actions"
-        mat-raised-button
         [type]="action.type"
-        [color]="getButtonColor(action.variant)"
+        [variant]="action.variant || 'primary'"
+        [label]="action.label"
         [disabled]="action.disabled || (action.type === 'submit' && (form.invalid || isSubmitting))"
-        (click)="action.type === 'reset' ? onReset() : action.type === 'button' ? onButtonAction(action) : null"
+        [loading]="action.type === 'submit' && isSubmitting"
+        [icon]="getActionIcon(action.type)"
+        (buttonClick)="handleActionClick(action)"
         class="action-button">
-        
-        <mat-icon *ngIf="action.type === 'submit' && isSubmitting">hourglass_empty</mat-icon>
-        <mat-icon *ngIf="action.type === 'submit' && !isSubmitting">send</mat-icon>
-        <mat-icon *ngIf="action.type === 'reset'">refresh</mat-icon>
-        {{ action.label }}
-      </button>
+      </ui-button>
     </div>
   </form>
 </div>

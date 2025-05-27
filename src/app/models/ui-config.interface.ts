@@ -124,6 +124,9 @@ export interface FormField {
   defaultValue?: any;
   helpText?: string;
   gridColumn?: string;
+  // File input specific properties
+  accept?: string;
+  multiple?: boolean;
 }
 
 export interface SelectOption {

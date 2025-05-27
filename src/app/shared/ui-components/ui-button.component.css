@@ -1,0 +1,29 @@
+.ui-button {
+  margin: 0.25rem;
+  min-width: 120px;
+}
+
+.button-label-with-icon {
+  margin-left: 0.5rem;
+}
+
+/* Custom variant styles that extend Material themes */
+.ui-button-primary {
+  /* Primary styles - can be customized here */
+}
+
+.ui-button-secondary {
+  /* Secondary styles - can be customized here */
+}
+
+.ui-button-danger {
+  /* Danger styles - can be customized here */
+}
+
+.ui-button-success {
+  /* Success styles - can be customized here */
+}
+
+.ui-button-warning {
+  /* Warning styles - can be customized here */
+}

@@ -134,11 +134,9 @@
   .version {
     display: none;
   }
-}
-    min-width: auto;
-  }
-}
   
   .demo-btn {
     width: 200px;
+    min-width: auto;
   }
+}
