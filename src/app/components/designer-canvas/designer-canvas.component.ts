@@ -20,7 +20,11 @@ import { DesignerService } from '../../services/designer.service';
         cdkDropList
         [cdkDropListData]="config?.components || []"
         (cdkDropListDropped)="onComponentDropped($event)"
-        (click)="onCanvasClick($event)">
+        (click)="onCanvasClick($event)"
+        (dragover)="onDragOver($event)"
+        (drop)="onNativeDrop($event)"
+        (dragenter)="onDragEnter($event)"
+        (dragleave)="onDragLeave($event)">
         
         <!-- Empty state -->
         <div class="empty-state" *ngIf="!config?.components?.length">
@@ -72,7 +76,11 @@ import { DesignerService } from '../../services/designer.service';
                 class="container-content"
                 cdkDropList
                 [cdkDropListData]="component.children || []"
-                (cdkDropListDropped)="onChildComponentDropped($event, component)">
+                (cdkDropListDropped)="onChildComponentDropped($event, component)"
+                (dragover)="onDragOver($event)"
+                (drop)="onNativeChildDrop($event, component)"
+                (dragenter)="onDragEnter($event)"
+                (dragleave)="onDragLeave($event)">
                 
                 <div class="drop-zone" *ngIf="!component.children?.length">
                   <mat-icon>add</mat-icon>
@@ -139,7 +147,11 @@ import { DesignerService } from '../../services/designer.service';
                   <div *ngIf="component.children?.length; else cardPlaceholder"
                        cdkDropList
                        [cdkDropListData]="component.children || []"
-                       (cdkDropListDropped)="onChildComponentDropped($event, component)">
+                       (cdkDropListDropped)="onChildComponentDropped($event, component)"
+                       (dragover)="onDragOver($event)"
+                       (drop)="onNativeChildDrop($event, component)"
+                       (dragenter)="onDragEnter($event)"
+                       (dragleave)="onDragLeave($event)">
                     <div *ngFor="let child of component.children; trackBy: trackByComponentId"
                          class="card-child"
                          [class.selected]="isComponentSelected(child)"
@@ -148,7 +160,11 @@ import { DesignerService } from '../../services/designer.service';
                     </div>
                   </div>
                   <ng-template #cardPlaceholder>
-                    <div class="card-placeholder">
+                    <div class="card-placeholder"
+                         (dragover)="onDragOver($event)"
+                         (drop)="onNativeChildDrop($event, component)"
+                         (dragenter)="onDragEnter($event)"
+                         (dragleave)="onDragLeave($event)">
                       <mat-icon>add</mat-icon>
                       <span>Add content to card</span>
                     </div>
@@ -337,6 +353,55 @@ export class DesignerCanvasComponent implements OnInit, OnDestroy {
     }
   }
 
+  // Native drag and drop handlers for component palette
+  onDragOver(event: DragEvent) {
+    event.preventDefault();
+    event.dataTransfer!.dropEffect = 'copy';
+  }
+
+  onDragEnter(event: DragEvent) {
+    event.preventDefault();
+    // Add visual feedback for drag over
+    const canvas = event.currentTarget as HTMLElement;
+    canvas.classList.add('drag-over');
+  }
+
+  onDragLeave(event: DragEvent) {
+    event.preventDefault();
+    // Remove visual feedback
+    const canvas = event.currentTarget as HTMLElement;
+    canvas.classList.remove('drag-over');
+  }
+
+  onNativeDrop(event: DragEvent) {
+    event.preventDefault();
+    const canvas = event.currentTarget as HTMLElement;
+    canvas.classList.remove('drag-over');
+    
+    const componentType = event.dataTransfer?.getData('text/plain') as ComponentType;
+    if (componentType) {
+      const newComponent = this.designerService.createComponent(componentType);
+      this.componentAdded.emit({ 
+        component: newComponent
+      });
+    }
+  }
+
+  onNativeChildDrop(event: DragEvent, parent: UIComponent) {
+    event.preventDefault();
+    const dropZone = event.currentTarget as HTMLElement;
+    dropZone.classList.remove('drag-over');
+    
+    const componentType = event.dataTransfer?.getData('text/plain') as ComponentType;
+    if (componentType) {
+      const newComponent = this.designerService.createComponent(componentType);
+      this.componentAdded.emit({ 
+        component: newComponent,
+        parent: parent
+      });
+    }
+  }
+
   private handleComponentDrag(componentType: ComponentType) {
     // This will be handled by the drop events
   }
@@ -349,36 +414,36 @@ export class DesignerCanvasComponent implements OnInit, OnDestroy {
       navigation: 'Navigation',
       text: 'Text',
       card: 'Card',
-      image: 'Image',
-      form: 'Form',
       button: 'Button',
-      dashboard: 'Dashboard',
+      form: 'Form',
+      image: 'Image',
       chart: 'Chart',
       modal: 'Modal',
       tabs: 'Tabs',
-      accordion: 'Accordion'
+      accordion: 'Accordion',
+      dashboard: 'Dashboard'
     };
     return labels[component.type] || component.type;
   }
 
-  getComponentIcon(componentType: ComponentType): string {
+  getComponentIcon(type: ComponentType): string {
     const icons: Record<ComponentType, string> = {
       container: 'crop_free',
       grid: 'grid_view',
       header: 'title',
       navigation: 'menu',
       text: 'text_fields',
-      card: 'credit_card',
-      image: 'image',
-      form: 'assignment',
+      card: 'featured_play_list',
       button: 'smart_button',
-      dashboard: 'dashboard',
+      form: 'assignment',
+      image: 'image',
       chart: 'bar_chart',
       modal: 'open_in_new',
       tabs: 'tab',
-      accordion: 'expand_more'
+      accordion: 'expand_more',
+      dashboard: 'dashboard'
     };
-    return icons[componentType] || 'widgets';
+    return icons[type] || 'widgets';
   }
 
   getGridColumns(component: UIComponent): string {

@@ -205,18 +205,26 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 80px;
-  border: 2px dashed #ccc;
-  border-radius: 4px;
+  min-height: 100px;
+  border: 2px dashed #ddd;
+  border-radius: 8px;
   color: #999;
-  background: #f9f9f9;
+  background: #fafafa;
+  transition: all 0.3s ease;
+}
+
+.drop-zone:hover,
+.drop-zone.drag-over {
+  border-color: #2196F3;
+  background: rgba(33, 150, 243, 0.05);
+  color: #2196F3;
 }
 
 .drop-zone mat-icon {
+  font-size: 32px;
+  width: 32px;
+  height: 32px;
   margin-bottom: 8px;
-  font-size: 24px;
-  width: 24px;
-  height: 24px;
 }
 
 .child-component {
@@ -471,6 +479,26 @@
   opacity: 0.6;
   background: #c8e6c9;
   border-color: #4caf50;
+}
+
+.canvas-viewport.drag-over {
+  border: 2px dashed #2196F3;
+  background-color: rgba(33, 150, 243, 0.05);
+}
+
+.canvas-viewport.drag-over::after {
+  content: 'Drop component here';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(33, 150, 243, 0.9);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 4px;
+  font-weight: 500;
+  z-index: 1000;
+  pointer-events: none;
 }
 
 /* Responsive Adjustments */
