@@ -1,0 +1,242 @@
+.dynamic-renderer {
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* Loading Styles */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  min-height: 200px;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Error Styles */
+.error-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  min-height: 200px;
+}
+
+.error-message {
+  text-align: center;
+  color: #dc3545;
+  background: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 0.375rem;
+  padding: 1.5rem;
+  max-width: 500px;
+}
+
+.error-message h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+/* Component Wrapper - Runtime Layout */
+.component-wrapper {
+  margin-bottom: 16px;
+  position: relative;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  clear: both;
+}
+
+.component-wrapper:last-child {
+  margin-bottom: 0;
+}
+
+/* Component Type Specific Styling for Runtime */
+.component-navigation {
+  background: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+  padding: 0.75rem 1rem;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  margin-bottom: 16px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.component-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 2rem 1rem;
+  text-align: center;
+  margin-bottom: 16px;
+  width: 100%;
+  box-sizing: border-box;
+  display: block;
+}
+
+.component-container {
+  padding: 1rem;
+  margin-bottom: 16px;
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+  display: block;
+  min-height: 120px;
+}
+
+.component-grid {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 16px;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 120px;
+}
+
+.component-form {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  margin-bottom: 16px;
+  width: 100%;
+  box-sizing: border-box;
+  display: block;
+  min-height: 200px;
+}
+
+.component-card {
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  padding: 1rem;
+  margin-bottom: 16px;
+  width: 100%;
+  box-sizing: border-box;
+  display: block;
+  min-height: 120px;
+}
+
+.component-text {
+  margin-bottom: 8px;
+  line-height: 1.6;
+  width: 100%;
+  box-sizing: border-box;
+  display: block;
+  min-height: 24px;
+}
+
+.component-button {
+  display: inline-block;
+  margin: 4px 8px 8px 0;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.component-image {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 16px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.component-chart {
+  background: white;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  margin-bottom: 16px;
+  min-height: 250px;
+  width: 100%;
+  box-sizing: border-box;
+  display: block;
+}
+
+.component-dashboard {
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 0.5rem;
+  margin-bottom: 16px;
+  width: 100%;
+  box-sizing: border-box;
+  display: block;
+}
+
+.component-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  z-index: 1000;
+  padding: 1.5rem;
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow: auto;
+}
+
+.component-tabs {
+  background: white;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  margin-bottom: 16px;
+  width: 100%;
+  box-sizing: border-box;
+  display: block;
+}
+
+.component-accordion {
+  background: white;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  margin-bottom: 16px;
+  width: 100%;
+  box-sizing: border-box;
+  display: block;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .modal-dialog {
+    margin: 0.5rem;
+  }
+  
+  .modal-content {
+    max-width: none;
+  }
+  
+  .grid {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .tab-nav {
+    flex-wrap: wrap;
+  }
+  
+  .tab-button {
+    flex: 1;
+    min-width: 0;
+  }
+}
