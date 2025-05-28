@@ -184,7 +184,28 @@ export class DynamicRendererComponent implements OnInit, OnDestroy {
    * Get component styles
    */
   getComponentStyles(component: UIComponent): { [key: string]: string } {
-    return this.rendererService.generateStyles(component.styles);
+    const props = component.props || {};
+    const styles: { [key: string]: any } = {};
+    
+    // Extract layout and style properties from props
+    const styleProps = [
+      'width', 'height', 'margin', 'padding', 'backgroundColor', 'textColor', 
+      'borderRadius', 'boxShadow', 'border', 'display', 'flexDirection',
+      'justifyContent', 'alignItems', 'gap', 'gridTemplateColumns'
+    ];
+    
+    styleProps.forEach(prop => {
+      if (props[prop] !== undefined && props[prop] !== null && props[prop] !== '') {
+        styles[prop] = props[prop];
+      }
+    });
+    
+    // Also include any existing styles from component.styles
+    if (component.styles) {
+      Object.assign(styles, component.styles);
+    }
+    
+    return this.rendererService.generateStyles(styles);
   }
 
   /**

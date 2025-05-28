@@ -66,7 +66,7 @@ import { DesignerService } from '../../services/designer.service';
           </div>
 
           <!-- Component preview -->
-          <div class="component-preview" [ngSwitch]="component.type">
+          <div class="component-preview" [ngSwitch]="component.type" [ngStyle]="getComponentStyles(component)">
             <!-- Container -->
             <div *ngSwitchCase="'container'" class="preview-container">
               <div class="container-header" *ngIf="component.props?.title">
@@ -464,5 +464,36 @@ export class DesignerCanvasComponent implements OnInit, OnDestroy {
       { label: 'About', href: '#' },
       { label: 'Contact', href: '#' }
     ];
+  }
+
+  /**
+   * Get component styles for design-time preview
+   */
+  getComponentStyles(component: UIComponent): { [key: string]: string } {
+    const props = component.props || {};
+    const styles: { [key: string]: any } = {};
+    
+    // Extract layout and style properties from props
+    const styleProps = [
+      'width', 'height', 'margin', 'padding', 'backgroundColor', 'textColor', 
+      'borderRadius', 'boxShadow', 'border', 'display', 'flexDirection',
+      'justifyContent', 'alignItems', 'gap', 'gridTemplateColumns'
+    ];
+    
+    styleProps.forEach(prop => {
+      if (props[prop] !== undefined && props[prop] !== null && props[prop] !== '') {
+        styles[prop] = props[prop];
+      }
+    });
+    
+    // Convert to CSS styles
+    const cssStyles: { [key: string]: string } = {};
+    Object.keys(styles).forEach(key => {
+      // Convert camelCase to kebab-case for CSS properties
+      const cssProperty = key.replace(/([A-Z])/g, '-$1').toLowerCase();
+      cssStyles[cssProperty] = styles[key];
+    });
+    
+    return cssStyles;
   }
 }

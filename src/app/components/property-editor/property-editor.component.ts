@@ -317,38 +317,7 @@ export class PropertyEditorComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnInit() {
-    // Subscribe to form changes
-    this.propertyForm.valueChanges
-      .pipe(
-        debounceTime(300),
-        distinctUntilChanged(),
-        takeUntil(this.destroy$)
-      )
-      .subscribe(values => this.handleFormChange('basic', values));
-
-    this.layoutForm.valueChanges
-      .pipe(
-        debounceTime(300),
-        distinctUntilChanged(),
-        takeUntil(this.destroy$)
-      )
-      .subscribe(values => this.handleFormChange('layout', values));
-
-    this.styleForm.valueChanges
-      .pipe(
-        debounceTime(300),
-        distinctUntilChanged(),
-        takeUntil(this.destroy$)
-      )
-      .subscribe(values => this.handleFormChange('style', values));
-
-    this.specificForm.valueChanges
-      .pipe(
-        debounceTime(300),
-        distinctUntilChanged(),
-        takeUntil(this.destroy$)
-      )
-      .subscribe(values => this.handleFormChange('specific', values));
+    this.subscribeToFormChanges();
   }
 
   ngOnDestroy() {
@@ -552,7 +521,42 @@ export class PropertyEditorComponent implements OnInit, OnDestroy, OnChanges {
     this.specificForm = this.fb.group(specificControls);
 
     // Re-subscribe to value changes after rebuilding forms
-    this.ngOnInit();
+    this.subscribeToFormChanges();
+  }
+
+  private subscribeToFormChanges() {
+    // Subscribe to form changes
+    this.propertyForm.valueChanges
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(values => this.handleFormChange('basic', values));
+
+    this.layoutForm.valueChanges
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(values => this.handleFormChange('layout', values));
+
+    this.styleForm.valueChanges
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(values => this.handleFormChange('style', values));
+
+    this.specificForm.valueChanges
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(values => this.handleFormChange('specific', values));
   }
 
   private createArrayItemFormGroup(arrayKey: string, item: any): FormGroup {
@@ -582,7 +586,7 @@ export class PropertyEditorComponent implements OnInit, OnDestroy, OnChanges {
 
     Object.keys(values).forEach(key => {
       const value = values[key];
-      if (value !== null && value !== undefined) {
+      if (value !== null && value !== undefined && value !== '') {
         if (formType === 'basic') {
           // Update component root properties
           this.propertyChanged.emit({

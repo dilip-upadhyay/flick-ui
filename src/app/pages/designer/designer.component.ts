@@ -177,7 +177,7 @@ export class DesignerComponent implements OnInit, OnDestroy {
   bottomPanelCollapsed = true;
 
   // Injected services
-  private designerService = inject(DesignerService);
+  private designerService: DesignerService = inject(DesignerService);
   private fb = inject(FormBuilder);
 
   constructor() {}
