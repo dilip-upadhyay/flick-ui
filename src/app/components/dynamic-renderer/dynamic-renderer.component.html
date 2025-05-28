@@ -25,9 +25,12 @@
     <div 
       *ngFor="let component of currentConfig.components" 
       class="component-wrapper"
+      [class.selectable]="enableSelection"
+      [class.selected]="enableSelection && selectedComponent?.id === component.id"
       [ngStyle]="getComponentStyles(component)"
       [attr.data-component-id]="component.id"
-      [attr.data-component-type]="component.type">
+      [attr.data-component-type]="component.type"
+      (click)="onComponentClick(component, $event)">
       
       <!-- Conditional Rendering -->
       <ng-container *ngIf="shouldRenderComponent(component)">

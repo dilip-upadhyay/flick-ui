@@ -217,6 +217,21 @@
   display: block;
 }
 
+/* Component selection styles */
+.component-wrapper.selectable {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.component-wrapper.selectable:hover {
+  box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.3);
+}
+
+.component-wrapper.selected {
+  box-shadow: 0 0 0 2px #2196f3;
+  outline: none;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .modal-dialog {

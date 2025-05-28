@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subject, takeUntil } from 'rxjs';
 import { UIConfig, UIComponent } from '../../models/ui-config.interface';
@@ -28,6 +28,10 @@ export class DynamicRendererComponent implements OnInit, OnDestroy {
   @Input() config: UIConfig | null = null;
   @Input() configSource?: string;
   @Input() context?: { [key: string]: any };
+  @Input() selectedComponent?: UIComponent | null = null;
+  @Input() enableSelection: boolean = false;
+
+  @Output() componentClicked = new EventEmitter<UIComponent>();
 
   currentConfig: UIConfig | null = null;
   isLoading = false;
@@ -216,6 +220,16 @@ export class DynamicRendererComponent implements OnInit, OnDestroy {
     // Handle events from child components
     if (event.action) {
       this.rendererService.executeAction(event.action, event.data);
+    }
+  }
+
+  /**
+   * Handle component click for selection
+   */
+  onComponentClick(component: UIComponent, event: Event): void {
+    if (this.enableSelection) {
+      event.stopPropagation();
+      this.componentClicked.emit(component);
     }
   }
 
