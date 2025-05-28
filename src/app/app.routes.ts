@@ -27,6 +27,10 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/designer/designer.component').then(m => m.DesignerComponent)
   },
   {
+    path: 'preview',
+    loadComponent: () => import('./pages/preview/preview.component').then(m => m.PreviewComponent)
+  },
+  {
     path: '**',
     redirectTo: '/home'
   }

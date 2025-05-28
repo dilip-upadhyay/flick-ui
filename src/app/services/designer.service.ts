@@ -285,23 +285,18 @@ export class DesignerService {
   }
 
   showPreview(): void {
-    // This would open the layout in a new tab/window using the dynamic renderer
     const config = this.currentConfig$.value;
-    const newWindow = window.open('', '_blank');
-    if (newWindow) {
-      newWindow.document.write(`
-        <html>
-          <head><title>Layout Preview</title></head>
-          <body>
-            <div id="preview-root"></div>
-            <script>
-              // In a real implementation, this would render the layout
-              console.log('Preview config:', ${JSON.stringify(config)});
-            </script>
-          </body>
-        </html>
-      `);
+    if (!config) {
+      console.warn('No configuration available for preview');
+      return;
     }
+
+    // Store config in session storage for the preview page
+    sessionStorage.setItem('preview-config', JSON.stringify(config));
+    
+    // Open preview in a new tab
+    const previewUrl = `${window.location.origin}/preview`;
+    window.open(previewUrl, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
   }
 
   // Private Helper Methods
