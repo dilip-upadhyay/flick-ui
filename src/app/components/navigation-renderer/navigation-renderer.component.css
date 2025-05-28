@@ -344,12 +344,11 @@
 
 /* Navigation Positioning */
 .navigation-position-top {
-  position: fixed;
-  top: 64px; /* Account for app header height (Material toolbar default height) */
-  left: 0;
-  right: 0;
-  z-index: 1030;
+  /* Position will be handled by inline styles from the service */
   width: 100%;
+  background: #fff;
+  border-bottom: 1px solid #dee2e6;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .navigation-position-top .navigation-menu {
@@ -362,11 +361,7 @@
 }
 
 .navigation-position-bottom {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 1030;
+  /* Position will be handled by inline styles from the service */
   width: 100%;
   border-top: 1px solid #dee2e6;
   background: #fff;
@@ -383,42 +378,38 @@
 }
 
 .navigation-position-left {
-  position: fixed;
-  top: 64px; /* Account for app header height */
-  left: 0;
-  bottom: 0;
-  z-index: 1030;
-  width: 250px;
+  /* Position will be handled by inline styles from the service */
   background: #fff;
   border-right: 1px solid #dee2e6;
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  overflow-x: hidden; /* Prevent horizontal overflow */
 }
 
 .navigation-position-left .navigation-menu {
   height: 100%;
   overflow-y: auto;
+  overflow-x: hidden; /* Prevent horizontal overflow */
   padding: 0; /* Remove default padding for better alignment */
+  width: 100%; /* Take full width of container */
 }
 
 .navigation-position-left .nav-vertical {
   height: 100%;
+  width: 100%;
 }
 
 .navigation-position-right {
-  position: fixed;
-  top: 64px; /* Account for app header height */
-  right: 0;
-  bottom: 0;
-  z-index: 1030;
-  width: 250px;
+  /* Position will be handled by inline styles from the service */
   background: #fff;
   border-left: 1px solid #dee2e6;
   box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+  overflow-x: hidden; /* Prevent horizontal overflow */
 }
 
 .navigation-position-right .navigation-menu {
   height: 100%;
   overflow-y: auto;
+  overflow-x: hidden; /* Prevent horizontal overflow */
   padding: 0; /* Remove default padding for better alignment */
 }
 

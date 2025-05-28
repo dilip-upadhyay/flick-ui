@@ -4,6 +4,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { UIConfig, UIComponent } from '../../models/ui-config.interface';
 import { ConfigService } from '../../services/config.service';
 import { RendererService } from '../../services/renderer.service';
+import { NavigationAlignmentService } from '../../services/navigation-alignment.service';
 
 // Import all renderer components
 import { HeaderRendererComponent } from '../header-renderer/header-renderer.component';
@@ -42,6 +43,7 @@ export class DynamicRendererComponent implements OnInit, OnDestroy {
   constructor(
     private configService: ConfigService,
     private rendererService: RendererService,
+    private navigationAlignmentService: NavigationAlignmentService,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -68,18 +70,26 @@ export class DynamicRendererComponent implements OnInit, OnDestroy {
    * Get renderer container classes based on navigation position
    */
   getRendererClasses(): string {
-    const classes = ['dynamic-renderer'];
-    
-    if (this.currentConfig?.components) {
-      const navigationComponent = this.currentConfig.components.find(c => c.type === 'navigation');
-      
-      if (navigationComponent?.props?.position) {
-        classes.push('has-positioned-navigation');
-        classes.push(`has-${navigationComponent.props.position}-navigation`);
-      }
-    }
-    
-    return classes.join(' ');
+    const baseClasses = ['dynamic-renderer'];
+    const navigationClasses = this.navigationAlignmentService.getNavigationClasses(this.currentConfig);
+    return [...baseClasses, navigationClasses].filter(c => c).join(' ');
+  }
+
+  /**
+   * Get content alignment styles for proper spacing around navigation
+   */
+  getContentAlignmentStyles(): any {
+    return this.navigationAlignmentService.getContentAlignmentStyles(this.currentConfig);
+  }
+
+  /**
+   * Get combined layout and alignment styles
+   */
+  getCombinedStyles(): any {
+    return {
+      ...this.getLayoutStyles(),
+      ...this.getContentAlignmentStyles()
+    };
   }
 
   ngOnDestroy(): void {

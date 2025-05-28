@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NavigationConfig, NavigationItem } from '../../models/ui-config.interface';
+import { NavigationConfig, NavigationItem, UIComponent } from '../../models/ui-config.interface';
+import { NavigationAlignmentService } from '../../services/navigation-alignment.service';
 
 @Component({
   selector: 'app-navigation-renderer',
@@ -15,6 +16,8 @@ export class NavigationRendererComponent {
 
   collapsedItems: Set<string> = new Set();
   isMobileMenuOpen = false;
+
+  constructor(private navigationAlignmentService: NavigationAlignmentService) {}
 
   /**
    * Handle navigation item click
@@ -87,6 +90,24 @@ export class NavigationRendererComponent {
     }
 
     return classes.join(' ');
+  }
+
+  /**
+   * Get navigation positioning styles using shared service
+   */
+  getNavigationStyles(): any {
+    if (!this.config.position) {
+      return {};
+    }
+
+    // Create a mock component for the service
+    const mockComponent: UIComponent = {
+      id: 'nav',
+      type: 'navigation',
+      props: { position: this.config.position }
+    };
+
+    return this.navigationAlignmentService.getNavigationStyles(mockComponent);
   }
 
   /**

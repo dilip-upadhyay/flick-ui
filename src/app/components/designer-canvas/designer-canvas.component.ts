@@ -5,6 +5,7 @@ import { UIConfig, UIComponent, ComponentType } from '../../models/ui-config.int
 import { DragDropModule, CdkDragDrop, CdkDrag, CdkDropList } from '@angular/cdk/drag-drop';
 import { Subject, takeUntil } from 'rxjs';
 import { DesignerService } from '../../services/designer.service';
+import { NavigationAlignmentService } from '../../services/navigation-alignment.service';
 import { DynamicRendererComponent } from '../dynamic-renderer/dynamic-renderer.component';
 
 @Component({
@@ -19,6 +20,7 @@ import { DynamicRendererComponent } from '../dynamic-renderer/dynamic-renderer.c
         [class.tablet]="viewMode === 'tablet'"
         [class.mobile]="viewMode === 'mobile'"
         [ngClass]="getCanvasClasses()"
+        [ngStyle]="getCanvasAlignmentStyles()"
         cdkDropList
         [cdkDropListData]="config?.components || []"
         (cdkDropListDropped)="onComponentDropped($event)"
@@ -64,7 +66,10 @@ export class DesignerCanvasComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   hoveredComponent: UIComponent | null = null;
 
-  constructor(private designerService: DesignerService) {}
+  constructor(
+    private designerService: DesignerService,
+    private navigationAlignmentService: NavigationAlignmentService
+  ) {}
 
   ngOnInit() {
     // Subscribe to drag events from component palette
@@ -235,29 +240,15 @@ export class DesignerCanvasComponent implements OnInit, OnDestroy {
   }
 
   getCanvasClasses(): string {
-    const classes: string[] = [];
-    
-    if (!this.config?.components) {
-      return classes.join(' ');
-    }
+    const baseClasses = ['canvas-viewport'];
+    const navigationClasses = this.navigationAlignmentService.getNavigationClasses(this.config);
+    return [...baseClasses, navigationClasses].filter(c => c).join(' ');
+  }
 
-    // Check for positioned navigation components
-    const navigationComponents = this.config.components.filter(c => c.type === 'navigation');
-    
-    let hasPositionedNav = false;
-
-    for (const nav of navigationComponents) {
-      const position = nav.props?.position;
-      if (position && ['top', 'left', 'right', 'bottom'].includes(position)) {
-        hasPositionedNav = true;
-        classes.push(`has-${position}-navigation`);
-      }
-    }
-
-    if (hasPositionedNav) {
-      classes.push('has-positioned-navigation');
-    }
-
-    return classes.join(' ');
+  /**
+   * Get canvas alignment styles using the shared service
+   */
+  getCanvasAlignmentStyles(): any {
+    return this.navigationAlignmentService.getCanvasAlignmentStyles(this.config);
   }
 }
