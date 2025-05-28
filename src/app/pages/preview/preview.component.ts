@@ -203,16 +203,20 @@ export class PreviewComponent implements OnInit {
         }
       } else {
         // Try to get from session storage (set by designer)
-        const storedConfig = sessionStorage.getItem('preview-config');
-        if (storedConfig) {
-          try {
-            this.config = JSON.parse(storedConfig);
-          } catch (error) {
-            this.error = 'Invalid stored configuration data';
-            console.error('Preview stored config parse error:', error);
+        if (typeof window !== 'undefined' && window.sessionStorage) {
+          const storedConfig = sessionStorage.getItem('preview-config');
+          if (storedConfig) {
+            try {
+              this.config = JSON.parse(storedConfig);
+            } catch (error) {
+              this.error = 'Invalid stored configuration data';
+              console.error('Preview stored config parse error:', error);
+            }
+          } else {
+            this.error = 'No configuration provided for preview';
           }
         } else {
-          this.error = 'No configuration provided for preview';
+          this.error = 'Preview not available in server-side rendering mode';
         }
       }
     });
@@ -224,11 +228,13 @@ export class PreviewComponent implements OnInit {
 
   closePreview(): void {
     // If opened in a new window/tab, close it
-    if (window.opener) {
-      window.close();
-    } else {
-      // Navigate back to designer
-      window.history.back();
+    if (typeof window !== 'undefined') {
+      if (window.opener) {
+        window.close();
+      } else {
+        // Navigate back to designer
+        window.history.back();
+      }
     }
   }
 

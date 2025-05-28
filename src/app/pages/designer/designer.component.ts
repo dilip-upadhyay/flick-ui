@@ -234,6 +234,9 @@ export class DesignerComponent implements OnInit, OnDestroy {
       case 'redo':
         this.designerService.redo();
         break;
+      case 'load-test-config':
+        this.loadTestConfig();
+        break;
     }
   }
 
@@ -318,5 +321,9 @@ export class DesignerComponent implements OnInit, OnDestroy {
 
   private previewLayout() {
     this.designerService.showPreview();
+  }
+
+  private loadTestConfig() {
+    this.designerService.loadTestConfiguration();
   }
 }

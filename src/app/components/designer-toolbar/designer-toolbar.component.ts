@@ -161,6 +161,13 @@ export interface ToolbarAction {
             <mat-icon>article</mat-icon>
             <span>Blog Layout</span>
           </button>
+          
+          <mat-divider></mat-divider>
+          
+          <button mat-menu-item (click)="onAction('load-test-config')">
+            <mat-icon>science</mat-icon>
+            <span>Load Test Config</span>
+          </button>
         </mat-menu>
       </div>
 

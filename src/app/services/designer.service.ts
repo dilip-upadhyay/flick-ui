@@ -292,11 +292,47 @@ export class DesignerService {
     }
 
     // Store config in session storage for the preview page
-    sessionStorage.setItem('preview-config', JSON.stringify(config));
-    
-    // Open preview in a new tab
-    const previewUrl = `${window.location.origin}/preview`;
-    window.open(previewUrl, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+    if (typeof window !== 'undefined' && window.sessionStorage) {
+      sessionStorage.setItem('preview-config', JSON.stringify(config));
+      
+      // Open preview in a new tab
+      const previewUrl = `${window.location.origin}/preview`;
+      window.open(previewUrl, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+    } else {
+      console.warn('Preview not available in server-side rendering mode');
+    }
+  }
+
+  async loadTestConfiguration(): Promise<void> {
+    try {
+      const response = await fetch('/assets/configs/spacing-appearance-test.json');
+      if (!response.ok) {
+        throw new Error(`Failed to load configuration: ${response.statusText}`);
+      }
+      
+      const config = await response.json();
+      this.loadConfig(config);
+      this.snackBar.open('Test configuration loaded successfully', 'Close', { duration: 3000 });
+    } catch (error) {
+      console.error('Error loading test configuration:', error);
+      this.snackBar.open('Error loading test configuration', 'Close', { duration: 3000 });
+    }
+  }
+
+  async loadConfigurationFromAssets(filename: string): Promise<void> {
+    try {
+      const response = await fetch(`/assets/configs/${filename}`);
+      if (!response.ok) {
+        throw new Error(`Failed to load configuration: ${response.statusText}`);
+      }
+      
+      const config = await response.json();
+      this.loadConfig(config);
+      this.snackBar.open(`Configuration ${filename} loaded successfully`, 'Close', { duration: 3000 });
+    } catch (error) {
+      console.error(`Error loading configuration ${filename}:`, error);
+      this.snackBar.open(`Error loading configuration ${filename}`, 'Close', { duration: 3000 });
+    }
   }
 
   // Private Helper Methods
