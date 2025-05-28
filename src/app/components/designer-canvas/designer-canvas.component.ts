@@ -66,7 +66,10 @@ import { DesignerService } from '../../services/designer.service';
           </div>
 
           <!-- Component preview -->
-          <div class="component-preview" [ngSwitch]="component.type" [ngStyle]="getComponentStyles(component)">
+          <div class="component-preview" 
+               [attr.data-type]="component.type"
+               [ngSwitch]="component.type" 
+               [ngStyle]="getComponentStyles(component)">
             <!-- Container -->
             <div *ngSwitchCase="'container'" class="preview-container">
               <div class="container-header" *ngIf="component.props?.title">
