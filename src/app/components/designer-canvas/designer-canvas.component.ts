@@ -18,6 +18,7 @@ import { DynamicRendererComponent } from '../dynamic-renderer/dynamic-renderer.c
         [class.desktop]="viewMode === 'desktop'"
         [class.tablet]="viewMode === 'tablet'"
         [class.mobile]="viewMode === 'mobile'"
+        [ngClass]="getCanvasClasses()"
         cdkDropList
         [cdkDropListData]="config?.components || []"
         (cdkDropListDropped)="onComponentDropped($event)"
@@ -231,5 +232,32 @@ export class DesignerCanvasComponent implements OnInit, OnDestroy {
       dashboard: 'Dashboard'
     };
     return labels[component.type] || component.type;
+  }
+
+  getCanvasClasses(): string {
+    const classes: string[] = [];
+    
+    if (!this.config?.components) {
+      return classes.join(' ');
+    }
+
+    // Check for positioned navigation components
+    const navigationComponents = this.config.components.filter(c => c.type === 'navigation');
+    
+    let hasPositionedNav = false;
+
+    for (const nav of navigationComponents) {
+      const position = nav.props?.position;
+      if (position && ['top', 'left', 'right', 'bottom'].includes(position)) {
+        hasPositionedNav = true;
+        classes.push(`has-${position}-navigation`);
+      }
+    }
+
+    if (hasPositionedNav) {
+      classes.push('has-positioned-navigation');
+    }
+
+    return classes.join(' ');
   }
 }

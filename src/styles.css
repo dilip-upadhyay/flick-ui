@@ -224,6 +224,28 @@ body {
   z-index: 100;
 }
 
+/* Prevent overlap with positioned navigation */
+.component-navigation + *,
+.component-preview[data-type="navigation"] + * {
+  margin-top: 0 !important;
+}
+
+/* Ensure proper spacing for fixed positioned navigation */
+.navigation-position-top ~ .component-wrapper,
+.navigation-position-top ~ .component-preview {
+  margin-top: 80px !important; /* Add top margin when navigation is positioned at top */
+}
+
+.navigation-position-left ~ .component-wrapper,
+.navigation-position-left ~ .component-preview {
+  margin-left: 250px !important; /* Add left margin when navigation is positioned at left */
+}
+
+.navigation-position-right ~ .component-wrapper,
+.navigation-position-right ~ .component-preview {
+  margin-right: 250px !important; /* Add right margin when navigation is positioned at right */
+}
+
 .component-header,
 .component-preview[data-type="header"] {
   margin-bottom: 16px !important;
@@ -301,4 +323,152 @@ body {
   flex: none !important;
   grid-column: unset !important;
   position: relative !important;
+}
+
+/* Navigation Overlap Prevention */
+/* Direct content adjustment for positioned navigation - using class-based approach for better browser support */
+
+/* When navigation is positioned at top */
+.content-with-top-nav {
+  margin-top: 80px !important;
+}
+
+/* When navigation is positioned at left */
+.content-with-left-nav {
+  margin-left: 250px !important;
+}
+
+/* When navigation is positioned at right */
+.content-with-right-nav {
+  margin-right: 250px !important;
+}
+
+/* When navigation is positioned at bottom */
+.content-with-bottom-nav {
+  margin-bottom: 80px !important;
+}
+
+/* Universal content spacing for positioned navigation */
+.dynamic-renderer.has-positioned-navigation {
+  position: relative;
+}
+
+.dynamic-renderer.has-positioned-navigation .component-wrapper {
+  transition: margin 0.3s ease;
+}
+
+/* Specific navigation position adjustments */
+.dynamic-renderer.has-top-navigation .component-wrapper:not(.component-navigation) {
+  margin-top: 16px !important;
+}
+
+.dynamic-renderer.has-left-navigation .component-wrapper:not(.component-navigation) {
+  margin-left: 266px !important; /* 250px nav width + 16px margin */
+}
+
+.dynamic-renderer.has-right-navigation .component-wrapper:not(.component-navigation) {
+  margin-right: 266px !important; /* 250px nav width + 16px margin */
+}
+
+.dynamic-renderer.has-bottom-navigation .component-wrapper:not(.component-navigation) {
+  margin-bottom: 96px !important; /* 80px nav height + 16px margin */
+}
+
+/* Specific component spacing adjustments */
+.component-wrapper.has-positioned-nav {
+  margin-top: 0 !important;
+}
+
+.component-form,
+.component-container,
+.component-grid,
+.component-table,
+.component-header,
+.component-dashboard {
+  position: relative;
+  z-index: 1;
+}
+
+/* Ensure forms and content are properly spaced */
+.component-form {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  padding: 24px;
+  margin: 16px 0;
+}
+
+/* Z-index management to prevent overlap */
+.navigation-position-top,
+.navigation-position-left,
+.navigation-position-right,
+.navigation-position-bottom {
+  z-index: 999; /* Lower than app header (1000) but higher than content */
+}
+
+.component-navigation:not([class*="navigation-position"]) {
+  position: relative;
+  z-index: auto;
+}
+
+/* Form and content alignment with positioned navigation */
+.dynamic-renderer.has-left-navigation .component-form {
+  margin-left: 266px !important; /* 250px nav width + 16px margin */
+  max-width: calc(100% - 266px) !important;
+}
+
+.dynamic-renderer.has-right-navigation .component-form {
+  margin-right: 266px !important; /* 250px nav width + 16px margin */
+  max-width: calc(100% - 266px) !important;
+}
+
+.dynamic-renderer.has-top-navigation .component-form {
+  margin-top: 96px !important; /* Ensure forms are below top navigation */
+}
+
+.dynamic-renderer.has-bottom-navigation .component-form {
+  margin-bottom: 96px !important; /* Ensure forms are above bottom navigation */
+}
+
+/* Header alignment with positioned navigation */
+.dynamic-renderer.has-left-navigation .component-header {
+  margin-left: 266px !important;
+  max-width: calc(100% - 266px) !important;
+}
+
+.dynamic-renderer.has-right-navigation .component-header {
+  margin-right: 266px !important;
+  max-width: calc(100% - 266px) !important;
+}
+
+/* Container and grid alignment */
+.dynamic-renderer.has-left-navigation .component-container,
+.dynamic-renderer.has-left-navigation .component-grid {
+  margin-left: 266px !important;
+  max-width: calc(100% - 266px) !important;
+}
+
+.dynamic-renderer.has-right-navigation .component-container,
+.dynamic-renderer.has-right-navigation .component-grid {
+  margin-right: 266px !important;
+  max-width: calc(100% - 266px) !important;
+}
+
+/* Ensure proper box-sizing for all positioned content */
+.dynamic-renderer.has-positioned-navigation .component-wrapper {
+  box-sizing: border-box;
+}
+
+/* Navigation panel should start at the very edge */
+.navigation-position-left,
+.navigation-position-right {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Ensure navigation items have consistent left padding */
+.navigation-position-left .nav-link,
+.navigation-position-right .nav-link {
+  padding-left: 16px !important;
+  padding-right: 16px !important;
 }

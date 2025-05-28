@@ -345,7 +345,7 @@
 /* Navigation Positioning */
 .navigation-position-top {
   position: fixed;
-  top: 0;
+  top: 64px; /* Account for app header height (Material toolbar default height) */
   left: 0;
   right: 0;
   z-index: 1030;
@@ -384,7 +384,7 @@
 
 .navigation-position-left {
   position: fixed;
-  top: 0;
+  top: 64px; /* Account for app header height */
   left: 0;
   bottom: 0;
   z-index: 1030;
@@ -397,6 +397,7 @@
 .navigation-position-left .navigation-menu {
   height: 100%;
   overflow-y: auto;
+  padding: 0; /* Remove default padding for better alignment */
 }
 
 .navigation-position-left .nav-vertical {
@@ -405,7 +406,7 @@
 
 .navigation-position-right {
   position: fixed;
-  top: 0;
+  top: 64px; /* Account for app header height */
   right: 0;
   bottom: 0;
   z-index: 1030;
@@ -418,6 +419,7 @@
 .navigation-position-right .navigation-menu {
   height: 100%;
   overflow-y: auto;
+  padding: 0; /* Remove default padding for better alignment */
 }
 
 .navigation-position-right .nav-vertical {

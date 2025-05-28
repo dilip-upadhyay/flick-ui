@@ -75,3 +75,31 @@
 .cdk-drop-list {
   min-height: 100%;
 }
+
+/* Navigation Alignment for Designer Canvas */
+/* Adjust canvas viewport for positioned navigation */
+.canvas-viewport.has-positioned-navigation {
+  transition: padding 0.3s ease;
+}
+
+.canvas-viewport.has-left-navigation {
+  padding-left: 286px; /* 250px nav width + 20px original padding + 16px buffer */
+}
+
+.canvas-viewport.has-right-navigation {
+  padding-right: 286px; /* 250px nav width + 20px original padding + 16px buffer */
+}
+
+.canvas-viewport.has-top-navigation {
+  padding-top: 116px; /* 80px nav height + 20px original padding + 16px buffer */
+}
+
+.canvas-viewport.has-bottom-navigation {
+  padding-bottom: 116px; /* 80px nav height + 20px original padding + 16px buffer */
+}
+
+/* Ensure preview container takes full space */
+.canvas-viewport.has-positioned-navigation .preview-container {
+  width: 100%;
+  min-height: 100%;
+}

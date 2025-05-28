@@ -64,6 +64,24 @@ export class DynamicRendererComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Get renderer container classes based on navigation position
+   */
+  getRendererClasses(): string {
+    const classes = ['dynamic-renderer'];
+    
+    if (this.currentConfig?.components) {
+      const navigationComponent = this.currentConfig.components.find(c => c.type === 'navigation');
+      
+      if (navigationComponent?.props?.position) {
+        classes.push('has-positioned-navigation');
+        classes.push(`has-${navigationComponent.props.position}-navigation`);
+      }
+    }
+    
+    return classes.join(' ');
+  }
+
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
