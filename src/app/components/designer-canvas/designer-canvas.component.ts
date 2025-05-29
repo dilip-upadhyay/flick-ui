@@ -43,6 +43,7 @@ import { DynamicRendererComponent } from '../dynamic-renderer/dynamic-renderer.c
             [config]="config"
             [selectedComponent]="selectedComponent"
             [enableSelection]="true"
+            [context]="{ mode: 'canvas', viewMode: viewMode }"
             (componentClicked)="onComponentClick($event)">
           </app-dynamic-renderer>
         </div>

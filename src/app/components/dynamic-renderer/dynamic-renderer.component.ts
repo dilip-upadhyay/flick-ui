@@ -67,11 +67,21 @@ export class DynamicRendererComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Get renderer container classes based on navigation position
+   * Get renderer container classes based on navigation position and context
    */
   getRendererClasses(): string {
     const baseClasses = ['dynamic-renderer'];
     const navigationClasses = this.navigationAlignmentService.getNavigationClasses(this.currentConfig);
+    
+    // Add context-specific classes
+    const context = this.getRenderingContext();
+    if (context.mode) {
+      baseClasses.push(`renderer-${context.mode}`);
+    }
+    if (context.viewMode) {
+      baseClasses.push(`view-${context.viewMode}`);
+    }
+    
     return [...baseClasses, navigationClasses].filter(c => c).join(' ');
   }
 
@@ -236,6 +246,22 @@ export class DynamicRendererComponent implements OnInit, OnDestroy {
     if (component.styles) {
       Object.assign(styles, component.styles);
     }
+
+    // Apply context-specific styling adjustments
+    const context = this.getRenderingContext();
+    if (context.mode === 'canvas') {
+      // Add canvas-specific styling (slightly more spacing for designer)
+      if (component.type === 'navigation') {
+        styles['transition'] = 'all 0.2s ease';
+      }
+    } else if (context.mode === 'preview') {
+      // Add preview-specific styling (optimized for final presentation)
+      if (component.type === 'navigation') {
+        styles['position'] = 'sticky';
+        styles['top'] = '0';
+        styles['z-index'] = '1000';
+      }
+    }
     
     return this.rendererService.generateStyles(styles);
   }
@@ -275,5 +301,33 @@ export class DynamicRendererComponent implements OnInit, OnDestroy {
    */
   updateComponent(componentId: string, updates: Partial<UIComponent>): void {
     this.configService.updateComponent(componentId, updates);
+  }
+
+  /**
+   * Get rendering context information
+   */
+  getRenderingContext(): any {
+    return this.context || {};
+  }
+
+  /**
+   * Check if we're in canvas mode (designer)
+   */
+  isCanvasMode(): boolean {
+    return this.getRenderingContext().mode === 'canvas';
+  }
+
+  /**
+   * Check if we're in preview mode
+   */
+  isPreviewMode(): boolean {
+    return this.getRenderingContext().mode === 'preview';
+  }
+
+  /**
+   * Get view mode from context
+   */
+  getViewMode(): string {
+    return this.getRenderingContext().viewMode || 'desktop';
   }
 }

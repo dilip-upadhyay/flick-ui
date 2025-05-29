@@ -230,6 +230,57 @@
   outline: none;
 }
 
+/* Context-Specific Renderer Styling */
+
+/* Canvas Mode (Designer) */
+.dynamic-renderer.renderer-canvas {
+  background: #fafafa;
+  border: 1px dashed #e0e0e0;
+  border-radius: 4px;
+  min-height: calc(100vh - 40px);
+}
+
+.dynamic-renderer.renderer-canvas .component-wrapper {
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.dynamic-renderer.renderer-canvas .component-wrapper:hover {
+  outline: 1px solid #2196f3;
+  outline-offset: 2px;
+}
+
+.dynamic-renderer.renderer-canvas .component-wrapper.selected {
+  outline: 2px solid #2196f3;
+  outline-offset: 2px;
+  background: rgba(33, 150, 243, 0.05);
+}
+
+/* Preview Mode (Final Output) */
+.dynamic-renderer.renderer-preview {
+  background: white;
+  min-height: 100vh;
+}
+
+.dynamic-renderer.renderer-preview .component-wrapper {
+  transition: none;
+}
+
+/* View Mode Specific Styles */
+.dynamic-renderer.view-desktop {
+  max-width: none;
+}
+
+.dynamic-renderer.view-tablet {
+  max-width: 768px;
+  margin: 0 auto;
+}
+
+.dynamic-renderer.view-mobile {
+  max-width: 375px;
+  margin: 0 auto;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .modal-dialog {

@@ -37,7 +37,11 @@ import { UIConfig } from '../../models/ui-config.interface';
       <!-- Dynamic Renderer Content -->
       <div class="preview-content">
         <div class="renderer-wrapper" *ngIf="config">
-          <app-dynamic-renderer [config]="config"></app-dynamic-renderer>
+          <app-dynamic-renderer 
+            [config]="config"
+            [enableSelection]="false"
+            [context]="{ mode: 'preview' }">
+          </app-dynamic-renderer>
         </div>
         
         <!-- Loading State -->

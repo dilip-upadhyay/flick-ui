@@ -40,7 +40,10 @@ import { UIConfig } from '../../models/ui-config.interface';
           
           @if (currentConfig) {
             <div class="renderer-container">
-              <app-dynamic-renderer [config]="currentConfig"></app-dynamic-renderer>
+              <app-dynamic-renderer 
+                [config]="currentConfig"
+                [context]="{ mode: 'demo' }">
+              </app-dynamic-renderer>
             </div>
           } @else {
             <div class="loading-container">
