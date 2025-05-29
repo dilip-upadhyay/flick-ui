@@ -160,16 +160,100 @@ export class ComponentPaletteComponent {
       components: [
         {
           type: 'form',
-          name: 'Form',
+          name: 'Form Container',
           icon: 'assignment',
-          description: 'Dynamic form with validation',
+          description: 'Complete form with validation and model binding',
+          category: 'Forms'
+        },
+        {
+          type: 'text-input',
+          name: 'Text Input',
+          icon: 'text_fields',
+          description: 'Single line text input field',
+          category: 'Forms'
+        },
+        {
+          type: 'email-input',
+          name: 'Email Input',
+          icon: 'email',
+          description: 'Email input field with validation',
+          category: 'Forms'
+        },
+        {
+          type: 'password-input',
+          name: 'Password Input',
+          icon: 'lock',
+          description: 'Password input field with masking',
+          category: 'Forms'
+        },
+        {
+          type: 'number-input',
+          name: 'Number Input',
+          icon: 'pin',
+          description: 'Numeric input field',
+          category: 'Forms'
+        },
+        {
+          type: 'textarea',
+          name: 'Text Area',
+          icon: 'notes',
+          description: 'Multi-line text input',
+          category: 'Forms'
+        },
+        {
+          type: 'select',
+          name: 'Select Dropdown',
+          icon: 'arrow_drop_down',
+          description: 'Dropdown selection field',
+          category: 'Forms'
+        },
+        {
+          type: 'checkbox',
+          name: 'Checkbox',
+          icon: 'check_box',
+          description: 'Checkbox for boolean values',
+          category: 'Forms'
+        },
+        {
+          type: 'radio',
+          name: 'Radio Button',
+          icon: 'radio_button_checked',
+          description: 'Radio button for single selection',
+          category: 'Forms'
+        },
+        {
+          type: 'date-input',
+          name: 'Date Picker',
+          icon: 'calendar_today',
+          description: 'Date selection input',
+          category: 'Forms'
+        },
+        {
+          type: 'file-input',
+          name: 'File Upload',
+          icon: 'upload_file',
+          description: 'File upload input',
+          category: 'Forms'
+        },
+        {
+          type: 'submit-button',
+          name: 'Submit Button',
+          icon: 'send',
+          description: 'Form submission button',
+          category: 'Forms'
+        },
+        {
+          type: 'reset-button',
+          name: 'Reset Button',
+          icon: 'refresh',
+          description: 'Form reset button',
           category: 'Forms'
         },
         {
           type: 'button',
           name: 'Button',
           icon: 'smart_button',
-          description: 'Interactive button component',
+          description: 'Generic interactive button',
           category: 'Forms'
         }
       ]

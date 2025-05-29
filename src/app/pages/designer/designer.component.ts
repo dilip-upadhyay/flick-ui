@@ -7,8 +7,10 @@ import { ComponentPaletteComponent } from '../../components/component-palette/co
 import { PropertyEditorComponent } from '../../components/property-editor/property-editor.component';
 import { DesignerToolbarComponent } from '../../components/designer-toolbar/designer-toolbar.component';
 import { ConfigPreviewComponent } from '../../components/config-preview/config-preview.component';
+import { FormBuilderPanelComponent } from '../../components/form-builder-panel/form-builder-panel.component';
 import { UIConfig, UIComponent, ComponentType } from '../../models/ui-config.interface';
 import { DesignerService } from '../../services/designer.service';
+import { FormBuilderService } from '../../services/form-builder.service';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
@@ -22,7 +24,8 @@ import { Subject, takeUntil } from 'rxjs';
     ComponentPaletteComponent,
     PropertyEditorComponent,
     DesignerToolbarComponent,
-    ConfigPreviewComponent
+    ConfigPreviewComponent,
+    FormBuilderPanelComponent
   ],
   template: `
     <div class="designer-container">
@@ -110,14 +113,22 @@ import { Subject, takeUntil } from 'rxjs';
         <!-- Right Sidebar - Properties Panel -->
         <div class="designer-sidebar right-sidebar" [class.collapsed]="rightSidebarCollapsed">
           <div class="sidebar-header">
-            <h3>Properties</h3>
+            <h3>{{ isFormBuilderActive ? 'Form Builder' : 'Properties' }}</h3>
             <button mat-icon-button (click)="toggleRightSidebar()">
               <mat-icon>{{ rightSidebarCollapsed ? 'chevron_left' : 'chevron_right' }}</mat-icon>
             </button>
           </div>
           
           <div class="sidebar-content" *ngIf="!rightSidebarCollapsed">
+            <!-- Form Builder Panel - shown when form is selected -->
+            <app-form-builder-panel 
+              *ngIf="isFormBuilderActive"
+              [selectedComponent]="selectedComponent">
+            </app-form-builder-panel>
+            
+            <!-- Property Editor - shown for non-form components -->
             <app-property-editor
+              *ngIf="!isFormBuilderActive"
               [selectedComponent]="selectedComponent"
               [config]="currentConfig"
               (propertyChanged)="onPropertyChanged($event)">
@@ -175,9 +186,13 @@ export class DesignerComponent implements OnInit, OnDestroy {
   leftSidebarCollapsed = false;
   rightSidebarCollapsed = false;
   bottomPanelCollapsed = true;
+  
+  // Form Builder State
+  isFormBuilderActive = false;
 
   // Injected services
   private designerService: DesignerService = inject(DesignerService);
+  private formBuilderService: FormBuilderService = inject(FormBuilderService);
   private fb = inject(FormBuilder);
 
   constructor() {}
@@ -196,6 +211,11 @@ export class DesignerComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe((component: UIComponent | null) => {
         this.selectedComponent = component;
+        // Toggle form builder when form component is selected
+        this.isFormBuilderActive = component?.type === 'form';
+        if (this.isFormBuilderActive) {
+          this.formBuilderService.setActiveForm(component);
+        }
       });
 
     this.designerService.getHasUnsavedChanges()

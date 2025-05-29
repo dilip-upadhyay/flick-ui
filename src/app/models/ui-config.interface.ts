@@ -28,7 +28,20 @@ export type ComponentType =
   | 'chart'
   | 'modal'
   | 'tabs'
-  | 'accordion';
+  | 'accordion'
+  // Form Elements
+  | 'text-input'
+  | 'email-input'
+  | 'password-input'
+  | 'number-input'
+  | 'textarea'
+  | 'select'
+  | 'checkbox'
+  | 'radio'
+  | 'date-input'
+  | 'file-input'
+  | 'submit-button'
+  | 'reset-button';
 
 export interface LayoutConfig {
   type: 'grid' | 'flex' | 'stack';
@@ -111,6 +124,38 @@ export interface FormConfig {
   validation?: FormValidation;
   layout?: 'vertical' | 'horizontal' | 'grid';
   columns?: number;
+  // Model association for backend persistence
+  model?: FormModel;
+  dataSource?: FormDataSource;
+}
+
+export interface FormModel {
+  name: string;
+  apiEndpoint: string;
+  method: 'POST' | 'PUT' | 'PATCH';
+  fields: { [fieldId: string]: string }; // Maps form field IDs to model property names
+  headers?: { [key: string]: string };
+  transformRequest?: (data: any) => any;
+  transformResponse?: (response: any) => any;
+  validation?: ModelValidation;
+}
+
+export interface FormDataSource {
+  loadEndpoint?: string; // For loading existing data (edit mode)
+  loadMethod?: 'GET';
+  loadTransform?: (response: any) => any;
+}
+
+export interface ModelValidation {
+  required?: string[];
+  rules?: { [fieldId: string]: ValidationRule[] };
+}
+
+export interface ValidationRule {
+  type: 'required' | 'minLength' | 'maxLength' | 'pattern' | 'email' | 'min' | 'max' | 'custom';
+  value?: any;
+  message: string;
+  validator?: (value: any) => boolean;
 }
 
 export interface FormField {

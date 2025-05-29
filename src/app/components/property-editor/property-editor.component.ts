@@ -9,10 +9,10 @@ interface PropertyDefinition {
   key: string;
   label: string;
   type: 'text' | 'number' | 'boolean' | 'select' | 'color' | 'array' | 'object';
-  options?: any[];
   description?: string;
   defaultValue?: any;
   category?: string;
+  options?: { value: any; label: string }[];
 }
 
 @Component({
@@ -657,7 +657,20 @@ export class PropertyEditorComponent implements OnInit, OnDestroy, OnChanges {
       chart: 'Chart',
       modal: 'Modal',
       tabs: 'Tabs',
-      accordion: 'Accordion'
+      accordion: 'Accordion',
+      // Form Elements
+      'text-input': 'Text Input',
+      'email-input': 'Email Input',
+      'password-input': 'Password Input',
+      'number-input': 'Number Input',
+      'textarea': 'Textarea',
+      'select': 'Select',
+      'checkbox': 'Checkbox',
+      'radio': 'Radio Button',
+      'date-input': 'Date Input',
+      'file-input': 'File Input',
+      'submit-button': 'Submit Button',
+      'reset-button': 'Reset Button'
     };
     return labels[componentType] || componentType;
   }
@@ -677,7 +690,20 @@ export class PropertyEditorComponent implements OnInit, OnDestroy, OnChanges {
       chart: 'bar_chart',
       modal: 'open_in_new',
       tabs: 'tab',
-      accordion: 'expand_more'
+      accordion: 'expand_more',
+      // Form Elements
+      'text-input': 'text_fields',
+      'email-input': 'email',
+      'password-input': 'lock',
+      'number-input': 'numbers',
+      'textarea': 'notes',
+      'select': 'arrow_drop_down',
+      'checkbox': 'check_box',
+      'radio': 'radio_button_checked',
+      'date-input': 'calendar_today',
+      'file-input': 'upload_file',
+      'submit-button': 'send',
+      'reset-button': 'refresh'
     };
     return icons[componentType] || 'widgets';
   }

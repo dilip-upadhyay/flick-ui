@@ -221,7 +221,7 @@ export class DesignerCanvasComponent implements OnInit, OnDestroy {
 
   // Simplified helper methods for backward compatibility
   getComponentLabel(component: UIComponent): string {
-    const labels: Record<ComponentType, string> = {
+    const labels: Partial<Record<ComponentType, string>> = {
       container: 'Container',
       grid: 'Grid Layout',
       header: 'Header',
@@ -235,7 +235,20 @@ export class DesignerCanvasComponent implements OnInit, OnDestroy {
       modal: 'Modal',
       tabs: 'Tabs',
       accordion: 'Accordion',
-      dashboard: 'Dashboard'
+      dashboard: 'Dashboard',
+      // Form elements
+      'text-input': 'Text Input',
+      'email-input': 'Email Input',
+      'password-input': 'Password Input',
+      'number-input': 'Number Input',
+      'textarea': 'Textarea',
+      'select': 'Select',
+      'checkbox': 'Checkbox',
+      'radio': 'Radio Button',
+      'date-input': 'Date Input',
+      'file-input': 'File Input',
+      'submit-button': 'Submit Button',
+      'reset-button': 'Reset Button'
     };
     return labels[component.type] || component.type;
   }

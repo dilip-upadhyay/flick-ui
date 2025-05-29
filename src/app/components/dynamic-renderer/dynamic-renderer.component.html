@@ -184,8 +184,27 @@
           </div>
         </div>
 
+        <!-- Form Elements -->
+        <app-form-element-renderer 
+          *ngIf="['text-input', 'email-input', 'password-input', 'number-input', 'textarea', 'select', 'checkbox', 'radio', 'date-input', 'file-input', 'submit-button', 'reset-button'].includes(component.type)"
+          [config]="{
+            id: component.id,
+            type: component.type,
+            label: component.props.label,
+            placeholder: component.props.placeholder,
+            required: component.props.required,
+            disabled: component.props.disabled,
+            options: component.props.options,
+            defaultValue: component.props.defaultValue,
+            helpText: component.props.helpText,
+            modelField: component.props.modelField
+          }"
+          (buttonClick)="onFormElementButtonClick($event, component)"
+          (fileSelected)="onFormElementFileSelected($event, component)">
+        </app-form-element-renderer>
+
         <!-- Unknown Component Type -->
-        <div *ngIf="!['header', 'navigation', 'form', 'table', 'dashboard', 'card', 'container', 'text', 'button', 'image', 'grid', 'modal', 'tabs'].includes(component.type)" 
+        <div *ngIf="!['header', 'navigation', 'form', 'table', 'dashboard', 'card', 'container', 'text', 'button', 'image', 'grid', 'modal', 'tabs', 'text-input', 'email-input', 'password-input', 'number-input', 'textarea', 'select', 'checkbox', 'radio', 'date-input', 'file-input', 'submit-button', 'reset-button'].includes(component.type)" 
              class="unknown-component">
           <p class="error">Unknown component type: {{ component.type }}</p>
         </div>

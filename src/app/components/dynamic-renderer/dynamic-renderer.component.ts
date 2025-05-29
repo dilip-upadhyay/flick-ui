@@ -11,6 +11,7 @@ import { HeaderRendererComponent } from '../header-renderer/header-renderer.comp
 import { NavigationRendererComponent } from '../navigation-renderer/navigation-renderer.component';
 import { DashboardRendererComponent } from '../dashboard-renderer/dashboard-renderer.component';
 import { FormRendererComponent } from '../form-renderer/form-renderer.component';
+import { FormElementRendererComponent } from '../form-element-renderer/form-element-renderer.component';
 
 @Component({
   selector: 'app-dynamic-renderer',
@@ -20,7 +21,8 @@ import { FormRendererComponent } from '../form-renderer/form-renderer.component'
     HeaderRendererComponent,
     NavigationRendererComponent,
     DashboardRendererComponent,
-    FormRendererComponent
+    FormRendererComponent,
+    FormElementRendererComponent
   ],
   templateUrl: './dynamic-renderer.component.html',
   styleUrl: './dynamic-renderer.component.css'
@@ -329,5 +331,31 @@ export class DynamicRendererComponent implements OnInit, OnDestroy {
    */
   getViewMode(): string {
     return this.getRenderingContext().viewMode || 'desktop';
+  }
+
+  /**
+   * Handle form element button clicks
+   */
+  onFormElementButtonClick(event: { type: string; config: any }, component: UIComponent): void {
+    console.log('Form element button clicked:', event, component);
+    
+    if (event.type === 'submit') {
+      // Handle form submission
+      this.onComponentEvent({ action: 'submit', data: component.props }, component);
+    } else if (event.type === 'reset') {
+      // Handle form reset
+      this.onComponentEvent({ action: 'reset', data: component.props }, component);
+    } else {
+      // Handle custom button click
+      this.onComponentEvent({ action: 'buttonClick', data: { ...component.props, buttonType: event.type } }, component);
+    }
+  }
+
+  /**
+   * Handle form element file selection
+   */
+  onFormElementFileSelected(event: { files: FileList; config: any }, component: UIComponent): void {
+    console.log('Form element file selected:', event, component);
+    this.onComponentEvent({ action: 'fileSelected', data: { files: event.files, component: component.props } }, component);
   }
 }

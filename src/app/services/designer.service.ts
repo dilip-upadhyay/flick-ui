@@ -364,7 +364,13 @@ export class DesignerService {
       form: {
         title: 'Form Title',
         fields: [],
-        actions: []
+        actions: [],
+        model: {
+          name: 'FormModel',
+          apiEndpoint: '/api/form-submit',
+          method: 'POST',
+          fields: {}
+        }
       },
       dashboard: {
         title: 'Dashboard',
@@ -410,6 +416,85 @@ export class DesignerService {
         items: [
           { id: 'item1', title: 'Accordion Item', content: 'Accordion content' }
         ]
+      },
+      // Form Element Types
+      'text-input': {
+        label: 'Text Input',
+        placeholder: 'Enter text...',
+        required: false,
+        modelField: 'textValue'
+      },
+      'email-input': {
+        label: 'Email Address',
+        placeholder: 'Enter email address...',
+        required: false,
+        modelField: 'email'
+      },
+      'password-input': {
+        label: 'Password',
+        placeholder: 'Enter password...',
+        required: false,
+        modelField: 'password'
+      },
+      'number-input': {
+        label: 'Number',
+        placeholder: 'Enter number...',
+        required: false,
+        modelField: 'number'
+      },
+      'textarea': {
+        label: 'Text Area',
+        placeholder: 'Enter detailed text...',
+        required: false,
+        rows: 4,
+        modelField: 'description'
+      },
+      'select': {
+        label: 'Select Option',
+        required: false,
+        options: [
+          { value: 'option1', label: 'Option 1' },
+          { value: 'option2', label: 'Option 2' },
+          { value: 'option3', label: 'Option 3' }
+        ],
+        modelField: 'selectedOption'
+      },
+      'checkbox': {
+        label: 'Checkbox Option',
+        required: false,
+        defaultValue: false,
+        modelField: 'isChecked'
+      },
+      'radio': {
+        label: 'Radio Group',
+        required: false,
+        options: [
+          { value: 'radio1', label: 'Radio Option 1' },
+          { value: 'radio2', label: 'Radio Option 2' }
+        ],
+        modelField: 'radioSelection'
+      },
+      'date-input': {
+        label: 'Date',
+        required: false,
+        modelField: 'date'
+      },
+      'file-input': {
+        label: 'File Upload',
+        required: false,
+        accept: 'image/*',
+        multiple: false,
+        modelField: 'file'
+      },
+      'submit-button': {
+        label: 'Submit',
+        type: 'submit',
+        variant: 'primary'
+      },
+      'reset-button': {
+        label: 'Reset',
+        type: 'reset',
+        variant: 'secondary'
       }
     };
 
