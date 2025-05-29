@@ -25,14 +25,14 @@ export interface FormElementConfig {
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, MaterialModule],
   template: `
-    <div class="form-element" [class.required]="config.required" [class.disabled]="!!config.disabled">
+    <div class="form-element" [class.required]="config.required" [class.disabled]="!!(config.disabled || disabled)">
       <!-- Text Input -->
       <mat-form-field *ngIf="config.type === 'text-input'" appearance="outline" class="full-width">
         <mat-label>{{ config.label }}</mat-label>
         <input matInput 
                [formControl]="formControl"
                [placeholder]="config.placeholder || ''"
-               [disabled]="!!config.disabled">
+               [disabled]="!!(config.disabled || disabled)">
         <mat-hint *ngIf="config.helpText">{{ config.helpText }}</mat-hint>
         <mat-error *ngIf="formControl.hasError('required')">{{ config.label }} is required</mat-error>
       </mat-form-field>
@@ -43,7 +43,7 @@ export interface FormElementConfig {
         <input matInput type="email"
                [formControl]="formControl"
                [placeholder]="config.placeholder || ''"
-               [disabled]="!!config.disabled">
+               [disabled]="!!(config.disabled || disabled)">
         <mat-icon matSuffix>email</mat-icon>
         <mat-hint *ngIf="config.helpText">{{ config.helpText }}</mat-hint>
         <mat-error *ngIf="formControl.hasError('required')">{{ config.label }} is required</mat-error>
@@ -56,7 +56,7 @@ export interface FormElementConfig {
         <input matInput [type]="hidePassword ? 'password' : 'text'"
                [formControl]="formControl"
                [placeholder]="config.placeholder || ''"
-               [disabled]="!!config.disabled">
+               [disabled]="!!(config.disabled || disabled)">
         <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" type="button">
           <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
         </button>
@@ -70,7 +70,7 @@ export interface FormElementConfig {
         <input matInput type="number"
                [formControl]="formControl"
                [placeholder]="config.placeholder || ''"
-               [disabled]="!!config.disabled">
+               [disabled]="!!(config.disabled || disabled)">
         <mat-hint *ngIf="config.helpText">{{ config.helpText }}</mat-hint>
         <mat-error *ngIf="formControl.hasError('required')">{{ config.label }} is required</mat-error>
       </mat-form-field>
@@ -81,7 +81,7 @@ export interface FormElementConfig {
         <textarea matInput
                   [formControl]="formControl"
                   [placeholder]="config.placeholder || ''"
-                  [disabled]="!!config.disabled"
+                  [disabled]="!!(config.disabled || disabled)"
                   rows="4">
         </textarea>
         <mat-hint *ngIf="config.helpText">{{ config.helpText }}</mat-hint>
@@ -91,7 +91,7 @@ export interface FormElementConfig {
       <!-- Select Dropdown -->
       <mat-form-field *ngIf="config.type === 'select'" appearance="outline" class="full-width">
         <mat-label>{{ config.label }}</mat-label>
-        <mat-select [formControl]="formControl" [disabled]="!!config.disabled">
+        <mat-select [formControl]="formControl" [disabled]="!!(config.disabled || disabled)">
           <mat-option *ngFor="let option of config.options" [value]="option.value">
             {{ option.label }}
           </mat-option>
@@ -102,7 +102,7 @@ export interface FormElementConfig {
 
       <!-- Checkbox -->
       <div *ngIf="config.type === 'checkbox'" class="checkbox-field">
-        <mat-checkbox [formControl]="formControl" [disabled]="!!config.disabled">
+        <mat-checkbox [formControl]="formControl" [disabled]="!!(config.disabled || disabled)">
           {{ config.label }}
         </mat-checkbox>
         <div *ngIf="config.helpText" class="help-text">{{ config.helpText }}</div>
@@ -111,7 +111,7 @@ export interface FormElementConfig {
       <!-- Radio Group -->
       <div *ngIf="config.type === 'radio'" class="radio-group">
         <label class="field-label">{{ config.label }}</label>
-        <mat-radio-group [formControl]="formControl" [disabled]="!!config.disabled">
+        <mat-radio-group [formControl]="formControl" [disabled]="!!(config.disabled || disabled)">
           <mat-radio-button *ngFor="let option of config.options" [value]="option.value" class="radio-option">
             {{ option.label }}
           </mat-radio-button>
@@ -125,7 +125,7 @@ export interface FormElementConfig {
         <mat-label>{{ config.label }}</mat-label>
         <input matInput [matDatepicker]="picker"
                [formControl]="formControl"
-               [disabled]="!!config.disabled">
+               [disabled]="!!(config.disabled || disabled)">
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
         <mat-hint *ngIf="config.helpText">{{ config.helpText }}</mat-hint>
@@ -137,11 +137,11 @@ export interface FormElementConfig {
         <label class="field-label">{{ config.label }}</label>
         <input type="file" 
                (change)="onFileSelected($event)"
-               [disabled]="!!config.disabled"
+               [disabled]="!!(config.disabled || disabled)"
                [multiple]="config.multiple || false"
                style="display: none;" 
                #fileInput>
-        <button mat-raised-button (click)="fileInput.click()" [disabled]="!!config.disabled">
+        <button mat-raised-button (click)="fileInput.click()" [disabled]="!!(config.disabled || disabled)">
           <mat-icon>upload_file</mat-icon>
           Choose File
         </button>
@@ -154,7 +154,7 @@ export interface FormElementConfig {
               mat-raised-button 
               color="primary" 
               type="submit"
-              [disabled]="!!config.disabled"
+              [disabled]="!!(config.disabled || disabled)"
               (click)="onButtonClick('submit')">
         <mat-icon>send</mat-icon>
         {{ config.label }}
@@ -165,7 +165,7 @@ export interface FormElementConfig {
               mat-raised-button 
               color="warn" 
               type="button"
-              [disabled]="!!config.disabled"
+              [disabled]="!!(config.disabled || disabled)"
               (click)="onButtonClick('reset')">
         <mat-icon>refresh</mat-icon>
         {{ config.label }}
@@ -174,7 +174,7 @@ export interface FormElementConfig {
       <!-- Generic Button -->
       <button *ngIf="config.type === 'button'" 
               mat-raised-button 
-              [disabled]="!!config.disabled"
+              [disabled]="!!(config.disabled || disabled)"
               (click)="onButtonClick('custom')">
         <mat-icon *ngIf="config.icon">{{ config.icon }}</mat-icon>
         {{ config.label }}
@@ -248,8 +248,10 @@ export interface FormElementConfig {
 export class FormElementRendererComponent implements OnInit {
   @Input() config!: FormElementConfig;
   @Input() formControl!: FormControl;
+  @Input() disabled: boolean = false;
   @Output() buttonClick = new EventEmitter<{ type: string; config: FormElementConfig }>();
   @Output() fileSelected = new EventEmitter<{ files: FileList; config: FormElementConfig }>();
+  @Output() valueChange = new EventEmitter<any>();
 
   hidePassword = true;
   selectedFileName = '';
@@ -258,6 +260,11 @@ export class FormElementRendererComponent implements OnInit {
     if (!this.formControl) {
       this.createFormControl();
     }
+    
+    // Subscribe to value changes
+    this.formControl.valueChanges.subscribe(value => {
+      this.valueChange.emit(value);
+    });
   }
 
   private createFormControl() {
@@ -277,7 +284,7 @@ export class FormElementRendererComponent implements OnInit {
     }
 
     this.formControl = new FormControl(
-      { value: this.config.defaultValue || '', disabled: this.config.disabled },
+      { value: this.config.defaultValue || '', disabled: this.config.disabled || this.disabled },
       validators
     );
   }

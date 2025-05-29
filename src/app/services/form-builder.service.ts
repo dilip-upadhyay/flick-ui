@@ -293,4 +293,27 @@ export class FormBuilderService {
 
     return formComponent;
   }
+
+  /**
+   * Set the form elements order (used by grid layout)
+   */
+  setFormElements(elements: UIComponent[]): void {
+    const currentState = this.formBuilderState$.value;
+    
+    if (!currentState.activeForm) {
+      return;
+    }
+
+    // Update form children with new order
+    currentState.activeForm.children = [...elements];
+
+    // Update form builder state
+    this.formBuilderState$.next({
+      ...currentState,
+      formElements: [...elements]
+    });
+
+    // Update the form component in the designer
+    this.designerService.updateComponent(currentState.activeForm);
+  }
 }

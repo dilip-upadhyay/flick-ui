@@ -305,14 +305,14 @@ export class DesignerService {
 
   async loadTestConfiguration(): Promise<void> {
     try {
-      const response = await fetch('/assets/configs/spacing-appearance-test.json');
+      const response = await fetch('/assets/configs/form-demo.json');
       if (!response.ok) {
         throw new Error(`Failed to load configuration: ${response.statusText}`);
       }
       
       const config = await response.json();
       this.loadConfig(config);
-      this.snackBar.open('Test configuration loaded successfully', 'Close', { duration: 3000 });
+      this.snackBar.open('Form demo configuration loaded successfully', 'Close', { duration: 3000 });
     } catch (error) {
       console.error('Error loading test configuration:', error);
       this.snackBar.open('Error loading test configuration', 'Close', { duration: 3000 });
