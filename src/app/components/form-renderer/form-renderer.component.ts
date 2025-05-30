@@ -162,12 +162,38 @@ export class FormRendererComponent implements OnInit, OnChanges, OnDestroy {
     return false; // Default for SSR
   }
 
+  hasGridPositioning(): boolean {
+    // Check if any field has grid positioning
+    const hasGrid = this.config?.fields?.some(field => field.gridColumn) || false;
+    console.log('hasGridPositioning:', hasGrid, 'fields with gridColumn:', 
+      this.config?.fields?.filter(field => field.gridColumn)?.map(f => ({ id: f.id, gridColumn: f.gridColumn })));
+    return hasGrid;
+  }
+
+  getFieldGridStyle(field: FormField): any {
+    if (field.gridColumn) {
+      const style = {
+        'grid-area': field.gridColumn
+      };
+      console.log(`Grid style for field ${field.id}:`, style);
+      return style;
+    }
+    return {};
+  }
+
   getFieldContainerClass(field: FormField): string {
     const classes = ['field-container'];
     
     // Add field type and ID as classes for CSS targeting
     classes.push(`field-type-${field.type}`);
     classes.push(`field-id-${field.id}`);
+    
+    // Check if field has grid positioning from grid layout
+    if (field.gridColumn) {
+      classes.push('grid-positioned');
+      console.log(`Field ${field.id} has grid positioning: ${field.gridColumn}, classes:`, classes);
+      return classes.join(' ');
+    }
     
     // Determine if field should span full width or be part of grid
     if (this.shouldUseGridLayout() && typeof window !== 'undefined') {

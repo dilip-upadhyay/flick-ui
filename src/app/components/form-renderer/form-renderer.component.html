@@ -5,9 +5,15 @@
   </div>
 
   <form [formGroup]="formGroup" (ngSubmit)="onSubmit()" class="dynamic-form">
-    <div class="form-fields" [ngClass]="{'form-fields-grid': shouldUseGridLayout()}">
+    <div class="form-fields" 
+         [ngClass]="{
+           'form-fields-grid': shouldUseGridLayout() && !hasGridPositioning(),
+           'form-fields-custom-grid': hasGridPositioning()
+         }">
       @for (field of config.fields; track field.id) {
-        <div class="field-container" [ngClass]="getFieldContainerClass(field)">
+        <div class="field-container" 
+             [ngClass]="getFieldContainerClass(field)"
+             [ngStyle]="getFieldGridStyle(field)">
           <!-- Text Input Fields -->
           @if (field.type === 'text' || field.type === 'email' || field.type === 'password' || field.type === 'tel') {
             <mat-form-field appearance="outline" class="full-width">

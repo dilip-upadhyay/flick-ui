@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { MaterialModule } from '../../shared/material.module';
 import { DynamicRendererComponent } from '../../components/dynamic-renderer/dynamic-renderer.component';
 import { UIConfig } from '../../models/ui-config.interface';
+import { ConfigService } from '../../services/config.service';
 
 @Component({
   selector: 'app-preview',
@@ -189,7 +190,7 @@ export class PreviewComponent implements OnInit {
   error: string | null = null;
   fullscreen = false;
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(private route: ActivatedRoute, private configService: ConfigService) {}
 
   ngOnInit(): void {
     this.loadPreviewConfig();
@@ -199,11 +200,29 @@ export class PreviewComponent implements OnInit {
     // Try to get config from route query params
     this.route.queryParams.subscribe(params => {
       if (params['config']) {
-        try {
-          this.config = JSON.parse(decodeURIComponent(params['config']));
-        } catch (error) {
-          this.error = 'Invalid configuration data provided';
-          console.error('Preview config parse error:', error);
+        const configParam = params['config'];
+        
+        // Check if it's a filename (doesn't start with { and doesn't contain spaces in JSON-like format)
+        if (!configParam.trim().startsWith('{') && !configParam.includes('"type"')) {
+          // Treat as filename - load from assets/configs/
+          const configPath = `assets/configs/${configParam}.json`;
+          this.configService.loadConfig(configPath).subscribe({
+            next: (config) => {
+              this.config = config;
+            },
+            error: (error) => {
+              this.error = `Failed to load configuration file: ${configParam}`;
+              console.error('Preview config file load error:', error);
+            }
+          });
+        } else {
+          // Treat as inline JSON
+          try {
+            this.config = JSON.parse(decodeURIComponent(configParam));
+          } catch (error) {
+            this.error = 'Invalid configuration data provided';
+            console.error('Preview config parse error:', error);
+          }
         }
       } else {
         // Try to get from session storage (set by designer)

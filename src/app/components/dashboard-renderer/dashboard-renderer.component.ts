@@ -55,10 +55,75 @@ export class DashboardRendererComponent implements OnInit, OnDestroy {
     return `dashboard-grid cols-${cols} gap-${gap}`;
   }
   
+  hasGridPositioning(): boolean {
+    // Check if any widget has CSS grid positioning
+    const allWidgets = [
+      ...this.widgets,
+      ...(this.config.layoutConfig?.header?.widgets || []),
+      ...(this.config.layoutConfig?.body?.widgets || []),
+      ...(this.config.layoutConfig?.leftPanel?.widgets || []),
+      ...(this.config.layoutConfig?.rightPanel?.widgets || []),
+      ...(this.config.layoutConfig?.footer?.widgets || [])
+    ];
+    
+    const hasGrid = allWidgets.some(widget => 
+      (widget as any).gridColumn || (widget as any).gridRow) || false;
+    console.log('Dashboard hasGridPositioning:', hasGrid, 'all widgets:', allWidgets.length, 'widgets with grid positioning:', 
+      allWidgets.filter(widget => (widget as any).gridColumn || (widget as any).gridRow)?.map(w => ({ 
+        id: w.id, 
+        gridColumn: (w as any).gridColumn, 
+        gridRow: (w as any).gridRow 
+      })));
+    return hasGrid;
+  }
+
+  getWidgetGridStyle(widget: WidgetConfig): any {
+    const widgetAny = widget as any;
+    const style: any = {};
+    
+    if (widgetAny.gridColumn) {
+      style['grid-column'] = widgetAny.gridColumn;
+    }
+    if (widgetAny.gridRow) {
+      style['grid-row'] = widgetAny.gridRow;
+    }
+    if (widgetAny.gridArea) {
+      style['grid-area'] = widgetAny.gridArea;
+    }
+    
+    if (Object.keys(style).length > 0) {
+      console.log(`Grid style for widget ${widget.id}:`, style);
+      return style;
+    }
+    return {};
+  }
+
+  getWidgetContainerClass(widget: WidgetConfig): string {
+    const classes = ['widget-container'];
+    
+    // Add widget type and ID as classes for CSS targeting
+    classes.push(`widget-type-${widget.type}`);
+    classes.push(`widget-id-${widget.id}`);
+    
+    // Check if widget has grid positioning
+    const widgetAny = widget as any;
+    if (widgetAny.gridColumn || widgetAny.gridRow || widgetAny.gridArea) {
+      classes.push('grid-positioned');
+      console.log(`Widget ${widget.id} has grid positioning, classes:`, classes);
+      return classes.join(' ');
+    }
+    
+    // Fall back to span-based positioning for compatibility
+    const span = widgetAny.span || 1;
+    const rowSpan = widgetAny.rowSpan || 1;
+    classes.push(`span-${span}`, `row-span-${rowSpan}`);
+    
+    return classes.join(' ');
+  }
+  
   getWidgetClass(widget: WidgetConfig): string {
-    const span = (widget as any).span || 1;
-    const rowSpan = (widget as any).rowSpan || 1;
-    return `widget span-${span} row-span-${rowSpan}`;
+    // Legacy method - use getWidgetContainerClass instead
+    return this.getWidgetContainerClass(widget);
   }
   
   onWidgetAction(widget: WidgetConfig, action: string) {

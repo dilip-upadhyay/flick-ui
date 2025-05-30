@@ -25,34 +25,6 @@ import { FormGridLayoutComponent, FormFieldWithPosition } from '../form-grid-lay
         </mat-card-header>
 
         <mat-card-content>
-          <!-- Layout Mode Toggle -->
-          <div class="layout-toggle">
-            <mat-button-toggle-group [(value)]="layoutMode" (change)="onLayoutModeChange($event)">
-              <mat-button-toggle value="list">
-                <mat-icon>list</mat-icon>
-                List View
-              </mat-button-toggle>
-              <mat-button-toggle value="grid">
-                <mat-icon>grid_view</mat-icon>
-                Grid Layout
-              </mat-button-toggle>
-            </mat-button-toggle-group>
-          </div>
-
-          <!-- Grid Layout View -->
-          <div *ngIf="layoutMode === 'grid'">
-            <app-form-grid-layout
-              [formFields]="convertToFormFieldsWithPosition()"
-              [editMode]="true"
-              [showPalette]="true"
-              (fieldsChange)="onGridFieldsChange($event)"
-              (fieldSelected)="onGridFieldSelected($event)"
-              (fieldEdit)="onGridFieldEdit($event)">
-            </app-form-grid-layout>
-          </div>
-
-          <!-- List Layout View -->
-          <div *ngIf="layoutMode === 'list'">
           <!-- Form Elements Section -->
           <mat-expansion-panel [expanded]="true" class="builder-section">
             <mat-expansion-panel-header>
@@ -160,7 +132,6 @@ import { FormGridLayoutComponent, FormFieldWithPosition } from '../form-grid-lay
               </div>
             </div>
           </mat-expansion-panel>
-          </div>
 
           <!-- Model Binding Section -->
           <mat-expansion-panel class="builder-section">
@@ -397,19 +368,6 @@ import { FormGridLayoutComponent, FormFieldWithPosition } from '../form-grid-lay
     .elements-drop-list.cdk-drop-list-dragging .form-element-item:not(.cdk-drag-placeholder) {
       transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
     }
-
-    .layout-toggle {
-      display: flex;
-      justify-content: flex-end;
-      margin-bottom: 16px;
-      padding: 8px 0;
-      border-bottom: 1px solid #e0e0e0;
-    }
-
-    .layout-toggle mat-button-toggle-group {
-      border: 1px solid #e0e0e0;
-      border-radius: 4px;
-    }
   `]
 })
 export class FormBuilderPanelComponent implements OnInit, OnDestroy {
@@ -424,7 +382,6 @@ export class FormBuilderPanelComponent implements OnInit, OnDestroy {
 
   selectedElement: UIComponent | null = null;
   modelForm: FormGroup;
-  layoutMode: 'list' | 'grid' = 'list';
 
   formElementTypes: { type: ComponentType; name: string; icon: string; description: string }[] = [
     { type: 'text-input', name: 'Text Input', icon: 'text_fields', description: 'Single line text input' },
@@ -572,55 +529,5 @@ export class FormBuilderPanelComponent implements OnInit, OnDestroy {
       'button': 'smart_button'
     };
     return iconMap[elementType] || 'help';
-  }
-
-  onLayoutModeChange(event: any) {
-    this.layoutMode = event.value;
-  }
-
-  convertToFormFieldsWithPosition(): FormFieldWithPosition[] {
-    return this.formBuilderState.formElements.map((element, index) => ({
-      id: element.id,
-      type: element.type,
-      label: element.props.label || element.type,
-      placeholder: element.props.placeholder,
-      required: element.props.required,
-      disabled: element.props.disabled,
-      modelField: element.props.modelField,
-      gridPosition: { row: Math.floor(index / 3), col: index % 3, width: 1, height: 1 }
-    }));
-  }
-
-  onGridFieldsChange(fields: FormFieldWithPosition[]) {
-    // Update the form elements order based on grid position changes
-    const reorderedElements = fields
-      .sort((a, b) => {
-        const aPos = a.gridPosition!.row * 3 + a.gridPosition!.col;
-        const bPos = b.gridPosition!.row * 3 + b.gridPosition!.col;
-        return aPos - bPos;
-      })
-      .map(field => this.formBuilderState.formElements.find(el => el.id === field.id))
-      .filter(el => el !== undefined);
-
-    // Update the service with the new order
-    this.formBuilderService.setFormElements(reorderedElements as UIComponent[]);
-  }
-
-  onGridFieldSelected(field: FormFieldWithPosition | null) {
-    if (field) {
-      const element = this.formBuilderState.formElements.find(el => el.id === field.id);
-      if (element) {
-        this.selectElement(element);
-      }
-    } else {
-      this.selectedElement = null;
-    }
-  }
-
-  onGridFieldEdit(field: FormFieldWithPosition) {
-    const element = this.formBuilderState.formElements.find(el => el.id === field.id);
-    if (element) {
-      this.editElement(element);
-    }
   }
 }

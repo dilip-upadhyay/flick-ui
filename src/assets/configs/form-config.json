@@ -9,6 +9,7 @@
       "label": "First Name",
       "placeholder": "Enter your first name",
       "required": true,
+      "gridColumn": "1 / 1 / 2 / 7",
       "validation": {
         "type": "minLength",
         "value": 2,
@@ -21,6 +22,7 @@
       "label": "Last Name",
       "placeholder": "Enter your last name",
       "required": true,
+      "gridColumn": "1 / 7 / 2 / 13",
       "validation": {
         "type": "minLength",
         "value": 2,
@@ -33,6 +35,7 @@
       "label": "Email Address",
       "placeholder": "Enter your email address",
       "required": true,
+      "gridColumn": "2 / 1 / 3 / 13",
       "validation": {
         "type": "email",
         "message": "Please enter a valid email address"

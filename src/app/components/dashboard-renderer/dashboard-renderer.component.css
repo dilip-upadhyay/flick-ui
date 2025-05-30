@@ -589,3 +589,82 @@
     padding: 12px;
   }
 }
+
+/* Custom Grid Layout - for widgets with explicit grid positioning */
+.section-widgets-custom-grid,
+.dashboard-widgets-custom-grid {
+  display: grid !important;
+  grid-template-columns: repeat(12, 1fr) !important; /* Default 12-column grid */
+  grid-auto-rows: minmax(120px, auto) !important;
+  gap: 20px !important;
+  align-items: start !important;
+  
+  /* DEBUG: Add visual grid indicators */
+  border: 2px solid #4CAF50;
+  background: linear-gradient(to right, 
+    rgba(76, 175, 80, 0.1) 0%, rgba(76, 175, 80, 0.1) 8.333%, transparent 8.333%, transparent 16.666%,
+    rgba(76, 175, 80, 0.1) 16.666%, rgba(76, 175, 80, 0.1) 25%, transparent 25%, transparent 33.333%,
+    rgba(76, 175, 80, 0.1) 33.333%, rgba(76, 175, 80, 0.1) 41.666%, transparent 41.666%, transparent 50%,
+    rgba(76, 175, 80, 0.1) 50%, rgba(76, 175, 80, 0.1) 58.333%, transparent 58.333%, transparent 66.666%,
+    rgba(76, 175, 80, 0.1) 66.666%, rgba(76, 175, 80, 0.1) 75%, transparent 75%, transparent 83.333%,
+    rgba(76, 175, 80, 0.1) 83.333%, rgba(76, 175, 80, 0.1) 91.666%, transparent 91.666%, transparent 100%
+  );
+  padding: 8px;
+}
+
+.widget-container.grid-positioned {
+  /* Remove span-based positioning for grid-positioned widgets */
+  grid-column: unset !important;
+  grid-row: unset !important;
+  
+  /* DEBUG: Add visible borders to grid-positioned widgets */
+  border: 2px solid #FF9800;
+  background-color: rgba(255, 152, 0, 0.1);
+  padding: 8px;
+  border-radius: 4px;
+}
+
+/* Responsive adjustments for custom grid */
+@media (min-width: 768px) {
+  .section-widgets-custom-grid,
+  .dashboard-widgets-custom-grid {
+    gap: 24px !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .section-widgets-custom-grid,
+  .dashboard-widgets-custom-grid {
+    gap: 28px !important;
+    grid-auto-rows: minmax(140px, auto) !important;
+  }
+}
+
+@media (min-width: 1280px) {
+  .section-widgets-custom-grid,
+  .dashboard-widgets-custom-grid {
+    gap: 32px !important;
+    grid-auto-rows: minmax(160px, auto) !important;
+  }
+}
+
+/* Ensure dashboard widgets fill their grid area properly */
+.section-widgets-custom-grid .widget-container .widget,
+.dashboard-widgets-custom-grid .widget-container .widget {
+  width: 100%;
+  height: 100%;
+  min-height: 120px;
+}
+
+/* Widget container positioning */
+.widget-container {
+  display: block;
+  width: 100%;
+}
+
+/* Ensure regular (non-grid-positioned) widgets still work */
+.section-widgets-grid .widget-container,
+.dashboard-widgets-grid .widget-container {
+  /* Keep existing span-based grid behavior */
+  display: block;
+}

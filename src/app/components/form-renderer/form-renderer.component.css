@@ -1,4 +1,3 @@
-
 /* Base styles - Mobile First approach */
 .form-container {
   width: 100%;
@@ -486,4 +485,72 @@
   .form-header p {
     color: #333;
   }
+}
+
+/* Custom Grid Layout - for fields with explicit grid positioning */
+.form-fields-custom-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr); /* Default 12-column grid */
+  grid-auto-rows: minmax(80px, auto);
+  gap: 16px;
+  align-items: start;
+  
+  /* DEBUG: Add visual grid indicators */
+  border: 2px solid #4CAF50;
+  background: linear-gradient(to right, 
+    rgba(76, 175, 80, 0.1) 0%, rgba(76, 175, 80, 0.1) 8.333%, transparent 8.333%, transparent 16.666%,
+    rgba(76, 175, 80, 0.1) 16.666%, rgba(76, 175, 80, 0.1) 25%, transparent 25%, transparent 33.333%,
+    rgba(76, 175, 80, 0.1) 33.333%, rgba(76, 175, 80, 0.1) 41.666%, transparent 41.666%, transparent 50%,
+    rgba(76, 175, 80, 0.1) 50%, rgba(76, 175, 80, 0.1) 58.333%, transparent 58.333%, transparent 66.666%,
+    rgba(76, 175, 80, 0.1) 66.666%, rgba(76, 175, 80, 0.1) 75%, transparent 75%, transparent 83.333%,
+    rgba(76, 175, 80, 0.1) 83.333%, rgba(76, 175, 80, 0.1) 91.666%, transparent 91.666%, transparent 100%
+  );
+  padding: 8px;
+}
+
+.field-container.grid-positioned {
+  /* Remove responsive overrides for grid-positioned fields */
+  width: 100% !important;
+  grid-column: unset !important;
+  
+  /* DEBUG: Add visible borders to grid-positioned fields */
+  border: 2px solid #FF9800;
+  background-color: rgba(255, 152, 0, 0.1);
+  padding: 8px;
+  border-radius: 4px;
+}
+
+/* Responsive adjustments for custom grid */
+@media (min-width: 768px) {
+  .form-fields-custom-grid {
+    gap: 20px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .form-fields-custom-grid {
+    gap: 24px;
+    grid-auto-rows: minmax(90px, auto);
+  }
+}
+
+@media (min-width: 1280px) {
+  .form-fields-custom-grid {
+    gap: 28px;
+    grid-auto-rows: minmax(100px, auto);
+  }
+}
+
+/* Ensure form elements fill their grid area properly */
+.form-fields-custom-grid .field-container .full-width {
+  width: 100%;
+  height: auto;
+}
+
+.form-fields-custom-grid .field-container mat-form-field {
+  width: 100%;
+}
+
+.form-fields-custom-grid .checkbox-group {
+  width: 100%;
 }
