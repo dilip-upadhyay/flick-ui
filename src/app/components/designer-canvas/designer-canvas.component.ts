@@ -407,7 +407,6 @@ export class DesignerCanvasComponent implements OnInit, OnDestroy {
       'password-input': 'Password Input',
       'number-input': 'Number Input',
       'textarea': 'Textarea',
-      'select': 'Select',
       'checkbox': 'Checkbox',
       'radio': 'Radio Button',
       'date-input': 'Date Input',

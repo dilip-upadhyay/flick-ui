@@ -472,6 +472,120 @@ export class PropertyEditorComponent implements OnInit, OnDestroy, OnChanges {
           { key: 'caption', label: 'Caption', type: 'text', description: 'Image caption' }
         ];
 
+      // Form Input Elements
+      case 'text-input':
+        return [
+          { key: 'label', label: 'Label', type: 'text', description: 'Field label text' },
+          { key: 'placeholder', label: 'Placeholder', type: 'text', description: 'Placeholder text' },
+          { key: 'required', label: 'Required', type: 'boolean', description: 'Mark field as required' },
+          { key: 'disabled', label: 'Disabled', type: 'boolean', description: 'Disable the field' },
+          { key: 'helpText', label: 'Help Text', type: 'text', description: 'Helper text below the field' },
+          { key: 'defaultValue', label: 'Default Value', type: 'text', description: 'Default field value' }
+        ];
+
+      case 'email-input':
+        return [
+          { key: 'label', label: 'Label', type: 'text', description: 'Field label text' },
+          { key: 'placeholder', label: 'Placeholder', type: 'text', description: 'Placeholder text' },
+          { key: 'required', label: 'Required', type: 'boolean', description: 'Mark field as required' },
+          { key: 'disabled', label: 'Disabled', type: 'boolean', description: 'Disable the field' },
+          { key: 'helpText', label: 'Help Text', type: 'text', description: 'Helper text below the field' },
+          { key: 'defaultValue', label: 'Default Value', type: 'text', description: 'Default field value' }
+        ];
+
+      case 'password-input':
+        return [
+          { key: 'label', label: 'Label', type: 'text', description: 'Field label text' },
+          { key: 'placeholder', label: 'Placeholder', type: 'text', description: 'Placeholder text' },
+          { key: 'required', label: 'Required', type: 'boolean', description: 'Mark field as required' },
+          { key: 'disabled', label: 'Disabled', type: 'boolean', description: 'Disable the field' },
+          { key: 'helpText', label: 'Help Text', type: 'text', description: 'Helper text below the field' }
+        ];
+
+      case 'number-input':
+        return [
+          { key: 'label', label: 'Label', type: 'text', description: 'Field label text' },
+          { key: 'placeholder', label: 'Placeholder', type: 'text', description: 'Placeholder text' },
+          { key: 'required', label: 'Required', type: 'boolean', description: 'Mark field as required' },
+          { key: 'disabled', label: 'Disabled', type: 'boolean', description: 'Disable the field' },
+          { key: 'helpText', label: 'Help Text', type: 'text', description: 'Helper text below the field' },
+          { key: 'defaultValue', label: 'Default Value', type: 'number', description: 'Default field value' }
+        ];
+
+      case 'textarea':
+        return [
+          { key: 'label', label: 'Label', type: 'text', description: 'Field label text' },
+          { key: 'placeholder', label: 'Placeholder', type: 'text', description: 'Placeholder text' },
+          { key: 'required', label: 'Required', type: 'boolean', description: 'Mark field as required' },
+          { key: 'disabled', label: 'Disabled', type: 'boolean', description: 'Disable the field' },
+          { key: 'helpText', label: 'Help Text', type: 'text', description: 'Helper text below the field' },
+          { key: 'defaultValue', label: 'Default Value', type: 'text', description: 'Default field value' },
+          { key: 'rows', label: 'Rows', type: 'number', description: 'Number of visible text lines', defaultValue: 4 }
+        ];
+
+      case 'checkbox':
+        return [
+          { key: 'label', label: 'Label', type: 'text', description: 'Field label text' },
+          { key: 'required', label: 'Required', type: 'boolean', description: 'Mark field as required' },
+          { key: 'disabled', label: 'Disabled', type: 'boolean', description: 'Disable the field' },
+          { key: 'helpText', label: 'Help Text', type: 'text', description: 'Helper text below the field' },
+          { key: 'defaultValue', label: 'Default Checked', type: 'boolean', description: 'Default checked state' }
+        ];
+
+      case 'radio':
+        return [
+          { key: 'label', label: 'Label', type: 'text', description: 'Field label text' },
+          { key: 'required', label: 'Required', type: 'boolean', description: 'Mark field as required' },
+          { key: 'disabled', label: 'Disabled', type: 'boolean', description: 'Disable the field' },
+          { key: 'helpText', label: 'Help Text', type: 'text', description: 'Helper text below the field' },
+          { key: 'options', label: 'Options', type: 'array', description: 'Radio button options' }
+        ];
+
+      case 'date-input':
+        return [
+          { key: 'label', label: 'Label', type: 'text', description: 'Field label text' },
+          { key: 'required', label: 'Required', type: 'boolean', description: 'Mark field as required' },
+          { key: 'disabled', label: 'Disabled', type: 'boolean', description: 'Disable the field' },
+          { key: 'helpText', label: 'Help Text', type: 'text', description: 'Helper text below the field' },
+          { key: 'defaultValue', label: 'Default Date', type: 'text', description: 'Default date value (YYYY-MM-DD format)' }
+        ];
+
+      case 'file-input':
+        return [
+          { key: 'label', label: 'Label', type: 'text', description: 'Field label text' },
+          { key: 'required', label: 'Required', type: 'boolean', description: 'Mark field as required' },
+          { key: 'disabled', label: 'Disabled', type: 'boolean', description: 'Disable the field' },
+          { key: 'helpText', label: 'Help Text', type: 'text', description: 'Helper text below the field' },
+          { key: 'multiple', label: 'Multiple Files', type: 'boolean', description: 'Allow multiple file selection' },
+          { key: 'accept', label: 'Accepted File Types', type: 'text', description: 'File type restrictions (e.g., .jpg,.png,.pdf)' }
+        ];
+
+      case 'submit-button':
+        return [
+          { key: 'text', label: 'Button Text', type: 'text', description: 'Text displayed on the button', defaultValue: 'Submit' },
+          { key: 'color', label: 'Color Theme', type: 'select',
+            options: [
+              { value: 'primary', label: 'Primary' },
+              { value: 'accent', label: 'Accent' },
+              { value: 'warn', label: 'Warning' }
+            ]
+          },
+          { key: 'disabled', label: 'Disabled', type: 'boolean', description: 'Disable the button' }
+        ];
+
+      case 'reset-button':
+        return [
+          { key: 'text', label: 'Button Text', type: 'text', description: 'Text displayed on the button', defaultValue: 'Reset' },
+          { key: 'color', label: 'Color Theme', type: 'select',
+            options: [
+              { value: 'primary', label: 'Primary' },
+              { value: 'accent', label: 'Accent' },
+              { value: 'warn', label: 'Warning' }
+            ]
+          },
+          { key: 'disabled', label: 'Disabled', type: 'boolean', description: 'Disable the button' }
+        ];
+
       default:
         return [];
     }
@@ -664,7 +778,6 @@ export class PropertyEditorComponent implements OnInit, OnDestroy, OnChanges {
       'password-input': 'Password Input',
       'number-input': 'Number Input',
       'textarea': 'Textarea',
-      'select': 'Select',
       'checkbox': 'Checkbox',
       'radio': 'Radio Button',
       'date-input': 'Date Input',
@@ -697,7 +810,6 @@ export class PropertyEditorComponent implements OnInit, OnDestroy, OnChanges {
       'password-input': 'lock',
       'number-input': 'numbers',
       'textarea': 'notes',
-      'select': 'arrow_drop_down',
       'checkbox': 'check_box',
       'radio': 'radio_button_checked',
       'date-input': 'calendar_today',

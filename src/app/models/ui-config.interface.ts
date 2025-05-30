@@ -35,7 +35,6 @@ export type ComponentType =
   | 'password-input'
   | 'number-input'
   | 'textarea'
-  | 'select'
   | 'checkbox'
   | 'radio'
   | 'date-input'
@@ -160,7 +159,7 @@ export interface ValidationRule {
 
 export interface FormField {
   id: string;
-  type: 'text' | 'email' | 'password' | 'tel' | 'number' | 'textarea' | 'select' | 'checkbox' | 'radio' | 'date' | 'file';
+  type: 'text' | 'email' | 'password' | 'tel' | 'number' | 'textarea' | 'checkbox' | 'radio' | 'date' | 'file';
   label: string;
   placeholder?: string;
   required?: boolean;

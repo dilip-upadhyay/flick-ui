@@ -146,29 +146,7 @@ export interface FormFieldWithPosition extends FormElementConfig {
         </div>
       </div>
 
-      <!-- Field Palette (when in edit mode) -->
-      <div class="field-palette" *ngIf="editMode && showPalette">
-        <mat-card class="palette-card">
-          <mat-card-header>
-            <mat-card-title>Form Elements</mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <div class="palette-elements" cdkDropList cdkDropListSortingDisabled>
-              <div 
-                *ngFor="let elementType of availableElementTypes"
-                class="palette-element"
-                cdkDrag
-                [cdkDragData]="elementType"
-                (cdkDragStarted)="onPaletteElementDragStart(elementType)"
-                (cdkDragEnded)="isDragActive = false">
-                <mat-icon>{{ elementType.icon }}</mat-icon>
-                <span>{{ elementType.name }}</span>
-              </div>
-            </div>
-          </mat-card-content>
-        </mat-card>
-      </div>
-    </div>
+      
   `,
   styles: [`
     .form-grid-container {
@@ -484,7 +462,6 @@ export class FormGridLayoutComponent implements OnInit, OnDestroy {
     { type: 'password-input', name: 'Password', icon: 'lock' },
     { type: 'number-input', name: 'Number', icon: 'numbers' },
     { type: 'textarea', name: 'Textarea', icon: 'notes' },
-    { type: 'select', name: 'Select', icon: 'arrow_drop_down' },
     { type: 'radio', name: 'Radio', icon: 'radio_button_checked' },
     { type: 'checkbox', name: 'Checkbox', icon: 'check_box' },
     { type: 'date-picker', name: 'Date', icon: 'date_range' },
@@ -803,7 +780,6 @@ export class FormGridLayoutComponent implements OnInit, OnDestroy {
       'tel': 'tel',
       'url': 'url',
       'textarea': 'textarea',
-      'select': 'select',
       'radio': 'radio',
       'checkbox': 'checkbox',
       'date': 'date',
@@ -825,8 +801,8 @@ export class FormGridLayoutComponent implements OnInit, OnDestroy {
       gridPosition: { row: cell.row, col: cell.col, width: 1, height: 1 }
     };
     
-    // Add options for select, radio, checkbox fields
-    if (['select', 'radio', 'checkbox'].includes(fieldType)) {
+    // Add options for radio, checkbox fields
+    if (['radio', 'checkbox'].includes(fieldType)) {
       newField.options = [
         { value: 'option1', label: 'Option 1' },
         { value: 'option2', label: 'Option 2' },

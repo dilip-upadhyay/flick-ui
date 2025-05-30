@@ -235,7 +235,7 @@ export class FormBuilderService {
   private isFormFieldElement(type: ComponentType): boolean {
     return [
       'text-input', 'email-input', 'password-input', 'number-input',
-      'textarea', 'select', 'checkbox', 'radio', 'date-input', 'file-input'
+      'textarea', 'checkbox', 'radio', 'date-input', 'file-input'
     ].includes(type);
   }
 
@@ -252,7 +252,6 @@ export class FormBuilderService {
       'password-input': 'password',
       'number-input': 'number',
       'textarea': 'textarea',
-      'select': 'select',
       'checkbox': 'checkbox',
       'radio': 'radio',
       'date-input': 'date',

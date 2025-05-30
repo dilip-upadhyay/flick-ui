@@ -88,18 +88,6 @@ export interface FormElementConfig {
         <mat-error *ngIf="formControl.hasError('required')">{{ config.label }} is required</mat-error>
       </mat-form-field>
 
-      <!-- Select Dropdown -->
-      <mat-form-field *ngIf="config.type === 'select'" appearance="outline" class="full-width">
-        <mat-label>{{ config.label }}</mat-label>
-        <mat-select [formControl]="formControl" [disabled]="!!(config.disabled || disabled)">
-          <mat-option *ngFor="let option of config.options" [value]="option.value">
-            {{ option.label }}
-          </mat-option>
-        </mat-select>
-        <mat-hint *ngIf="config.helpText">{{ config.helpText }}</mat-hint>
-        <mat-error *ngIf="formControl.hasError('required')">{{ config.label }} is required</mat-error>
-      </mat-form-field>
-
       <!-- Checkbox -->
       <div *ngIf="config.type === 'checkbox'" class="checkbox-field">
         <mat-checkbox [formControl]="formControl" [disabled]="!!(config.disabled || disabled)">

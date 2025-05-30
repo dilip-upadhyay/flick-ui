@@ -201,13 +201,6 @@ export class ComponentPaletteComponent {
           category: 'Forms'
         },
         {
-          type: 'select',
-          name: 'Select Dropdown',
-          icon: 'arrow_drop_down',
-          description: 'Dropdown selection field',
-          category: 'Forms'
-        },
-        {
           type: 'checkbox',
           name: 'Checkbox',
           icon: 'check_box',

@@ -186,7 +186,7 @@
 
         <!-- Form Elements -->
         <app-form-element-renderer 
-          *ngIf="['text-input', 'email-input', 'password-input', 'number-input', 'textarea', 'select', 'checkbox', 'radio', 'date-input', 'file-input', 'submit-button', 'reset-button'].includes(component.type)"
+          *ngIf="['text-input', 'email-input', 'password-input', 'number-input', 'textarea', 'checkbox', 'radio', 'date-input', 'file-input', 'submit-button', 'reset-button'].includes(component.type)"
           [config]="{
             id: component.id,
             type: component.type,
@@ -204,7 +204,7 @@
         </app-form-element-renderer>
 
         <!-- Unknown Component Type -->
-        <div *ngIf="!['header', 'navigation', 'form', 'table', 'dashboard', 'card', 'container', 'text', 'button', 'image', 'grid', 'modal', 'tabs', 'text-input', 'email-input', 'password-input', 'number-input', 'textarea', 'select', 'checkbox', 'radio', 'date-input', 'file-input', 'submit-button', 'reset-button'].includes(component.type)" 
+        <div *ngIf="!['header', 'navigation', 'form', 'table', 'dashboard', 'card', 'container', 'text', 'button', 'image', 'grid', 'modal', 'tabs', 'text-input', 'email-input', 'password-input', 'number-input', 'textarea', 'checkbox', 'radio', 'date-input', 'file-input', 'submit-button', 'reset-button'].includes(component.type)" 
              class="unknown-component">
           <p class="error">Unknown component type: {{ component.type }}</p>
         </div>

@@ -41,23 +41,6 @@
             </mat-form-field>
           }
 
-          <!-- Select Fields -->
-          @if (field.type === 'select') {
-            <mat-form-field appearance="outline" class="full-width">
-              <mat-label>{{ field.label }}
-                <span *ngIf="field.required" class="required-indicator">*</span>
-              </mat-label>
-              <mat-select [formControlName]="field.id" [placeholder]="field.placeholder || ''">
-                @for (option of field.options; track option.value) {
-                  <mat-option [value]="option.value">{{ option.label }}</mat-option>
-                }
-              </mat-select>
-              <mat-error *ngIf="getFormControl(field.id)?.hasError('required')">
-                {{ field.label }} is required
-              </mat-error>
-            </mat-form-field>
-          }
-
           <!-- Date Fields -->
           @if (field.type === 'date') {
             <mat-form-field appearance="outline" class="full-width">

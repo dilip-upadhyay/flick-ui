@@ -204,7 +204,7 @@ export class FormRendererComponent implements OnInit, OnChanges, OnDestroy {
       const fullSpanFieldIds = ['terms', 'newsletter', 'interests', 'description'];
       
       // Fields that should be half-width on larger screens
-      const halfSpanFields = ['select', 'date'];
+      const halfSpanFields = ['date'];
       const halfSpanFieldIds = ['gender', 'dateOfBirth'];
       
       // For password fields, handle them first with specific responsive logic
