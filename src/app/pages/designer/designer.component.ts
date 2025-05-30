@@ -33,12 +33,19 @@ import { Subject, takeUntil } from 'rxjs';
           <mat-icon>design_services</mat-icon>
           <h1>Visual Layout Designer</h1>
           <span class="subtitle">Drag & Drop Interface Builder</span>
+
+          <!-- Move toolbar controls here, right-aligned -->
+          <span class="designer-header-toolbar">
+            <app-designer-toolbar
+              [hasChanges]="hasUnsavedChanges"
+              [viewMode]="viewMode"
+              [zoomLevel]="zoomLevel"
+              (viewModeChange)="onViewModeChange($event)"
+              (zoomLevelChange)="onZoomLevelChanged($event)"
+              (action)="onToolbarAction($event)">
+            </app-designer-toolbar>
+          </span>
         </div>
-        
-        <app-designer-toolbar
-          [hasChanges]="hasUnsavedChanges"
-          (action)="onToolbarAction($event)">
-        </app-designer-toolbar>
       </div>
 
       <!-- Designer Layout -->
@@ -61,40 +68,6 @@ import { Subject, takeUntil } from 'rxjs';
 
         <!-- Center - Design Canvas -->
         <div class="designer-canvas-area">
-          <div class="canvas-header">
-            <div class="canvas-title">
-              <mat-icon>web</mat-icon>
-              <span>Design Canvas</span>
-            </div>
-            
-            <div class="canvas-controls">
-              <mat-button-toggle-group [value]="viewMode" (change)="onViewModeChange($event)">
-                <mat-button-toggle value="desktop">
-                  <mat-icon>desktop_mac</mat-icon>
-                  Desktop
-                </mat-button-toggle>
-                <mat-button-toggle value="tablet">
-                  <mat-icon>tablet_mac</mat-icon>
-                  Tablet
-                </mat-button-toggle>
-                <mat-button-toggle value="mobile">
-                  <mat-icon>phone_iphone</mat-icon>
-                  Mobile
-                </mat-button-toggle>
-              </mat-button-toggle-group>
-              
-              <mat-slider
-                class="zoom-slider"
-                min="25"
-                max="200"
-                step="25"
-                (input)="onZoomChange($event)">
-                <input matSliderThumb [value]="zoomLevel">
-              </mat-slider>
-              <span class="zoom-label">{{ zoomLevel }}%</span>
-            </div>
-          </div>
-          
           <div class="canvas-container" [style.transform]="'scale(' + zoomLevel/100 + ')'">
             <app-designer-canvas
               [config]="currentConfig"
@@ -286,6 +259,10 @@ export class DesignerComponent implements OnInit, OnDestroy {
   onZoomChange(event: Event) {
     const target = event.target as HTMLInputElement;
     this.zoomLevel = parseInt(target.value);
+  }
+
+  onZoomLevelChanged(value: number) {
+    this.zoomLevel = value;
   }
 
   // Config Management

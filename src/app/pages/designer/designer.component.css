@@ -24,6 +24,9 @@
   display: flex;
   align-items: center;
   gap: 12px;
+  flex-wrap: wrap;
+  min-width: 0;
+  width: 100%;
 }
 
 .designer-title h1 {
@@ -37,6 +40,18 @@
   color: #666;
   font-size: 14px;
   font-weight: 400;
+}
+
+/* Add spacing for the header toolbar container */
+.designer-header-toolbar {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  min-width: 0;
+  flex: 1 1 auto;
+  justify-content: flex-end;
+  overflow-x: auto;
+  gap: 8px;
 }
 
 /* Main Layout */
@@ -234,6 +249,20 @@
   
   .zoom-slider {
     width: 80px;
+  }
+  
+  /* Responsive: stack title and toolbar on small screens */
+  @media (max-width: 600px) {
+    .designer-title {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+    }
+    .designer-header-toolbar {
+      width: 100%;
+      justify-content: flex-start;
+      margin-left: 0;
+    }
   }
 }
 
