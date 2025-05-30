@@ -14,6 +14,12 @@ export interface GridPosition {
   height: number;
 }
 
+export interface GridCell {
+  row: number;
+  col: number;
+  isDragOver?: boolean;
+}
+
 export interface FormFieldWithPosition extends FormElementConfig {
   gridPosition?: GridPosition;
 }
@@ -69,12 +75,16 @@ export interface FormFieldWithPosition extends FormElementConfig {
           [class.occupied]="isCellOccupied(cell.row, cell.col)"
           [class.drop-target]="editMode"
           [class.drop-zone-active]="isDragActive"
+          [class.native-drag-over]="cell.isDragOver"
           [attr.data-row]="cell.row"
           [attr.data-col]="cell.col"
           [id]="'grid-cell-' + cell.row + '-' + cell.col"
           cdkDropList
           [cdkDropListData]="getFieldsInCell(cell.row, cell.col)"
           (cdkDropListDropped)="onCellDropped($event, cell)"
+          (dragover)="onNativeDragOver($event, cell)"
+          (dragleave)="onNativeDragLeave($event, cell)"
+          (drop)="onNativeDrop($event, cell)"
           (click)="onCellClick(cell, $event)">
           
           <!-- Drop zone indicator -->
@@ -217,9 +227,15 @@ export interface FormFieldWithPosition extends FormElementConfig {
     }
 
     .grid-cell.drop-target:hover,
-    .grid-cell.drop-zone-active {
+    .grid-cell.drop-zone-active,
+    .grid-cell.native-drag-over {
       border-color: #2196f3;
       background-color: rgba(33, 150, 243, 0.1);
+    }
+
+    .grid-cell.native-drag-over {
+      border-width: 2px;
+      border-style: dashed;
     }
 
     .grid-cell.occupied {
@@ -459,7 +475,7 @@ export class FormGridLayoutComponent implements OnInit, OnDestroy {
   selectedField: FormFieldWithPosition | null = null;
   draggingField: FormFieldWithPosition | null = null;
   isDragActive: boolean = false;
-  gridCells: { row: number; col: number }[] = [];
+  gridCells: GridCell[] = [];
   
   // Available element types for palette
   availableElementTypes = [
@@ -736,5 +752,93 @@ export class FormGridLayoutComponent implements OnInit, OnDestroy {
     if (!this.editMode) {
       // Emit value change or handle form data
     }
+  }
+
+  // Native drag-and-drop handlers for component palette integration
+  onNativeDragOver(event: DragEvent, cell: GridCell) {
+    if (!this.editMode) return;
+    
+    event.preventDefault();
+    event.dataTransfer!.dropEffect = 'copy';
+    
+    // Update cell drag over state
+    cell.isDragOver = true;
+  }
+
+  onNativeDragLeave(event: DragEvent, cell: GridCell) {
+    if (!this.editMode) return;
+    
+    // Only clear drag over if we're actually leaving the cell
+    const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
+    const x = event.clientX;
+    const y = event.clientY;
+    
+    if (x < rect.left || x > rect.right || y < rect.top || y > rect.bottom) {
+      cell.isDragOver = false;
+    }
+  }
+
+  onNativeDrop(event: DragEvent, cell: GridCell) {
+    if (!this.editMode) return;
+    
+    event.preventDefault();
+    cell.isDragOver = false;
+    
+    // Get the component type from the drag data
+    const componentType = event.dataTransfer?.getData('text/plain');
+    if (!componentType) return;
+    
+    // Check if cell is already occupied
+    if (this.isCellOccupied(cell.row, cell.col)) {
+      console.warn('Cannot drop component: cell is already occupied');
+      return;
+    }
+    
+    // Create a new form field based on the component type
+    const fieldTypeMap: { [key: string]: string } = {
+      'text': 'text',
+      'email': 'email', 
+      'password': 'password',
+      'number': 'number',
+      'tel': 'tel',
+      'url': 'url',
+      'textarea': 'textarea',
+      'select': 'select',
+      'radio': 'radio',
+      'checkbox': 'checkbox',
+      'date': 'date',
+      'time': 'time',
+      'datetime-local': 'datetime-local',
+      'file': 'file',
+      'button': 'button'
+    };
+    
+    const fieldType = fieldTypeMap[componentType] || 'text';
+    const fieldName = componentType.charAt(0).toUpperCase() + componentType.slice(1);
+    
+    const newField: FormFieldWithPosition = {
+      id: this.generateFieldId(),
+      type: fieldType as any,
+      label: `${fieldName} Field`,
+      placeholder: `Enter ${fieldName.toLowerCase()}`,
+      required: false,
+      gridPosition: { row: cell.row, col: cell.col, width: 1, height: 1 }
+    };
+    
+    // Add options for select, radio, checkbox fields
+    if (['select', 'radio', 'checkbox'].includes(fieldType)) {
+      newField.options = [
+        { value: 'option1', label: 'Option 1' },
+        { value: 'option2', label: 'Option 2' },
+        { value: 'option3', label: 'Option 3' }
+      ];
+    }
+    
+    this.formFields.push(newField);
+    this.fieldsChange.emit(this.formFields);
+    
+    // Select the newly created field
+    this.selectedField = newField;
+    this.fieldSelected.emit(newField);
   }
 }
