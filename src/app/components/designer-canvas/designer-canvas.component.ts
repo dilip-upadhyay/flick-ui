@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { MaterialModule } from '../../shared/material.module';
 import { UIConfig, UIComponent, ComponentType } from '../../models/ui-config.interface';
 import { DragDropModule, CdkDragDrop, CdkDrag, CdkDropList } from '@angular/cdk/drag-drop';
@@ -12,10 +13,28 @@ import { FormGridLayoutComponent, FormFieldWithPosition } from '../form-grid-lay
 import { FormElementConfig } from '../form-element-renderer/form-element-renderer.component';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
 
+// Grid interfaces similar to form grid layout
+export interface GridPosition {
+  row: number;
+  col: number;
+  width: number;
+  height: number;
+}
+
+export interface GridCell {
+  row: number;
+  col: number;
+  isDragOver?: boolean;
+}
+
+export interface ComponentWithPosition extends UIComponent {
+  gridPosition?: GridPosition;
+}
+
 @Component({
   selector: 'app-designer-canvas',
   standalone: true,
-  imports: [CommonModule, MaterialModule, DragDropModule, DynamicRendererComponent, FormGridLayoutComponent],
+  imports: [CommonModule, FormsModule, MaterialModule, DragDropModule, DynamicRendererComponent, FormGridLayoutComponent],
   template: `
     <div class="canvas-container" #canvasContainer>
       <!-- Form Grid Layout Mode -->
@@ -66,41 +85,248 @@ import { MatButtonToggleChange } from '@angular/material/button-toggle';
         </div>
       </div>
 
-      <!-- Regular Canvas Mode -->
+      <!-- Enhanced Grid Layout Mode -->
       <div 
-        class="canvas-viewport" 
-        *ngIf="!isFormBuilderMode"
+        class="enhanced-grid-mode" 
+        *ngIf="!isFormBuilderMode && config?.layout?.type === 'grid'"
         [class.desktop]="viewMode === 'desktop'"
         [class.tablet]="viewMode === 'tablet'"
         [class.mobile]="viewMode === 'mobile'"
         [ngClass]="getCanvasClasses()"
         [ngStyle]="getCanvasAlignmentStyles()"
-        cdkDropList
-        [cdkDropListData]="config?.components || []"
-        (cdkDropListDropped)="onComponentDropped($event)"
-        (click)="onCanvasClick($event)"
-        (dragover)="onDragOver($event)"
-        (drop)="onNativeDrop($event)"
-        (dragenter)="onDragEnter($event)"
-        (dragleave)="onDragLeave($event)">
-        
-        <!-- Empty state -->
-        <div class="empty-state" *ngIf="!config?.components?.length">
-          <mat-icon>web</mat-icon>
-          <h3>Start Building Your Layout</h3>
-          <p>Drag components from the palette to get started</p>
+      >
+        <!-- Grid Controls -->
+        <div class="grid-controls" *ngIf="enableGridControls">
+          <mat-card class="controls-card">
+            <mat-card-content>
+              <div class="grid-settings">
+                <mat-form-field appearance="outline" class="grid-input">
+                  <mat-label>Columns</mat-label>
+                  <input matInput type="number" [(ngModel)]="gridCols" min="1" max="12" (change)="onGridSettingsChange()">
+                </mat-form-field>
+                
+                <mat-form-field appearance="outline" class="grid-input">
+                  <mat-label>Rows</mat-label>
+                  <input matInput type="number" [(ngModel)]="gridRows" min="1" max="20" (change)="onGridSettingsChange()">
+                </mat-form-field>
+                
+                <mat-form-field appearance="outline" class="grid-input">
+                  <mat-label>Gap (px)</mat-label>
+                  <input matInput type="number" [(ngModel)]="gridGap" min="0" max="50" (change)="onGridSettingsChange()">
+                </mat-form-field>
+
+                <mat-slide-toggle [(ngModel)]="showGridLines" (change)="onGridSettingsChange()">
+                  Show Grid Lines
+                </mat-slide-toggle>
+
+                <mat-slide-toggle [(ngModel)]="snapToGrid" (change)="onGridSettingsChange()">
+                  Snap to Grid
+                </mat-slide-toggle>
+
+                <mat-slide-toggle [(ngModel)]="enableGridControls" (change)="onGridControlsToggle()">
+                  Grid Controls
+                </mat-slide-toggle>
+              </div>
+            </mat-card-content>
+          </mat-card>
         </div>
 
-        <!-- Preview-only rendering using dynamic renderer -->
-        <div class="preview-container" *ngIf="config?.components?.length">
-          <app-dynamic-renderer 
-            [config]="config"
-            [selectedComponent]="selectedComponent"
-            [enableSelection]="true"
-            [context]="{ mode: 'canvas', viewMode: viewMode }"
-            (componentClicked)="onComponentClick($event)">
-          </app-dynamic-renderer>
+        <!-- Enhanced Grid Layout with Cell-based Drop Zones -->
+        <div 
+          class="enhanced-grid-layout"
+          [class.show-grid-lines]="showGridLines"
+          [class.edit-mode]="true"
+          [ngStyle]="{
+            'grid-template-columns': 'repeat(' + gridCols + ', 1fr)',
+            'grid-template-rows': 'repeat(' + gridRows + ', minmax(80px, auto))',
+            'gap': gridGap + 'px'
+          }"
+          cdkDropListGroup>
+          
+          <!-- Grid Cells with Individual Drop Lists -->
+          <div 
+            *ngFor="let cell of gridCells; let i = index"
+            class="enhanced-grid-cell"
+            [class.occupied]="isCellOccupied(cell.row, cell.col)"
+            [class.drop-target]="true"
+            [class.drop-zone-active]="isDragActive"
+            [class.native-drag-over]="cell.isDragOver"
+            [class.selected-cell]="isSelectedComponentInCell(cell.row, cell.col)"
+            [attr.data-row]="cell.row"
+            [attr.data-col]="cell.col"
+            [id]="'enhanced-grid-cell-' + cell.row + '-' + cell.col"
+            cdkDropList
+            [cdkDropListData]="getComponentsInCell(cell.row, cell.col)"
+            (cdkDropListDropped)="onEnhancedCellDropped($event, cell)"
+            (dragover)="onNativeDragOver($event, cell)"
+            (dragleave)="onNativeDragLeave($event, cell)"
+            (drop)="onNativeDrop($event, cell)"
+            (click)="onCellClick(cell, $event)">
+            
+            <!-- Drop zone indicator -->
+            <div class="drop-zone-indicator" *ngIf="!isCellOccupied(cell.row, cell.col)">
+              <mat-icon>add</mat-icon>
+              <span>Drop here</span>
+              <small>{{ cell.row + 1 }},{{ cell.col + 1 }}</small>
+            </div>
+            
+            <!-- Component in this cell -->
+            <div 
+              *ngFor="let component of getComponentsInCell(cell.row, cell.col)"
+              class="cell-component-wrapper"
+              [class.selected]="selectedComponent?.id === component.id"
+              [class.dragging]="draggingComponent?.id === component.id"
+              [ngStyle]="getComponentGridStyle(component)"
+              cdkDrag
+              [cdkDragData]="component"
+              (cdkDragStarted)="onComponentDragStart(component)"
+              (cdkDragEnded)="onComponentDragEnd()"
+              (click)="onComponentClick(component, $event)">
+              
+              <!-- Resize handles for selected component -->
+              <div class="component-resize-handles" *ngIf="selectedComponent?.id === component.id">
+                <div class="resize-handle resize-handle-se" 
+                     (mousedown)="startComponentResize($event, component, 'se')"></div>
+                <div class="resize-handle resize-handle-e" 
+                     (mousedown)="startComponentResize($event, component, 'e')"></div>
+                <div class="resize-handle resize-handle-s" 
+                     (mousedown)="startComponentResize($event, component, 's')"></div>
+              </div>
+
+              <!-- Component content -->
+              <div class="component-content">
+                <app-dynamic-renderer
+                  [config]="{ type: 'layout', components: [component] }"
+                  [selectedComponent]="selectedComponent"
+                  [enableSelection]="false"
+                  [context]="{ mode: 'canvas', viewMode: viewMode, gridCell: { row: cell.row, col: cell.col } }">
+                </app-dynamic-renderer>
+              </div>
+
+              <!-- Component overlay for edit mode -->
+              <div class="component-overlay">
+                <div class="component-info">
+                  <span class="component-type">{{ component.type }}</span>
+                  <span class="component-label">{{ getComponentLabel(component) }}</span>
+                </div>
+                <div class="component-actions">
+                  <button mat-icon-button 
+                          size="small"
+                          (click)="onComponentClick(component, $event); $event.stopPropagation()">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button mat-icon-button 
+                          color="warn"
+                          size="small"
+                          (click)="onDeleteComponent(component, $event); $event.stopPropagation()">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                  <button mat-icon-button 
+                          size="small"
+                          (click)="onDuplicateComponent(component, $event); $event.stopPropagation()">
+                    <mat-icon>content_copy</mat-icon>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
+
+      <!-- Regular Canvas Mode -->
+      <div 
+        class="canvas-viewport" 
+        *ngIf="!isFormBuilderMode && (!config?.layout || config?.layout?.type !== 'grid')"
+        [class.desktop]="viewMode === 'desktop'"
+        [class.tablet]="viewMode === 'tablet'"
+        [class.mobile]="viewMode === 'mobile'"
+        [ngClass]="getCanvasClasses()"
+        [ngStyle]="getCanvasAlignmentStyles()"
+      >
+        <!-- Simple Grid Layout Visualization for layout.type === 'grid' -->
+        <ng-container *ngIf="config?.layout?.type === 'grid' && config?.layout?.columns">
+          <div class="main-grid-layout"
+               [style.display]="'grid'"
+               [style.gridTemplateColumns]="'repeat(' + (config?.layout?.columns || 1) + ', 1fr)'"
+               [style.gap]="config?.layout?.gap || '16px'"
+               cdkDropListGroup>
+            <ng-container *ngFor="let i of gridBlocks; trackBy: trackByIndex">
+              <div class="main-grid-block"
+                   cdkDropList
+                   [id]="'grid-block-' + i"
+                   [cdkDropListData]="getGridBlockData(i)"
+                   (cdkDropListDropped)="onGridBlockDrop($event, i)"
+                   [class.has-component]="!!config?.components?.[i]"
+                   [class.drop-zone-active]="isDragActive"
+                   (mouseenter)="onGridBlockHover(i)"
+                   (mouseleave)="onGridBlockHoverEnd()">
+                
+                <!-- Component content -->
+                <ng-container *ngIf="config?.components?.[i] as comp">
+                  <div class="component-content" 
+                       [class.selected]="isComponentSelected(comp)"
+                       cdkDrag
+                       [cdkDragData]="comp"
+                       (cdkDragStarted)="onGridDragStarted()"
+                       (cdkDragEnded)="onGridDragEnded()">
+                    <app-dynamic-renderer
+                      [config]="{ type: 'layout', components: [comp] }"
+                      [selectedComponent]="selectedComponent"
+                      [enableSelection]="true"
+                      [context]="{ mode: 'canvas', viewMode: viewMode, gridBlock: i }"
+                      (componentClicked)="onComponentClick($event)">
+                    </app-dynamic-renderer>
+                  </div>
+                </ng-container>
+                
+                <!-- Enhanced empty block placeholder -->
+                <div class="empty-block-placeholder" *ngIf="!config?.components?.[i]">
+                  <mat-icon>add_circle_outline</mat-icon>
+                  <span>Drop Component</span>
+                  <small>Block {{ i + 1 }}</small>
+                </div>
+                
+                <!-- Interactive drop zone indicator -->
+                <div class="drop-zone-indicator" *ngIf="isDragActive">
+                  <mat-icon>file_download</mat-icon>
+                  <span>Drop Here</span>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </ng-container>
+
+        <!-- Existing fallback rendering for non-grid layouts -->
+        <ng-container *ngIf="!config?.layout || config?.layout?.type !== 'grid'">
+          <div 
+            cdkDropList
+            [cdkDropListData]="config?.components || []"
+            (cdkDropListDropped)="onComponentDropped($event)"
+            (click)="onCanvasClick($event)"
+            (dragover)="onDragOver($event)"
+            (drop)="onNativeDrop($event)"
+            (dragenter)="onDragEnter($event)"
+            (dragleave)="onDragLeave($event)">
+            
+            <!-- Empty state -->
+            <div class="empty-state" *ngIf="!config?.components?.length">
+              <mat-icon>web</mat-icon>
+              <h3>Start Building Your Layout</h3>
+              <p>Drag components from the palette to get started</p>
+            </div>
+
+            <!-- Preview-only rendering using dynamic renderer -->
+            <div class="preview-container" *ngIf="config?.components?.length">
+              <app-dynamic-renderer 
+                [config]="config"
+                [selectedComponent]="selectedComponent"
+                [enableSelection]="true"
+                [context]="{ mode: 'canvas', viewMode: viewMode }"
+                (componentClicked)="onComponentClick($event)">
+              </app-dynamic-renderer>
+            </div>
+          </div>
+        </ng-container>
       </div>
     </div>
   `,
@@ -126,6 +352,25 @@ export class DesignerCanvasComponent implements OnInit, OnDestroy {
   gridLayoutMode: 'list' | 'grid' = 'grid';
   isFormBuilderMode = false;
 
+  // Enhanced Grid Layout properties
+  gridCols: number = 3;
+  gridRows: number = 5;
+  gridGap: number = 16;
+  showGridLines: boolean = true;
+  snapToGrid: boolean = true;
+  enableGridControls: boolean = true;
+  gridCells: GridCell[] = [];
+  
+  // Interactive grid properties
+  isDragActive = false;
+  hoveredGridBlock: number | null = null;
+  draggingComponent: UIComponent | null = null;
+  
+  // Resizing state
+  private resizing = false;
+  private resizeStartPos = { x: 0, y: 0 };
+  private resizeStartSize = { width: 1, height: 1 };
+
   constructor(
     private designerService: DesignerService,
     private navigationAlignmentService: NavigationAlignmentService,
@@ -149,6 +394,10 @@ export class DesignerCanvasComponent implements OnInit, OnDestroy {
         this.formBuilderState = state;
         this.isFormBuilderMode = !!state.activeForm;
       });
+
+    // Initialize enhanced grid
+    this.generateGridCells();
+    this.initializeComponentPositions();
   }
 
   ngOnDestroy() {
@@ -158,6 +407,198 @@ export class DesignerCanvasComponent implements OnInit, OnDestroy {
 
   trackByComponentId(index: number, component: UIComponent): string {
     return component.id;
+  }
+
+  // Enhanced Grid Layout Methods
+  generateGridCells() {
+    this.gridCells = [];
+    for (let row = 0; row < this.gridRows; row++) {
+      for (let col = 0; col < this.gridCols; col++) {
+        this.gridCells.push({ row, col });
+      }
+    }
+  }
+
+  initializeComponentPositions() {
+    // Initialize positions for components that don't have them
+    if (this.config?.components) {
+      this.config.components.forEach((component, index) => {
+        const compWithPos = component as ComponentWithPosition;
+        if (!compWithPos.gridPosition) {
+          const row = Math.floor(index / this.gridCols);
+          const col = index % this.gridCols;
+          compWithPos.gridPosition = { row, col, width: 1, height: 1 };
+        }
+      });
+    }
+  }
+
+  onGridSettingsChange() {
+    this.generateGridCells();
+    // Adjust component positions if they're outside the new grid
+    if (this.config?.components) {
+      this.config.components.forEach(component => {
+        const compWithPos = component as ComponentWithPosition;
+        if (compWithPos.gridPosition) {
+          if (compWithPos.gridPosition.col >= this.gridCols) {
+            compWithPos.gridPosition.col = this.gridCols - 1;
+          }
+          if (compWithPos.gridPosition.row >= this.gridRows) {
+            compWithPos.gridPosition.row = this.gridRows - 1;
+          }
+        }
+      });
+    }
+    // Emit configuration change
+    this.componentUpdated.emit(this.config as any);
+  }
+
+  onGridControlsToggle() {
+    // Just toggle the controls visibility
+  }
+
+  isCellOccupied(row: number, col: number): boolean {
+    if (!this.config?.components) return false;
+    
+    return this.config.components.some(component => {
+      const compWithPos = component as ComponentWithPosition;
+      return compWithPos.gridPosition && 
+        compWithPos.gridPosition.row <= row && 
+        compWithPos.gridPosition.row + compWithPos.gridPosition.height > row &&
+        compWithPos.gridPosition.col <= col && 
+        compWithPos.gridPosition.col + compWithPos.gridPosition.width > col;
+    });
+  }
+
+  getComponentsInCell(row: number, col: number): ComponentWithPosition[] {
+    if (!this.config?.components) return [];
+    
+    return this.config.components.filter(component => {
+      const compWithPos = component as ComponentWithPosition;
+      return compWithPos.gridPosition && 
+        compWithPos.gridPosition.row === row && 
+        compWithPos.gridPosition.col === col;
+    }) as ComponentWithPosition[];
+  }
+
+  isSelectedComponentInCell(row: number, col: number): boolean {
+    if (!this.selectedComponent) return false;
+    
+    const compWithPos = this.selectedComponent as ComponentWithPosition;
+    return compWithPos.gridPosition?.row === row && compWithPos.gridPosition?.col === col;
+  }
+
+  onCellClick(cell: GridCell, event: Event) {
+    const componentsInCell = this.getComponentsInCell(cell.row, cell.col);
+    if (componentsInCell.length === 0) {
+      this.componentSelected.emit(null);
+    }
+  }
+
+  onComponentDragStart(component: UIComponent) {
+    this.draggingComponent = component;
+    this.isDragActive = true;
+  }
+
+  onComponentDragEnd() {
+    this.draggingComponent = null;
+    this.isDragActive = false;
+  }
+
+  onEnhancedCellDropped(event: CdkDragDrop<ComponentWithPosition[]>, cell: GridCell) {
+    const draggedItem = event.item.data;
+    this.isDragActive = false;
+    
+    if (draggedItem && typeof draggedItem === 'object') {
+      if (draggedItem.id) {
+        // It's an existing component being moved
+        const existingComponent = draggedItem as ComponentWithPosition;
+        if (existingComponent.gridPosition) {
+          existingComponent.gridPosition.row = cell.row;
+          existingComponent.gridPosition.col = cell.col;
+          this.componentUpdated.emit(existingComponent);
+        }
+      } else if (draggedItem.type || typeof draggedItem === 'string') {
+        // It's a new component from palette
+        const componentType = (typeof draggedItem === 'string' ? draggedItem : draggedItem.type) as ComponentType;
+        const newComponent = this.designerService.createComponent(componentType) as ComponentWithPosition;
+        newComponent.gridPosition = { row: cell.row, col: cell.col, width: 1, height: 1 };
+        
+        this.componentAdded.emit({ 
+          component: newComponent, 
+          index: cell.row * this.gridCols + cell.col 
+        });
+      }
+    }
+  }
+
+  getComponentGridStyle(component: ComponentWithPosition): any {
+    if (!component.gridPosition) return {};
+    
+    return {
+      'grid-column': `span ${component.gridPosition.width}`,
+      'grid-row': `span ${component.gridPosition.height}`
+    };
+  }
+
+  startComponentResize(event: MouseEvent, component: ComponentWithPosition, direction: string) {
+    if (!component.gridPosition) return;
+    
+    event.preventDefault();
+    event.stopPropagation();
+    
+    this.resizing = true;
+    this.resizeStartPos = { x: event.clientX, y: event.clientY };
+    this.resizeStartSize = { 
+      width: component.gridPosition.width, 
+      height: component.gridPosition.height 
+    };
+    
+    const onMouseMove = (e: MouseEvent) => {
+      if (!this.resizing || !component.gridPosition) return;
+      
+      const deltaX = e.clientX - this.resizeStartPos.x;
+      const deltaY = e.clientY - this.resizeStartPos.y;
+      
+      // Calculate new size based on direction
+      if (direction.includes('e')) {
+        const newWidth = Math.max(1, this.resizeStartSize.width + Math.round(deltaX / 100));
+        component.gridPosition.width = Math.min(newWidth, this.gridCols - component.gridPosition.col);
+      }
+      
+      if (direction.includes('s')) {
+        const newHeight = Math.max(1, this.resizeStartSize.height + Math.round(deltaY / 60));
+        component.gridPosition.height = Math.min(newHeight, this.gridRows - component.gridPosition.row);
+      }
+    };
+    
+    const onMouseUp = () => {
+      this.resizing = false;
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+      this.componentUpdated.emit(component);
+    };
+    
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+  }
+
+  // Native drag-and-drop handlers for enhanced grid
+  onNativeDragOver(event: DragEvent, cell: GridCell) {
+    event.preventDefault();
+    event.dataTransfer!.dropEffect = 'copy';
+    cell.isDragOver = true;
+  }
+
+  onNativeDragLeave(event: DragEvent, cell: GridCell) {
+    // Only clear drag over if we're actually leaving the cell
+    const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
+    const x = event.clientX;
+    const y = event.clientY;
+    
+    if (x < rect.left || x > rect.right || y < rect.top || y > rect.bottom) {
+      cell.isDragOver = false;
+    }
   }
 
   // Form Builder methods
@@ -351,17 +792,46 @@ export class DesignerCanvasComponent implements OnInit, OnDestroy {
     canvas.classList.remove('drag-over');
   }
 
-  onNativeDrop(event: DragEvent) {
+  onNativeDrop(event: DragEvent, cell?: GridCell) {
     event.preventDefault();
-    const canvas = event.currentTarget as HTMLElement;
-    canvas.classList.remove('drag-over');
     
-    const componentType = event.dataTransfer?.getData('text/plain') as ComponentType;
-    if (componentType) {
-      const newComponent = this.designerService.createComponent(componentType);
+    if (cell) {
+      // Enhanced grid mode
+      cell.isDragOver = false;
+      
+      // Get the component type from the drag data
+      const componentType = event.dataTransfer?.getData('text/plain') as ComponentType;
+      if (!componentType) return;
+      
+      // Check if cell is already occupied
+      if (this.isCellOccupied(cell.row, cell.col)) {
+        console.warn('Cannot drop component: cell is already occupied');
+        return;
+      }
+      
+      // Create a new component with grid position
+      const newComponent = this.designerService.createComponent(componentType) as ComponentWithPosition;
+      newComponent.gridPosition = { row: cell.row, col: cell.col, width: 1, height: 1 };
+      
       this.componentAdded.emit({ 
-        component: newComponent
+        component: newComponent, 
+        index: cell.row * this.gridCols + cell.col 
       });
+      
+      // Select the newly created component
+      this.componentSelected.emit(newComponent);
+    } else {
+      // Regular canvas mode
+      const canvas = event.currentTarget as HTMLElement;
+      canvas.classList.remove('drag-over');
+      
+      const componentType = event.dataTransfer?.getData('text/plain') as ComponentType;
+      if (componentType) {
+        const newComponent = this.designerService.createComponent(componentType);
+        this.componentAdded.emit({ 
+          component: newComponent
+        });
+      }
     }
   }
 
@@ -384,49 +854,143 @@ export class DesignerCanvasComponent implements OnInit, OnDestroy {
     // This will be handled by the drop events
   }
 
-  // Simplified helper methods for backward compatibility
+  // Interactive Grid Layout Methods
+  trackByIndex(index: number): number {
+    return index;
+  }
+
+  getGridBlockData(blockIndex: number): UIComponent[] {
+    // Return the component at this grid position, or empty array if none
+    const component = this.config?.components?.[blockIndex];
+    return component ? [component] : [];
+  }
+
+  onGridBlockDrop(event: CdkDragDrop<UIComponent[]>, blockIndex: number) {
+    this.isDragActive = false;
+    
+    if (event.previousContainer === event.container) {
+      // Reordering within the same grid block - update component position
+      if (event.item.data && typeof event.item.data === 'object' && 'id' in event.item.data) {
+        const component = event.item.data as UIComponent;
+        // Update the component's grid position
+        this.designerService.moveComponent(component, undefined, blockIndex);
+      }
+    } else {
+      // Adding new component to grid block or moving from palette
+      if (typeof event.item.data === 'string') {
+        // New component from palette
+        const componentType = event.item.data as ComponentType;
+        const newComponent = this.designerService.createComponent(componentType);
+        this.componentAdded.emit({ 
+          component: newComponent, 
+          index: blockIndex 
+        });
+      } else if (event.item.data && typeof event.item.data === 'object' && 'id' in event.item.data) {
+        // Moving existing component to new grid position
+        const component = event.item.data as UIComponent;
+        this.designerService.moveComponent(component, undefined, blockIndex);
+      }
+    }
+  }
+
+  onGridBlockHover(blockIndex: number) {
+    this.hoveredGridBlock = blockIndex;
+  }
+
+  onGridBlockHoverEnd() {
+    this.hoveredGridBlock = null;
+  }
+
+  onGridDragStarted() {
+    this.isDragActive = true;
+  }
+
+  onGridDragEnded() {
+    this.isDragActive = false;
+    this.hoveredGridBlock = null;
+  }
+
+  get gridBlocks(): number[] {
+    const count = this.config?.layout?.columns || 1;
+    return Array.from({ length: count }, (_, i) => i);
+  }
+
+  // Canvas styling and helper methods
   getComponentLabel(component: UIComponent): string {
-    const labels: Partial<Record<ComponentType, string>> = {
-      container: 'Container',
-      grid: 'Grid Layout',
-      header: 'Header',
-      navigation: 'Navigation',
-      text: 'Text',
-      card: 'Card',
-      button: 'Button',
-      form: 'Form',
-      image: 'Image',
-      chart: 'Chart',
-      modal: 'Modal',
-      tabs: 'Tabs',
-      accordion: 'Accordion',
-      dashboard: 'Dashboard',
-      // Form elements
-      'text-input': 'Text Input',
-      'email-input': 'Email Input',
-      'password-input': 'Password Input',
-      'number-input': 'Number Input',
-      'textarea': 'Textarea',
-      'checkbox': 'Checkbox',
-      'radio': 'Radio Button',
-      'date-input': 'Date Input',
-      'file-input': 'File Input',
-      'submit-button': 'Submit Button',
-      'reset-button': 'Reset Button'
+    // Extract label from component props or provide default based on type
+    if (component.props?.label) {
+      return component.props.label;
+    }
+    
+    // Provide default labels based on component type
+    switch (component.type) {
+      case 'text-input':
+        return 'Text Input';
+      case 'email-input':
+        return 'Email Input';
+      case 'password-input':
+        return 'Password Input';
+      case 'number-input':
+        return 'Number Input';
+      case 'textarea':
+        return 'Text Area';
+      case 'checkbox':
+        return 'Checkbox';
+      case 'radio':
+        return 'Radio Button';
+      case 'date-input':
+        return 'Date Input';
+      case 'file-input':
+        return 'File Input';
+      case 'submit-button':
+        return 'Submit Button';
+      case 'reset-button':
+        return 'Reset Button';
+      case 'button':
+        return 'Button';
+      case 'text':
+        return 'Text';
+      case 'image':
+        return 'Image';
+      case 'container':
+        return 'Container';
+      case 'form':
+        return 'Form';
+      case 'header':
+        return 'Header';
+      case 'navigation':
+        return 'Navigation';
+      case 'card':
+        return 'Card';
+      case 'grid':
+        return 'Grid';
+      case 'chart':
+        return 'Chart';
+      case 'dashboard':
+        return 'Dashboard';
+      case 'modal':
+        return 'Modal';
+      case 'tabs':
+        return 'Tabs';
+      case 'accordion':
+        return 'Accordion';
+      default:
+        return (component.type as string).charAt(0).toUpperCase() + (component.type as string).slice(1);
+    }
+  }
+
+  getCanvasClasses(): { [key: string]: boolean } {
+    return {
+      'canvas-desktop': this.viewMode === 'desktop',
+      'canvas-tablet': this.viewMode === 'tablet',
+      'canvas-mobile': this.viewMode === 'mobile',
+      'drag-active': this.isDragActive,
+      'has-selection': !!this.selectedComponent
     };
-    return labels[component.type] || component.type;
   }
 
-  getCanvasClasses(): string {
-    const baseClasses = ['canvas-viewport'];
-    const navigationClasses = this.navigationAlignmentService.getNavigationClasses(this.config);
-    return [...baseClasses, navigationClasses].filter(c => c).join(' ');
-  }
-
-  /**
-   * Get canvas alignment styles using the shared service
-   */
-  getCanvasAlignmentStyles(): any {
-    return this.navigationAlignmentService.getCanvasAlignmentStyles(this.config);
+  getCanvasAlignmentStyles(): { [key: string]: string } {
+    const styles = this.navigationAlignmentService.getCanvasAlignmentStyles(this.config);
+    return styles || {};
   }
 }

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Grid Layout Test</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .test-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border-left: 4px solid #667eea;
+            background: #f8f9ff;
+        }
+        .button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+            transition: background 0.3s;
+        }
+        .button:hover {
+            background: #5a6fd8;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .warning { background: #fff3cd; color: #856404; border: 1px solid #ffeaa7; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .code {
+            background: #f4f4f4;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+        iframe {
+            width: 100%;
+            height: 600px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-header">
+        <h1>🧪 Interactive Grid Layout Test Suite</h1>
+        <p>Comprehensive testing for the enhanced grid layout functionality</p>
+    </div>
+
+    <div class="test-container">
+        <h2>🚀 Test Execution</h2>
+        
+        <div class="test-section">
+            <h3>Automated Testing</h3>
+            <p>Click the button below to run automated tests on the designer page:</p>
+            <button class="button" onclick="runAutomatedTest()">Run Automated Tests</button>
+            <button class="button" onclick="openDesignerPage()">Open Designer Page</button>
+            <div id="testResults" class="status" style="display: none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>Manual Testing Steps</h3>
+            <ol>
+                <li><strong>Open Designer Page:</strong> Navigate to <code>http://localhost:4200/designer</code></li>
+                <li><strong>Verify Grid Layout:</strong> Check that the main grid layout is visible with interactive blocks</li>
+                <li><strong>Test Hover Effects:</strong> Hover over grid blocks to see visual feedback</li>
+                <li><strong>Test Drag and Drop:</strong> Drag components from the palette to grid blocks</li>
+                <li><strong>Test Responsiveness:</strong> Resize the browser window to test responsive behavior</li>
+                <li><strong>Check Console:</strong> Open browser console to see detailed test results</li>
+            </ol>
+        </div>
+
+        <div class="test-section">
+            <h3>Console Test Script</h3>
+            <p>Copy and paste this script into the browser console on the designer page:</p>
+            <div class="code" id="consoleScript">
+                // Loading script...
+            </div>
+            <button class="button" onclick="copyToClipboard()">Copy to Clipboard</button>
+        </div>
+
+        <div class="test-section">
+            <h3>Expected Features</h3>
+            <ul>
+                <li>✅ Interactive grid container with hover effects</li>
+                <li>✅ Drag and drop functionality from component palette</li>
+                <li>✅ Visual feedback for drop zones</li>
+                <li>✅ Responsive grid layout</li>
+                <li>✅ Component placement and management</li>
+                <li>✅ Empty block placeholders with icons</li>
+                <li>✅ Smooth animations and transitions</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="test-container">
+        <h2>🖥️ Designer Page Preview</h2>
+        <iframe src="http://localhost:4200/designer" id="designerFrame"></iframe>
+    </div>
+
+    <script>
+        // Load the test script content
+        fetch('./interactive-grid-validation.js')
+            .then(response => response.text())
+            .then(script => {
+                document.getElementById('consoleScript').textContent = script;
+            })
+            .catch(error => {
+                document.getElementById('consoleScript').textContent = 'Error loading script: ' + error.message;
+            });
+
+        function runAutomatedTest() {
+            const resultsDiv = document.getElementById('testResults');
+            resultsDiv.style.display = 'block';
+            resultsDiv.className = 'status warning';
+            resultsDiv.innerHTML = '⏳ Running automated tests...';
+
+            // Open the designer page in a new window and run tests
+            const testWindow = window.open('http://localhost:4200/designer', '_blank');
+            
+            // Wait for the window to load, then inject our test script
+            setTimeout(() => {
+                try {
+                    // Load and execute the test script
+                    fetch('./interactive-grid-validation.js')
+                        .then(response => response.text())
+                        .then(script => {
+                            testWindow.eval(script);
+                            resultsDiv.className = 'status success';
+                            resultsDiv.innerHTML = '✅ Tests are running in the new window. Check the console for detailed results.';
+                        })
+                        .catch(error => {
+                            resultsDiv.className = 'status error';
+                            resultsDiv.innerHTML = '❌ Error loading test script: ' + error.message;
+                        });
+                } catch (error) {
+                    resultsDiv.className = 'status error';
+                    resultsDiv.innerHTML = '❌ Error running tests: ' + error.message + '. Please run tests manually using the console script.';
+                }
+            }, 2000);
+        }
+
+        function openDesignerPage() {
+            window.open('http://localhost:4200/designer', '_blank');
+        }
+
+        function copyToClipboard() {
+            const script = document.getElementById('consoleScript').textContent;
+            navigator.clipboard.writeText(script).then(() => {
+                alert('Test script copied to clipboard! Paste it in the browser console on the designer page.');
+            }).catch(err => {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = script;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                alert('Test script copied to clipboard!');
+            });
+        }
+
+        // Refresh iframe every 30 seconds to show latest changes
+        setInterval(() => {
+            const iframe = document.getElementById('designerFrame');
+            iframe.src = iframe.src;
+        }, 30000);
+    </script>
+</body>
+</html>
