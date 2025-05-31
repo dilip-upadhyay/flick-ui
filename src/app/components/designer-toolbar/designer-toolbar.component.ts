@@ -302,10 +302,18 @@ export class DesignerToolbarComponent {
   showShortcuts = false;
 
   onAction(actionId: string) {
+    console.log('DesignerToolbar: onAction called with:', actionId);
+    
+    // Temporary debug alert for preview action
+    if (actionId === 'preview') {
+      alert('Preview button clicked! Check console for details.');
+    }
+    
     if (actionId === 'settings-shortcuts' || actionId === 'help-shortcuts') {
       this.showShortcuts = true;
       return;
     }
+    console.log('DesignerToolbar: Emitting action:', actionId);
     this.action.emit(actionId);
   }
 

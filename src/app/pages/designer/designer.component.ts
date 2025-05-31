@@ -187,6 +187,12 @@ export class DesignerComponent implements OnInit, OnDestroy {
       .subscribe((hasChanges: boolean) => {
         this.hasUnsavedChanges = hasChanges;
       });
+
+    // TEMPORARY: Test preview functionality after component loads
+    setTimeout(() => {
+      console.log('TEMP TEST: Testing preview functionality automatically...');
+      this.testPreviewFunctionality();
+    }, 3000);
   }
 
   ngOnDestroy() {
@@ -196,6 +202,7 @@ export class DesignerComponent implements OnInit, OnDestroy {
 
   // Toolbar Actions
   onToolbarAction(action: string) {
+    console.log('Designer: onToolbarAction called with:', action);
     switch (action) {
       case 'new':
         this.createNewLayout();
@@ -210,6 +217,7 @@ export class DesignerComponent implements OnInit, OnDestroy {
         this.exportConfig();
         break;
       case 'preview':
+        console.log('Designer: Calling previewLayout()');
         this.previewLayout();
         break;
       case 'undo':
@@ -308,10 +316,18 @@ export class DesignerComponent implements OnInit, OnDestroy {
   }
 
   private previewLayout() {
+    console.log('Designer: previewLayout() called');
+    console.log('Designer: Current config:', this.currentConfig);
     this.designerService.showPreview();
   }
 
   private loadTestConfig() {
     this.designerService.loadTestConfiguration();
+  }
+
+  // TEMPORARY: Test method for preview functionality
+  private testPreviewFunctionality() {
+    console.log('TEMP TEST: Simulating preview button click...');
+    this.onToolbarAction('preview');
   }
 }

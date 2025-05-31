@@ -285,19 +285,42 @@ export class DesignerService {
   }
 
   showPreview(): void {
+    console.log('DesignerService: showPreview() called');
+    
+    // Temporary debug notification
+    this.snackBar.open('Preview function called - check console for details', 'Close', { duration: 5000 });
+    
     const config = this.currentConfig$.value;
+    console.log('DesignerService: Current config:', config);
     if (!config) {
       console.warn('No configuration available for preview');
+      this.snackBar.open('No configuration available for preview', 'Close', { duration: 5000 });
       return;
     }
 
     // Store config in session storage for the preview page
     if (typeof window !== 'undefined' && window.sessionStorage) {
+      console.log('DesignerService: Storing config in sessionStorage');
       sessionStorage.setItem('preview-config', JSON.stringify(config));
       
       // Open preview in a new tab
       const previewUrl = `${window.location.origin}/preview`;
-      window.open(previewUrl, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+      console.log('DesignerService: Opening preview URL:', previewUrl);
+      const newWindow = window.open(previewUrl, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+      if (!newWindow) {
+        console.error('DesignerService: Failed to open preview window - popup may be blocked');
+        // Fallback: Show snackbar with option to navigate manually
+        this.snackBar.open(
+          'Preview window blocked. Click here to open preview in current tab.', 
+          'Open Preview', 
+          { duration: 10000 }
+        ).onAction().subscribe(() => {
+          window.location.href = previewUrl;
+        });
+      } else {
+        console.log('DesignerService: Preview window opened successfully');
+        this.snackBar.open('Preview opened in new tab', '', { duration: 3000 });
+      }
     } else {
       console.warn('Preview not available in server-side rendering mode');
     }
