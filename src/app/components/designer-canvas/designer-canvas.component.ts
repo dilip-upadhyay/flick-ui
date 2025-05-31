@@ -10,7 +10,6 @@ import { NavigationAlignmentService } from '../../services/navigation-alignment.
 import { FormBuilderService, FormBuilderState } from '../../services/form-builder.service';
 import { DynamicRendererComponent } from '../dynamic-renderer/dynamic-renderer.component';
 import { FormGridLayoutComponent, FormFieldWithPosition } from '../form-grid-layout/form-grid-layout.component';
-import { FormElementConfig } from '../form-element-renderer/form-element-renderer.component';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
 
 // Grid interfaces similar to form grid layout
@@ -233,7 +232,7 @@ export interface ComponentWithPosition extends UIComponent {
         </div>
       </div>
 
-      <!-- Regular Canvas Mode -->
+      <!-- Regular Canvas Mode (NON-GRID layouts only) -->
       <div 
         class="canvas-viewport" 
         *ngIf="!isFormBuilderMode && (!config?.layout || config?.layout?.type !== 'grid')"
@@ -243,7 +242,7 @@ export interface ComponentWithPosition extends UIComponent {
         [ngClass]="getCanvasClasses()"
         [ngStyle]="getCanvasAlignmentStyles()"
       >
-        <!-- Simple Grid Layout Visualization for layout.type === 'grid' -->
+        <!-- Fallback Grid Layout (should not be reached if enhanced grid mode is working) -->
         <ng-container *ngIf="config?.layout?.type === 'grid' && config?.layout?.columns">
           <div class="main-grid-layout"
                [style.display]="'grid'"
@@ -280,7 +279,7 @@ export interface ComponentWithPosition extends UIComponent {
                 </ng-container>
                 
                 <!-- Enhanced empty block placeholder -->
-                <div class="empty-block-placeholder" *ngIf="!config?.components?.[i]">
+                <div class="empty-block-placeholder" *ngIf="isGridBlockEmpty(i)">
                   <mat-icon>add_circle_outline</mat-icon>
                   <span>Drop Component</span>
                   <small>Block {{ i + 1 }}</small>
@@ -378,6 +377,9 @@ export class DesignerCanvasComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    // Ensure we have a proper grid layout configuration first
+    this.ensureGridLayoutConfiguration();
+    
     // Subscribe to drag events from component palette
     this.designerService.getDraggedComponent()
       .pipe(takeUntil(this.destroy$))
@@ -398,6 +400,9 @@ export class DesignerCanvasComponent implements OnInit, OnDestroy {
     // Initialize enhanced grid
     this.generateGridCells();
     this.initializeComponentPositions();
+    
+    // Debug grid configuration
+    setTimeout(() => this.debugGridConfiguration(), 1000);
   }
 
   ngOnDestroy() {
@@ -407,6 +412,34 @@ export class DesignerCanvasComponent implements OnInit, OnDestroy {
 
   trackByComponentId(index: number, component: UIComponent): string {
     return component.id;
+  }
+
+  // Method to ensure we have a grid layout configuration
+  ensureGridLayoutConfiguration() {
+    if (!this.config) {
+      this.config = {
+        type: 'layout',
+        layout: {
+          type: 'grid',
+          columns: 3,
+          gap: '16px'
+        },
+        components: []
+      };
+      console.log('Created default grid configuration:', this.config);
+    } else if (!this.config.layout || this.config.layout.type !== 'grid') {
+      this.config.layout = {
+        type: 'grid',
+        columns: 3,
+        gap: '16px'
+      };
+      console.log('Updated layout to grid configuration:', this.config.layout);
+    }
+    
+    // Ensure components array exists
+    if (this.config && !this.config.components) {
+      this.config.components = [];
+    }
   }
 
   // Enhanced Grid Layout Methods
@@ -913,6 +946,34 @@ export class DesignerCanvasComponent implements OnInit, OnDestroy {
   get gridBlocks(): number[] {
     const count = this.config?.layout?.columns || 1;
     return Array.from({ length: count }, (_, i) => i);
+  }
+
+  // Helper method to check if a grid block is empty
+  isGridBlockEmpty(blockIndex: number): boolean {
+    const isEmpty = !this.config?.components?.[blockIndex];
+    // Debug logging to help troubleshoot visibility issues
+    if (blockIndex < 5) { // Only log first 5 blocks to avoid spam
+      console.log(`Block ${blockIndex + 1} isEmpty:`, isEmpty, 
+                  'config.components:', this.config?.components?.length || 0,
+                  'component at index:', this.config?.components?.[blockIndex] || 'undefined');
+    }
+    return isEmpty;
+  }
+
+  // Debug method to help with empty block placeholder visibility issues  
+  debugGridConfiguration() {
+    console.log('=== GRID DEBUG INFO ===');
+    console.log('isFormBuilderMode:', this.isFormBuilderMode);
+    console.log('config:', this.config);
+    console.log('config?.layout:', this.config?.layout);
+    console.log('config?.layout?.type:', this.config?.layout?.type);
+    console.log('config?.layout?.columns:', this.config?.layout?.columns);
+    console.log('config?.components:', this.config?.components);
+    console.log('config?.components?.length:', this.config?.components?.length);
+    console.log('gridBlocks array:', this.gridBlocks);
+    console.log('Enhanced Grid Mode Condition:', !this.isFormBuilderMode && this.config?.layout?.type === 'grid');
+    console.log('Regular Canvas Mode Condition:', !this.isFormBuilderMode && (!this.config?.layout || this.config?.layout?.type !== 'grid'));
+    console.log('=====================');
   }
 
   // Canvas styling and helper methods
