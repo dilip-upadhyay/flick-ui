@@ -41,6 +41,11 @@ export interface FormFieldWithPosition extends FormElementConfig {
               </mat-form-field>
               
               <mat-form-field appearance="outline" class="grid-input">
+                <mat-label>Rows</mat-label>
+                <input matInput type="number" [(ngModel)]="gridRows" min="1" max="20" (change)="onGridSettingsChange()">
+              </mat-form-field>
+              
+              <mat-form-field appearance="outline" class="grid-input">
                 <mat-label>Gap (px)</mat-label>
                 <input matInput type="number" [(ngModel)]="gridGap" min="0" max="50" (change)="onGridSettingsChange()">
               </mat-form-field>
@@ -510,11 +515,21 @@ export class FormGridLayoutComponent implements OnInit, OnDestroy {
     // Adjust field positions if they're outside the new grid
     this.formFields.forEach(field => {
       if (field.gridPosition) {
+        // Adjust column position if outside new grid
         if (field.gridPosition.col >= this.gridCols) {
           field.gridPosition.col = this.gridCols - 1;
         }
+        // Adjust row position if outside new grid
         if (field.gridPosition.row >= this.gridRows) {
           field.gridPosition.row = this.gridRows - 1;
+        }
+        // Adjust width if it extends beyond grid
+        if (field.gridPosition.col + field.gridPosition.width > this.gridCols) {
+          field.gridPosition.width = this.gridCols - field.gridPosition.col;
+        }
+        // Adjust height if it extends beyond grid
+        if (field.gridPosition.row + field.gridPosition.height > this.gridRows) {
+          field.gridPosition.height = this.gridRows - field.gridPosition.row;
         }
       }
     });
