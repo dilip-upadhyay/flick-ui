@@ -16,19 +16,19 @@ export interface DesignerAction {
   providedIn: 'root'
 })
 export class DesignerService {
-  private currentConfig$ = new BehaviorSubject<UIConfig>(this.getDefaultConfig());
-  private selectedComponent$ = new BehaviorSubject<UIComponent | null>(null);
-  private draggedComponent$ = new BehaviorSubject<ComponentType | null>(null);
-  private hasUnsavedChanges$ = new BehaviorSubject<boolean>(false);
+  private readonly currentConfig$ = new BehaviorSubject<UIConfig>(this.getDefaultConfig());
+  private readonly selectedComponent$ = new BehaviorSubject<UIComponent | null>(null);
+  private readonly draggedComponent$ = new BehaviorSubject<ComponentType | null>(null);
+  private readonly hasUnsavedChanges$ = new BehaviorSubject<boolean>(false);
   
   // Undo/Redo functionality
   private history: UIConfig[] = [];
   private historyIndex = -1;
-  private maxHistorySize = 50;
+  private readonly maxHistorySize = 50;
 
   constructor(
-    private dialog: MatDialog,
-    private snackBar: MatSnackBar
+    private readonly dialog: MatDialog,
+    private readonly snackBar: MatSnackBar
   ) {
     this.saveToHistory(this.getDefaultConfig());
   }

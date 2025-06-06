@@ -28,7 +28,7 @@ import { Subject, takeUntil } from 'rxjs';
   styleUrls: ['./designer.component.css']
 })
 export class DesignerComponent implements OnInit, OnDestroy {
-  private destroy$ = new Subject<void>();
+  private readonly destroy$ = new Subject<void>();
 
   currentConfig: UIConfig = {
     type: 'layout',
@@ -56,9 +56,9 @@ export class DesignerComponent implements OnInit, OnDestroy {
   isFormBuilderActive = false;
 
   // Injected services
-  private designerService: DesignerService = inject(DesignerService);
-  private formBuilderService: FormBuilderService = inject(FormBuilderService);
-  private fb = inject(FormBuilder);
+  private readonly designerService: DesignerService = inject(DesignerService);
+  private readonly formBuilderService: FormBuilderService = inject(FormBuilderService);
+  private readonly fb = inject(FormBuilder);
 
   constructor() {}
 
@@ -88,12 +88,6 @@ export class DesignerComponent implements OnInit, OnDestroy {
       .subscribe((hasChanges: boolean) => {
         this.hasUnsavedChanges = hasChanges;
       });
-
-    // TEMPORARY: Test preview functionality after component loads
-    setTimeout(() => {
-      console.log('TEMP TEST: Testing preview functionality automatically...');
-      this.testPreviewFunctionality();
-    }, 3000);
   }
 
   ngOnDestroy() {
