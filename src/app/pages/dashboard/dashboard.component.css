@@ -1,0 +1,28 @@
+.page-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.page-card {
+  margin-bottom: 20px;
+}
+
+.page-header-icon {
+  background-color: #1976d2;
+  color: white;
+}
+
+.demo-selector {
+  margin-bottom: 24px;
+}
+
+.demo-selector mat-chip-listbox {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.renderer-container {
+  margin-top: 20px;
+}

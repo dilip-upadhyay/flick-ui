@@ -1,0 +1,35 @@
+<div class="page-container">
+  <mat-card class="page-card">
+    <mat-card-header>
+      <div mat-card-avatar class="page-header-icon">
+        <mat-icon>dashboard</mat-icon>
+      </div>
+      <mat-card-title>Dashboard</mat-card-title>
+      <mat-card-subtitle>Dynamic dashboard with configurable widgets</mat-card-subtitle>
+    </mat-card-header>
+    
+    <mat-card-content>
+      <div class="demo-selector">
+        <mat-chip-listbox>
+          @for (demo of dashboardDemos; track demo.key) {
+            <mat-chip-option 
+              [selected]="currentDemo === demo.key"
+              (click)="loadDemo(demo.key)">
+              <mat-icon matChipAvatar>{{demo.icon}}</mat-icon>
+              {{ demo.name }}
+            </mat-chip-option>
+          }
+        </mat-chip-listbox>
+      </div>
+      
+      @if (currentConfig) {
+        <div class="renderer-container">
+          <app-dynamic-renderer 
+            [config]="currentConfig"
+            [context]="{ mode: 'dashboard' }">
+          </app-dynamic-renderer>
+        </div>
+      }
+    </mat-card-content>
+  </mat-card>
+</div>

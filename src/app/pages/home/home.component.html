@@ -1,0 +1,85 @@
+<div class="home-container">
+  <div class="hero-section">
+    <mat-card class="hero-card">
+      <mat-card-header>
+        <div mat-card-avatar class="hero-icon">
+          <mat-icon>dynamic_feed</mat-icon>
+        </div>
+        <mat-card-title>Dynamic UI Renderer</mat-card-title>
+        <mat-card-subtitle>Build dynamic user interfaces with configuration-driven components</mat-card-subtitle>
+      </mat-card-header>
+      
+      <mat-card-content>
+        <p class="hero-description">
+          Explore our powerful dynamic UI rendering system that allows you to create 
+          complex user interfaces through simple JSON configurations. From dashboards 
+          to forms, everything is dynamically generated and fully customizable.
+        </p>
+        
+        <div class="features-grid">
+          <div class="feature-item">
+            <mat-icon color="primary">dashboard</mat-icon>
+            <h3>Dynamic Dashboards</h3>
+            <p>Create responsive dashboard layouts with configurable widgets</p>
+          </div>
+          
+          <div class="feature-item">
+            <mat-icon color="primary">assignment</mat-icon>
+            <h3>Interactive Forms</h3>
+            <p>Build complex forms with validation and various input controls</p>
+          </div>
+          
+          <div class="feature-item">
+            <mat-icon color="primary">view_module</mat-icon>
+            <h3>Modular Components</h3>
+            <p>Compose interfaces from reusable, configuration-driven components</p>
+          </div>
+          
+          <div class="feature-item">
+            <mat-icon color="primary">settings</mat-icon>
+            <h3>Flexible Configuration</h3>
+            <p>JSON-based configuration system for rapid prototyping</p>
+          </div>
+        </div>
+      </mat-card-content>
+      
+      <mat-card-actions class="hero-actions">
+        <button mat-raised-button color="primary" routerLink="/dashboard">
+          <mat-icon>dashboard</mat-icon>
+          Explore Dashboards
+        </button>
+        <button mat-raised-button color="accent" routerLink="/form">
+          <mat-icon>assignment</mat-icon>
+          Try Forms
+        </button>
+        <button mat-stroked-button routerLink="/complete">
+          <mat-icon>view_comfy</mat-icon>
+          Complete Demo
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+  
+  <div class="quick-links">
+    <h2>Quick Navigation</h2>
+    <div class="links-grid">
+      <mat-card class="link-card" routerLink="/dashboard">
+        <mat-icon color="primary">dashboard</mat-icon>
+        <h3>Dashboard</h3>
+        <p>Dynamic dashboard components</p>
+      </mat-card>
+      
+      <mat-card class="link-card" routerLink="/form">
+        <mat-icon color="primary">assignment</mat-icon>
+        <h3>Forms</h3>
+        <p>Interactive form builders</p>
+      </mat-card>
+      
+      <mat-card class="link-card" routerLink="/complete">
+        <mat-icon color="primary">view_comfy</mat-icon>
+        <h3>Complete Demo</h3>
+        <p>All components showcase</p>
+      </mat-card>
+    </div>
+  </div>
+</div>

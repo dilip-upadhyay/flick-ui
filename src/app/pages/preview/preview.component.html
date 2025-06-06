@@ -1,0 +1,51 @@
+<div class="preview-container" [class]="getContainerClasses()">
+  <!-- Preview Header (can be hidden in fullscreen mode) -->
+  <div class="preview-header" *ngIf="!fullscreen">
+    <div class="header-content">
+      <mat-icon>preview</mat-icon>
+      <h1>Layout Preview</h1>
+      <span class="preview-info" *ngIf="config?.metadata?.title">{{ config?.metadata?.title }}</span>
+    </div>
+    
+    <div class="header-actions">
+      <button mat-icon-button 
+              (click)="toggleFullscreen()"
+              matTooltip="Toggle Fullscreen">
+        <mat-icon>{{ fullscreen ? 'fullscreen_exit' : 'fullscreen' }}</mat-icon>
+      </button>
+      
+      <button mat-icon-button 
+              (click)="closePreview()"
+              matTooltip="Close Preview">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- Dynamic Renderer Content -->
+  <div class="preview-content">
+    <div class="renderer-wrapper" *ngIf="config">
+      <app-dynamic-renderer 
+        [config]="config"
+        [enableSelection]="false"
+        [context]="{ mode: 'preview' }">
+      </app-dynamic-renderer>
+    </div>
+    
+    <!-- Loading State -->
+    <div class="loading-state" *ngIf="!config && !error">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p>Loading preview...</p>
+    </div>
+    
+    <!-- Error State -->
+    <div class="error-state" *ngIf="error">
+      <mat-icon color="warn">error_outline</mat-icon>
+      <h3>Preview Error</h3>
+      <p>{{ error }}</p>
+      <button mat-raised-button color="primary" (click)="closePreview()">
+        Return to Designer
+      </button>
+    </div>
+  </div>
+</div>

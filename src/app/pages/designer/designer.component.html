@@ -1,0 +1,97 @@
+<div class="designer-container">
+  <!-- Designer Header -->
+  <div class="designer-header">
+    <div class="designer-title">
+      <mat-icon>design_services</mat-icon>
+      <h1>Visual Layout Designer</h1>
+      <span class="subtitle">Drag & Drop Interface Builder</span>
+
+      <!-- Move toolbar controls here, right-aligned -->
+      <span class="designer-header-toolbar">
+        <app-designer-toolbar
+          [hasChanges]="hasUnsavedChanges"
+          [viewMode]="viewMode"
+          [zoomLevel]="zoomLevel"
+          (viewModeChange)="onViewModeChange($event)"
+          (zoomLevelChange)="onZoomLevelChanged($event)"
+          (action)="onToolbarAction($event)">
+        </app-designer-toolbar>
+      </span>
+    </div>
+  </div>
+
+  <!-- Designer Layout -->
+  <div class="designer-layout">
+    <!-- Left Sidebar - Component Palette -->
+    <div class="designer-sidebar left-sidebar" [class.collapsed]="leftSidebarCollapsed">
+      <div class="sidebar-header">
+        <h3>Components</h3>
+        <button mat-icon-button (click)="toggleLeftSidebar()">
+          <mat-icon>{{ leftSidebarCollapsed ? 'chevron_right' : 'chevron_left' }}</mat-icon>
+        </button>
+      </div>
+      
+      <div class="sidebar-content" *ngIf="!leftSidebarCollapsed">
+        <app-component-palette
+          (componentSelected)="onComponentSelected($event)">
+        </app-component-palette>
+      </div>
+    </div>
+
+    <!-- Center - Design Canvas -->
+    <div class="designer-canvas-area">
+      <div class="canvas-container" [style.transform]="'scale(' + zoomLevel/100 + ')'">
+        <app-designer-canvas
+          [config]="currentConfig"
+          [selectedComponent]="selectedComponent"
+          [viewMode]="viewMode"
+          (componentSelected)="onCanvasComponentSelected($event)"
+          (componentUpdated)="onComponentUpdated($event)"
+          (componentDeleted)="onComponentDeleted($event)"
+          (componentAdded)="onComponentAdded($event)">
+        </app-designer-canvas>
+      </div>
+    </div>
+
+    <!-- Right Sidebar - Properties Panel -->
+    <div class="designer-sidebar right-sidebar" [class.collapsed]="rightSidebarCollapsed">
+      <div class="sidebar-header">
+        <h3>Properties</h3>
+        <button mat-icon-button (click)="toggleRightSidebar()">
+          <mat-icon>{{ rightSidebarCollapsed ? 'chevron_left' : 'chevron_right' }}</mat-icon>
+        </button>
+      </div>
+      
+      <div class="sidebar-content" *ngIf="!rightSidebarCollapsed">
+        <!-- Property Editor - shown for all components -->
+        <app-property-editor
+          [selectedComponent]="selectedComponent"
+          [config]="currentConfig"
+          (propertyChanged)="onPropertyChanged($event)">
+        </app-property-editor>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Panel - Code Preview (Collapsible) -->
+  <div class="designer-bottom-panel" [class.collapsed]="bottomPanelCollapsed">
+    <div class="panel-header">
+      <div class="panel-title">
+        <mat-icon>code</mat-icon>
+        <span>Configuration Preview</span>
+      </div>
+      <button mat-icon-button (click)="toggleBottomPanel()">
+        <mat-icon>{{ bottomPanelCollapsed ? 'expand_less' : 'expand_more' }}</mat-icon>
+      </button>
+    </div>
+    
+    <div class="panel-content" *ngIf="!bottomPanelCollapsed">
+      <app-config-preview
+        [config]="currentConfig"
+        (configImported)="onConfigImported($event)">
+      </app-config-preview>
+    </div>
+  </div>
+</div>
+
+<!-- Dialogs and overlays will be handled by individual components -->

@@ -1,0 +1,27 @@
+<div class="page-container">
+  <mat-card class="page-card">
+    <mat-card-header>
+      <div mat-card-avatar class="page-header-icon">
+        <mat-icon>assignment</mat-icon>
+      </div>
+      <mat-card-title>Forms</mat-card-title>
+      <mat-card-subtitle>Dynamic form components with validation and controls</mat-card-subtitle>
+    </mat-card-header>
+    
+    <mat-card-content>
+      @if (currentConfig) {
+        <div class="renderer-container">
+          <app-form-renderer 
+            [config]="currentConfig"
+            (event)="onFormEvent($event)">
+          </app-form-renderer>
+        </div>
+      } @else {
+        <div class="loading-container">
+          <mat-spinner diameter="40"></mat-spinner>
+          <p>Loading form configuration...</p>
+        </div>
+      }
+    </mat-card-content>
+  </mat-card>
+</div>
