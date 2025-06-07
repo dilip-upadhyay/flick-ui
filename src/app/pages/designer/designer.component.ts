@@ -124,9 +124,11 @@ export class DesignerComponent implements OnInit, OnDestroy {
         break;
       case 'redo':
         this.designerService.redo();
-        break;
-      case 'load-test-config':
+        break;      case 'load-test-config':
         this.loadTestConfig();
+        break;
+      case 'load-grid-test':
+        this.loadGridTestScenario();
         break;
     }
   }
@@ -227,9 +229,12 @@ export class DesignerComponent implements OnInit, OnDestroy {
     console.log('Designer: Current config:', this.currentConfig);
     this.designerService.showPreview();
   }
-
   private loadTestConfig() {
     this.designerService.loadTestConfiguration();
+  }
+
+  private loadGridTestScenario() {
+    this.designerService.loadConfigurationFromAssets('grid-test-scenario.json');
   }
 
   // TEMPORARY: Test method for preview functionality

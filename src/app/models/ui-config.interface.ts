@@ -12,6 +12,12 @@ export interface UIComponent {
   children?: UIComponent[];
   conditions?: DisplayCondition[];
   styles?: ComponentStyles;
+  gridPosition?: {
+    row: number;
+    col: number;
+    width: number;
+    height: number;
+  };
 }
 
 export type ComponentType = 

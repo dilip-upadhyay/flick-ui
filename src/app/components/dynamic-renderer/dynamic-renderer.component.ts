@@ -178,8 +178,7 @@ export class DynamicRendererComponent implements OnInit, OnDestroy {
 
   /**
    * Get layout styles for the main container
-   */
-  getLayoutStyles(): { [key: string]: string } {
+   */  getLayoutStyles(): { [key: string]: string } {
     if (!this.currentConfig?.layout) {
       return {};
     }
@@ -192,6 +191,9 @@ export class DynamicRendererComponent implements OnInit, OnDestroy {
         styles['display'] = 'grid';
         if (layout.columns) {
           styles['grid-template-columns'] = `repeat(${layout.columns}, 1fr)`;
+        }
+        if (layout.rows) {
+          styles['grid-template-rows'] = `repeat(${layout.rows}, minmax(120px, auto))`;
         }
         if (layout.gap) {
           styles['gap'] = layout.gap;
@@ -246,20 +248,13 @@ export class DynamicRendererComponent implements OnInit, OnDestroy {
     // Also include any existing styles from component.styles
     if (component.styles) {
       Object.assign(styles, component.styles);
-    }
-
-    // Apply CSS grid positioning if the component has gridPosition
-    if (component.props?.gridPosition) {
-      const gridPos = component.props.gridPosition;
-      console.log('Applying grid positioning for component:', component.id, gridPos);
+    }    // Apply CSS grid positioning if the component has gridPosition
+    if (component.gridPosition || component.props?.gridPosition) {
+      const gridPos = component.gridPosition || component.props.gridPosition;
       
-      // Apply grid positioning styles      styles['grid-column'] = `${gridPos.column + 1} / ${gridPos.column + (gridPos.width ?? 1) + 1}`;
+      // Apply grid positioning styles using col/row (not column/row)
+      styles['grid-column'] = `${gridPos.col + 1} / ${gridPos.col + (gridPos.width ?? 1) + 1}`;
       styles['grid-row'] = `${gridPos.row + 1} / ${gridPos.row + (gridPos.height ?? 1) + 1}`;
-      
-      console.log('Grid styles applied:', {
-        'grid-column': styles['grid-column'],
-        'grid-row': styles['grid-row']
-      });
     }
 
     // Apply context-specific styling adjustments

@@ -1,0 +1,70 @@
+{
+  "type": "layout",
+  "components": [
+    {
+      "id": "text-1749293637102-vx4uv",
+      "type": "text",
+      "props": {
+        "content": "Text content",
+        "variant": "body1"
+      },
+      "gridPosition": {
+        "row": 0,
+        "col": 0,
+        "width": 1,
+        "height": 1
+      }
+    },
+    {
+      "id": "text-1749293639012-u69lc",
+      "type": "text",
+      "props": {
+        "content": "Text content",
+        "variant": "body1"
+      },
+      "gridPosition": {
+        "row": 0,
+        "col": 1,
+        "width": 1,
+        "height": 1
+      }
+    },
+    {
+      "id": "text-1749293641156-24n2v",
+      "type": "text",
+      "props": {
+        "content": "Text content",
+        "variant": "body1"
+      },
+      "gridPosition": {
+        "row": 1,
+        "col": 0,
+        "width": 1,
+        "height": 1
+      }
+    },
+    {
+      "id": "text-1749293642991-9l5uu",
+      "type": "text",
+      "props": {
+        "content": "Text content",
+        "variant": "body1"
+      },
+      "gridPosition": {
+        "row": 1,
+        "col": 1,
+        "width": 1,
+        "height": 1
+      }
+    }
+  ],
+  "layout": {
+    "type": "grid",
+    "columns": 2,
+    "gap": "12px",
+    "rows": 2
+  },
+  "metadata": {
+    "title": "Test Grid Layout"
+  }
+}
