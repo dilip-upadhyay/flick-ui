@@ -37,11 +37,7 @@ export class DesignerToolbarComponent {
   onAction(actionId: string) {
     console.log('DesignerToolbar: onAction called with:', actionId);
     
-    // Temporary debug alert for preview action
-    if (actionId === 'preview') {
-      alert('Preview button clicked! Check console for details.');
-    }
-    
+  
     // Handle grid test scenario loading
     if (actionId === 'load-grid-test') {
       console.log('DesignerToolbar: Loading grid test scenario');
