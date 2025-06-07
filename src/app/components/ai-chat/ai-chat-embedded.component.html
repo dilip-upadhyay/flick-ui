@@ -1,0 +1,118 @@
+<!-- AI Chat Embedded Version for Sidebar -->
+<div class="ai-chat-embedded">
+  <!-- Chat Header -->
+  <div class="chat-header">
+    <div class="header-content">
+      <mat-icon>smart_toy</mat-icon>
+      <h3>AI Design Assistant</h3>
+    </div>
+    <div class="header-actions">
+      <button mat-icon-button (click)="clearChat()" matTooltip="Clear chat">
+        <mat-icon>clear_all</mat-icon>
+      </button>
+      <button mat-icon-button (click)="exportChat()" matTooltip="Export chat">
+        <mat-icon>download</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- Messages Container -->
+  <div class="messages-container" #messagesContainer>
+    <div class="messages-list">
+      <!-- Welcome Message -->
+      <div class="message ai-message" *ngIf="messages.length === 0">
+        <div class="message-avatar">
+          <mat-icon>smart_toy</mat-icon>
+        </div>
+        <div class="message-content">
+          <div class="message-text">
+            👋 Hi! I'm your AI design assistant. I can help you create and modify UI components. 
+            Try asking me to add forms, layouts, or modify existing components!
+          </div>
+        </div>
+      </div>
+
+      <!-- Chat Messages -->
+      <div 
+        *ngFor="let message of messages; trackBy: trackByMessageId" 
+        class="message"
+        [class.user-message]="message.sender === 'user'"
+        [class.ai-message]="message.sender === 'ai'">
+        
+        <div class="message-avatar" *ngIf="message.sender === 'ai'">
+          <mat-icon>smart_toy</mat-icon>
+        </div>
+        <div class="message-avatar user-avatar" *ngIf="message.sender === 'user'">
+          <mat-icon>person</mat-icon>
+        </div>
+
+        <div class="message-content">
+          <div class="message-text" [innerHTML]="message.content"></div>
+          <div class="message-time">
+            {{ message.timestamp | date:'short' }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Loading indicator -->
+      <div class="message ai-message" *ngIf="isLoading">
+        <div class="message-avatar">
+          <mat-icon>smart_toy</mat-icon>
+        </div>
+        <div class="message-content">
+          <div class="loading-indicator">
+            <div class="typing-dots">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <span class="loading-text">AI is thinking...</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="quick-actions" *ngIf="messages.length === 0">
+    <h4>Quick Actions</h4>
+    <div class="actions-grid">
+      <mat-chip-listbox>
+        <mat-chip-option 
+          *ngFor="let action of quickActions" 
+          (click)="useQuickAction(action)"
+          class="action-chip">
+          {{ action.label }}
+        </mat-chip-option>
+      </mat-chip-listbox>
+    </div>
+  </div>
+
+  <!-- Chat Input -->
+  <div class="chat-input-container">
+    <form [formGroup]="chatForm" (ngSubmit)="onSubmit()" class="chat-form">
+      <mat-form-field appearance="outline" class="message-input">
+        <mat-label>Type your message...</mat-label>
+        <textarea 
+          matInput 
+          #chatInput
+          formControlName="message"
+          (keydown)="onEnterKeydown($event)"
+          placeholder="Ask me to add components, modify layouts, or style elements..."
+          rows="2"
+          cdkTextareaAutosize
+          cdkAutosizeMinRows="1"
+          cdkAutosizeMaxRows="4">
+        </textarea>
+        <button 
+          mat-icon-button 
+          matSuffix 
+          type="submit"
+          [disabled]="!chatForm.valid || isLoading"
+          color="primary">
+          <mat-icon>send</mat-icon>
+        </button>
+      </mat-form-field>
+    </form>
+  </div>
+</div>

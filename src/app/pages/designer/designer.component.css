@@ -243,20 +243,22 @@
 
 /* Tab content styling */
 .tab-content {
-  padding: 16px;
+  padding: 0;
   height: calc(100vh - 140px);
-  overflow-y: auto;
+  overflow: hidden;
   background: white;
 }
 
-.tab-content app-property-editor,
-.tab-content app-ai-chat {
+.tab-content app-property-editor {
   display: block;
   height: 100%;
+  padding: 16px;
+  overflow-y: auto;
 }
 
-/* Ensure AI chat component fits properly */
-.tab-content app-ai-chat {
+.tab-content app-ai-chat-embedded {
+  display: block;
+  height: 100%;
   overflow: hidden;
 }
 

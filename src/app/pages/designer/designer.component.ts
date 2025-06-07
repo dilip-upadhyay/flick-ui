@@ -7,7 +7,7 @@ import { ComponentPaletteComponent } from '../../components/component-palette/co
 import { PropertyEditorComponent } from '../../components/property-editor/property-editor.component';
 import { DesignerToolbarComponent } from '../../components/designer-toolbar/designer-toolbar.component';
 import { ConfigPreviewComponent } from '../../components/config-preview/config-preview.component';
-import { AiChatComponent } from '../../components/ai-chat/ai-chat.component';
+import { AiChatEmbeddedComponent } from '../../components/ai-chat/ai-chat-embedded.component';
 import { UIConfig, UIComponent, ComponentType } from '../../models/ui-config.interface';
 import { DesignerService } from '../../services/designer.service';
 import { FormBuilderService } from '../../services/form-builder.service';
@@ -24,7 +24,7 @@ import { Subject, takeUntil } from 'rxjs';
     PropertyEditorComponent,
     DesignerToolbarComponent,
     ConfigPreviewComponent,
-    AiChatComponent
+    AiChatEmbeddedComponent
   ],templateUrl: './designer.component.html',
   styleUrls: ['./designer.component.css']
 })

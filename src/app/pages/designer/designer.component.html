@@ -81,11 +81,9 @@
             [config]="currentConfig"
             (propertyChanged)="onPropertyChanged($event)">
           </app-property-editor>
-        </div>
-
-        <!-- AI Chat Tab -->
+        </div>        <!-- AI Chat Tab -->
         <div *ngIf="rightSidebarTab === 'ai-chat'" class="tab-content">
-          <app-ai-chat></app-ai-chat>
+          <app-ai-chat-embedded></app-ai-chat-embedded>
         </div>
       </div>
     </div>
