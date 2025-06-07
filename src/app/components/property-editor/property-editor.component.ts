@@ -473,7 +473,6 @@ export class PropertyEditorComponent implements OnInit, OnDestroy, OnChanges {
   duplicateComponent() {
     if (this.selectedComponent) {
       // Emit event to parent to handle duplication
-      console.log('Duplicate component:', this.selectedComponent);
     }
   }
 
@@ -487,7 +486,6 @@ export class PropertyEditorComponent implements OnInit, OnDestroy, OnChanges {
   deleteComponent() {
     if (this.selectedComponent) {
       // Emit event to parent to handle deletion
-      console.log('Delete component:', this.selectedComponent);
     }
   }
 
