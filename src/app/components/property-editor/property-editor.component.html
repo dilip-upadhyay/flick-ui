@@ -7,9 +7,7 @@
         <span class="component-id">ID: {{ selectedComponent.id }}</span>
       </div>
     </div>
-  </div>
-
-  <!-- Quick Label Editor for Form Fields -->
+  </div>  <!-- Quick Label Editor for Form Fields -->
   <div class="quick-label-editor" *ngIf="isFormField(selectedComponent.type)">
     <mat-card class="label-editor-card">
       <mat-card-header>
@@ -46,6 +44,77 @@
 
   <!-- Property Categories -->
   <mat-accordion multi="true" class="property-accordion">
+      <!-- Text Settings Panel - Prominent for Form Fields -->
+    <mat-expansion-panel 
+      *ngIf="selectedComponent && isFormField(selectedComponent.type)"
+      [expanded]="true"
+      class="property-panel text-settings-panel">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <mat-icon>text_fields</mat-icon>
+          Text Settings
+        </mat-panel-title>
+        <mat-panel-description>
+          Configure labels and text properties
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      
+      <form [formGroup]="specificForm" class="property-form text-settings-form">
+        <div class="text-settings-grid">
+          <!-- Primary Label Field -->
+          <mat-form-field appearance="outline" class="primary-label-field">
+            <mat-label>Field Label</mat-label>
+            <input matInput 
+                   formControlName="label" 
+                   placeholder="Enter field label"
+                   (input)="onLabelChange($event)">
+            <mat-icon matSuffix>label</mat-icon>
+            <mat-hint>The main label displayed above this form field</mat-hint>
+          </mat-form-field>
+          
+          <!-- Placeholder Text (for applicable fields) -->
+          <mat-form-field appearance="outline" 
+                          *ngIf="selectedComponent.type !== 'checkbox' && selectedComponent.type !== 'radio'">
+            <mat-label>Placeholder Text</mat-label>
+            <input matInput 
+                   formControlName="placeholder" 
+                   placeholder="Enter placeholder text">
+            <mat-icon matSuffix>help_outline</mat-icon>
+            <mat-hint>Hint text shown inside the input field</mat-hint>
+          </mat-form-field>
+          
+          <!-- Help Text -->
+          <mat-form-field appearance="outline">
+            <mat-label>Help Text</mat-label>
+            <input matInput 
+                   formControlName="helpText" 
+                   placeholder="Enter help text">
+            <mat-icon matSuffix>info</mat-icon>
+            <mat-hint>Additional help information displayed below the field</mat-hint>
+          </mat-form-field>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="text-actions">
+          <button mat-stroked-button 
+                  type="button"
+                  (click)="clearAllText()"
+                  class="clear-text-btn">
+            <mat-icon>clear_all</mat-icon>
+            Clear All Text
+          </button>
+          
+          <button mat-stroked-button 
+                  type="button"
+                  (click)="generateDefaultLabel()"
+                  class="generate-label-btn">
+            <mat-icon>auto_fix_high</mat-icon>
+            Generate Default Label
+          </button>
+        </div>
+      </form>
+    </mat-expansion-panel>
+
     <!-- Basic Properties -->
     <mat-expansion-panel 
       *ngIf="basicProperties.length > 0"
@@ -398,3 +467,17 @@
     <p>Click on a component in the canvas to edit its properties</p>
   </div>
 </ng-template>
+
+<!-- DEBUG SECTION - Remove after testing -->
+<div style="background: #f0f0f0; padding: 10px; margin-bottom: 10px; border-radius: 4px;">
+  <h4>Debug Info:</h4>
+  <p>Selected Component: {{ selectedComponent?.id || 'None' }}</p>
+  <p>Component Type: {{ selectedComponent?.type || 'None' }}</p>
+  <p>Is Form Field: {{ selectedComponent ? isFormField(selectedComponent.type) : 'N/A' }}</p>  <p>Specific Form Valid: {{ specificForm.valid }}</p>
+  <p>Specific Form Controls: {{ getFormControlKeys() }}</p>
+  
+  <!-- Test Button -->
+  <button mat-raised-button color="primary" (click)="simulateFormFieldSelection()">
+    Test: Simulate Form Field Selection
+  </button>
+</div>

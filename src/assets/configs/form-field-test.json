@@ -1,0 +1,53 @@
+{
+  "type": "layout",
+  "components": [
+    {
+      "id": "test-grid",
+      "type": "grid",
+      "props": {
+        "title": "Form Fields Test",
+        "columns": 2,
+        "gap": "16px"
+      },
+      "children": [
+        {
+          "id": "text-field-1",
+          "type": "text-input",
+          "props": {
+            "label": "First Name",
+            "placeholder": "Enter your first name",
+            "required": true
+          }
+        },
+        {
+          "id": "email-field-1", 
+          "type": "email-input",
+          "props": {
+            "label": "Email Address",
+            "placeholder": "Enter your email",
+            "required": true
+          }
+        },
+        {
+          "id": "number-field-1",
+          "type": "number-input", 
+          "props": {
+            "label": "Age",
+            "placeholder": "Enter your age",
+            "required": false
+          }
+        },
+        {
+          "id": "textarea-field-1",
+          "type": "textarea",
+          "props": {
+            "label": "Comments", 
+            "placeholder": "Enter any comments",
+            "rows": 3,
+            "required": false
+          }
+        }
+      ]
+    }
+  ]
+}

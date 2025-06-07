@@ -130,6 +130,10 @@ export class DesignerComponent implements OnInit, OnDestroy {
         console.log('Designer: Calling testLoadGridFormConfig()');
         this.testLoadGridFormConfig();
         break;
+      case 'load-form-field-test':
+        console.log('Designer: Loading form field test configuration');
+        this.testLoadFormFieldConfig();
+        break;
     }
   }
 
@@ -245,5 +249,78 @@ export class DesignerComponent implements OnInit, OnDestroy {
   public async testLoadGridFormConfig() {
     console.log('TEMP TEST: Loading grid form test configuration...');
     await this.designerService.loadGridFormPreviewTest();
+  }
+
+  // TEMPORARY: Test method to load form field test configuration
+  public async testLoadFormFieldConfig() {
+    console.log('TEMP TEST: Loading form field test configuration...');
+    await this.designerService.loadFormFieldTest();
+  }
+
+  // Test method to load form field configuration
+  loadTestFormFieldConfig() {
+    const testConfig: UIConfig = {
+      type: 'layout',
+      components: [
+        {
+          id: 'test-grid',
+          type: 'grid',
+          props: {
+            title: 'Form Fields Test',
+            columns: 2,
+            gap: '16px'
+          },
+          children: [
+            {
+              id: 'text-field-1',
+              type: 'text-input',
+              props: {
+                label: 'First Name',
+                placeholder: 'Enter your first name',
+                required: true
+              }
+            },
+            {
+              id: 'email-field-1', 
+              type: 'email-input',
+              props: {
+                label: 'Email Address',
+                placeholder: 'Enter your email',
+                required: true
+              }
+            },
+            {
+              id: 'number-field-1',
+              type: 'number-input', 
+              props: {
+                label: 'Age',
+                placeholder: 'Enter your age',
+                required: false
+              }
+            },
+            {
+              id: 'textarea-field-1',
+              type: 'textarea',
+              props: {
+                label: 'Comments', 
+                placeholder: 'Enter any comments',
+                rows: 3,
+                required: false
+              }
+            }
+          ]
+        }
+      ],
+      layout: {
+        type: 'stack',
+        direction: 'column'
+      },
+      metadata: {
+        title: 'Form Fields Test Layout'
+      }
+    };
+
+    console.log('Loading test form field configuration:', testConfig);
+    this.designerService.loadConfig(testConfig);
   }
 }

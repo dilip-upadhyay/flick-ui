@@ -377,6 +377,11 @@ export class DesignerService {
     await this.loadConfigurationFromAssets('grid-form-preview-test.json');
   }
 
+  // Method to load form field test configuration for label editing testing
+  async loadFormFieldTest(): Promise<void> {
+    await this.loadConfigurationFromAssets('form-field-test.json');
+  }
+
   // Private Helper Methods
   private getDefaultConfig(): UIConfig {
     return {

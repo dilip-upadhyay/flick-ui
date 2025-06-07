@@ -4,6 +4,7 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, FormArray, FormControl } f
 import { MaterialModule } from '../../shared/material.module';
 import { UIConfig, UIComponent, ComponentType } from '../../models/ui-config.interface';
 import { Subject, takeUntil, debounceTime, distinctUntilChanged } from 'rxjs';
+import { FormBuilderService } from '../../services/form-builder.service';
 
 interface PropertyDefinition {
   key: string;
@@ -18,7 +19,8 @@ interface PropertyDefinition {
 @Component({
   selector: 'app-property-editor',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MaterialModule],  templateUrl: './property-editor.component.html',
+  imports: [CommonModule, ReactiveFormsModule, MaterialModule],
+  templateUrl: './property-editor.component.html',
   styleUrls: ['./property-editor.component.css']
 })
 export class PropertyEditorComponent implements OnInit, OnDestroy, OnChanges {
@@ -27,7 +29,7 @@ export class PropertyEditorComponent implements OnInit, OnDestroy, OnChanges {
 
   @Output() propertyChanged = new EventEmitter<{component: UIComponent, property: string, value: any}>();
 
-  private destroy$ = new Subject<void>();
+  private readonly destroy$ = new Subject<void>();
 
   propertyForm: FormGroup;
   layoutForm: FormGroup;
@@ -39,15 +41,22 @@ export class PropertyEditorComponent implements OnInit, OnDestroy, OnChanges {
   styleProperties: PropertyDefinition[] = [];
   specificProperties: PropertyDefinition[] = [];
 
-  constructor(private fb: FormBuilder) {
+  // For template debugging
+  Object = Object;
+
+  constructor(
+    private readonly fb: FormBuilder,
+    private readonly formBuilderService: FormBuilderService
+  ) {
     this.propertyForm = this.fb.group({});
     this.layoutForm = this.fb.group({});
     this.styleForm = this.fb.group({});
     this.specificForm = this.fb.group({});
   }
-
   ngOnInit() {
     this.subscribeToFormChanges();
+    // Test form field detection
+    this.testFormFieldDetection();
   }
 
   ngOnDestroy() {
@@ -57,6 +66,9 @@ export class PropertyEditorComponent implements OnInit, OnDestroy, OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['selectedComponent'] && this.selectedComponent) {
+      console.log('PropertyEditor: Component selected:', this.selectedComponent);
+      console.log('PropertyEditor: Component type:', this.selectedComponent.type);
+      console.log('PropertyEditor: Is form field:', this.isFormField(this.selectedComponent.type));
       this.initializePropertyDefinitions();
       this.buildForms();
     }
@@ -66,6 +78,7 @@ export class PropertyEditorComponent implements OnInit, OnDestroy, OnChanges {
     if (!this.selectedComponent) return;
 
     const componentType = this.selectedComponent.type;
+    console.log('PropertyEditor: Initializing properties for type:', componentType);
 
     // Reset arrays
     this.basicProperties = [];
@@ -96,6 +109,7 @@ export class PropertyEditorComponent implements OnInit, OnDestroy, OnChanges {
 
     // Component-specific properties
     this.specificProperties = this.getComponentSpecificProperties(componentType);
+    console.log('PropertyEditor: Specific properties for', componentType, ':', this.specificProperties);
   }
 
   private getComponentSpecificProperties(componentType: ComponentType): PropertyDefinition[] {
@@ -324,13 +338,13 @@ export class PropertyEditorComponent implements OnInit, OnDestroy, OnChanges {
   private buildForms() {
     if (!this.selectedComponent) return;
 
-    const properties = this.selectedComponent.props || {};
-
-    // Build basic form
+    const properties = this.selectedComponent.props ?? {};
+    console.log('PropertyEditor: Building forms for component:', this.selectedComponent.id);
+    console.log('PropertyEditor: Component properties:', properties);    // Build basic form
     const basicControls: any = {};
     this.basicProperties.forEach(prop => {
       basicControls[prop.key] = new FormControl(
-        this.selectedComponent?.[prop.key as keyof UIComponent] || prop.defaultValue || ''
+        this.selectedComponent?.[prop.key as keyof UIComponent] ?? prop.defaultValue ?? ''
       );
     });
     this.propertyForm = this.fb.group(basicControls);
@@ -338,31 +352,42 @@ export class PropertyEditorComponent implements OnInit, OnDestroy, OnChanges {
     // Build layout form
     const layoutControls: any = {};
     this.layoutProperties.forEach(prop => {
-      layoutControls[prop.key] = new FormControl(properties[prop.key] || prop.defaultValue || '');
+      layoutControls[prop.key] = new FormControl(properties[prop.key] ?? prop.defaultValue ?? '');
     });
     this.layoutForm = this.fb.group(layoutControls);
 
     // Build style form
     const styleControls: any = {};
     this.styleProperties.forEach(prop => {
-      styleControls[prop.key] = new FormControl(properties[prop.key] || prop.defaultValue || '');
+      styleControls[prop.key] = new FormControl(properties[prop.key] ?? prop.defaultValue ?? '');
     });
-    this.styleForm = this.fb.group(styleControls);
-
-    // Build specific form
-    const specificControls: any = {};
-    this.specificProperties.forEach(prop => {
+    this.styleForm = this.fb.group(styleControls);    // Build specific form
+    const specificControls: any = {};    this.specificProperties.forEach(prop => {
       if (prop.type === 'array') {
-        const arrayValue = properties[prop.key] || [];
+        const arrayValue = properties[prop.key] ?? [];
         const formArray = this.fb.array(
           arrayValue.map((item: any) => this.createArrayItemFormGroup(prop.key, item))
         );
         specificControls[prop.key] = formArray;
       } else {
-        specificControls[prop.key] = new FormControl(properties[prop.key] || prop.defaultValue || '');
+        const controlValue = properties[prop.key] ?? prop.defaultValue ?? '';
+        specificControls[prop.key] = new FormControl(controlValue);
+        console.log(`PropertyEditor: Created form control '${prop.key}' with value:`, controlValue);
       }
     });
     this.specificForm = this.fb.group(specificControls);
+    console.log('PropertyEditor: Specific form controls created:', Object.keys(specificControls));
+    console.log('PropertyEditor: Specific form:', this.specificForm);
+    console.log('PropertyEditor: Specific form valid:', this.specificForm.valid);
+    
+    // Log form field detection details
+    if (this.selectedComponent) {
+      console.log('PropertyEditor: Form field detection:');
+      console.log('  - Component type:', this.selectedComponent.type);
+      console.log('  - Is form field:', this.isFormField(this.selectedComponent.type));
+      console.log('  - Specific properties count:', this.specificProperties.length);
+      console.log('  - Component props:', this.selectedComponent.props);
+    }
 
     // Re-subscribe to value changes after rebuilding forms
     this.subscribeToFormChanges();
@@ -402,26 +427,24 @@ export class PropertyEditorComponent implements OnInit, OnDestroy, OnChanges {
       )
       .subscribe(values => this.handleFormChange('specific', values));
   }
-
   private createArrayItemFormGroup(arrayKey: string, item: any): FormGroup {
     if (arrayKey === 'fields') {
       return this.fb.group({
-        label: [item.label || ''],
-        type: [item.type || 'text'],
-        placeholder: [item.placeholder || ''],
-        required: [item.required || false]
+        label: [item.label ?? ''],
+        type: [item.type ?? 'text'],
+        placeholder: [item.placeholder ?? ''],
+        required: [item.required ?? false]
       });
     } else if (arrayKey === 'items') {
       return this.fb.group({
-        label: [item.label || ''],
-        href: [item.href || '#'],
-        icon: [item.icon || '']
+        label: [item.label ?? ''],
+        href: [item.href ?? '#'],
+        icon: [item.icon ?? '']
       });
-    }
-    
+    }    
     return this.fb.group({
-      label: [item.label || ''],
-      value: [item.value || '']
+      label: [item.label ?? ''],
+      value: [item.value ?? '']
     });
   }
 
@@ -548,9 +571,7 @@ export class PropertyEditorComponent implements OnInit, OnDestroy, OnChanges {
       'reset-button': 'refresh'
     };
     return icons[componentType] || 'widgets';
-  }
-
-  // Form field helper methods for enhanced label editing
+  }  // Form field helper methods for enhanced label editing
   isFormField(componentType: ComponentType): boolean {
     const formFieldTypes: ComponentType[] = [
       'text-input',
@@ -563,12 +584,26 @@ export class PropertyEditorComponent implements OnInit, OnDestroy, OnChanges {
       'date-input',
       'file-input'
     ];
-    return formFieldTypes.includes(componentType);
+    const result = formFieldTypes.includes(componentType);
+    console.log('PropertyEditor: isFormField check:', {
+      componentType,
+      formFieldTypes,
+      result,
+      selectedComponent: this.selectedComponent?.id,
+      selectedComponentType: this.selectedComponent?.type,
+      isFormFieldResult: result
+    });
+    return result;
   }
-
   updateLabel(event: any): void {
     const newLabel = event.target.value;
     if (this.selectedComponent) {
+      // Use FormBuilderService for form elements
+      if (this.isFormField(this.selectedComponent.type)) {
+        this.formBuilderService.updateFormElementLabel(this.selectedComponent.id, newLabel);
+      }
+      
+      // Also emit the property change for other listeners
       this.propertyChanged.emit({
         component: this.selectedComponent,
         property: 'props.label',
@@ -582,9 +617,14 @@ export class PropertyEditorComponent implements OnInit, OnDestroy, OnChanges {
       }
     }
   }
-
   clearLabel(): void {
     if (this.selectedComponent) {
+      // Use FormBuilderService for form elements
+      if (this.isFormField(this.selectedComponent.type)) {
+        this.formBuilderService.updateFormElementLabel(this.selectedComponent.id, '');
+      }
+      
+      // Also emit the property change for other listeners
       this.propertyChanged.emit({
         component: this.selectedComponent,
         property: 'props.label',
@@ -597,5 +637,113 @@ export class PropertyEditorComponent implements OnInit, OnDestroy, OnChanges {
         labelControl.setValue('', { emitEvent: false });
       }
     }
+  }
+  // Text Settings Methods
+  onLabelChange(event: any): void {
+    this.updateLabel(event);
+  }
+
+  clearAllText(): void {
+    if (this.selectedComponent && this.isFormField(this.selectedComponent.type)) {
+      const form = this.specificForm;
+      form.patchValue({
+        label: '',
+        placeholder: '',
+        helpText: ''
+      });
+    }
+  }
+
+  generateDefaultLabel(): void {
+    if (this.selectedComponent && this.isFormField(this.selectedComponent.type)) {
+      const componentType = this.selectedComponent.type;
+      let defaultLabel = '';
+      
+      switch (componentType) {
+        case 'text-input':
+          defaultLabel = 'Text Input';
+          break;
+        case 'email-input':
+          defaultLabel = 'Email Address';
+          break;
+        case 'password-input':
+          defaultLabel = 'Password';
+          break;
+        case 'number-input':
+          defaultLabel = 'Number';
+          break;
+        case 'textarea':
+          defaultLabel = 'Text Area';
+          break;
+        case 'checkbox':
+          defaultLabel = 'Checkbox';
+          break;
+        case 'radio':
+          defaultLabel = 'Radio Selection';
+          break;
+        case 'date-input':
+          defaultLabel = 'Date';
+          break;
+        case 'file-input':
+          defaultLabel = 'File Upload';
+          break;
+        default:
+          defaultLabel = 'Field Label';
+      }
+      
+      const form = this.specificForm;
+      form.patchValue({
+        label: defaultLabel
+      });
+    }
+  }
+
+  // Test method to verify form field detection
+  testFormFieldDetection(): void {
+    const testTypes: ComponentType[] = ['text-input', 'email-input', 'number-input', 'textarea', 'button', 'text'];
+    console.log('=== FORM FIELD DETECTION TEST ===');
+    testTypes.forEach(type => {
+      const isFormFieldResult = this.isFormField(type);
+      console.log(`Type: ${type} -> Is Form Field: ${isFormFieldResult}`);
+    });
+    console.log('=== END TEST ===');
+  }
+
+  // Test method to simulate form field selection
+  simulateFormFieldSelection(): void {
+    console.log('=== SIMULATING FORM FIELD SELECTION ===');
+    
+    // Create a mock form field component
+    const mockFormField: UIComponent = {
+      id: 'test-text-input-1',
+      type: 'text-input',
+      props: {
+        label: 'Test Label',
+        placeholder: 'Enter text here',
+        helpText: 'This is help text',
+        required: true
+      }
+    };
+    
+    console.log('Mock form field created:', mockFormField);
+    
+    // Simulate component selection
+    this.selectedComponent = mockFormField;
+    console.log('Selected component set to:', this.selectedComponent);
+    
+    // Initialize properties and rebuild forms
+    this.initializePropertyDefinitions();
+    this.buildForms();
+    
+    console.log('Forms rebuilt. Specific form controls:', Object.keys(this.specificForm.controls));
+    console.log('Is form field check:', this.isFormField(this.selectedComponent.type));
+    console.log('=== SIMULATION COMPLETE ===');
+  }
+  // Helper method for template debugging
+  getFormControlKeys(): string {
+    if (this.specificForm?.controls) {
+      return Object.keys(this.specificForm.controls).join(', ');
+    }
+    return 'None';
   }
 }
