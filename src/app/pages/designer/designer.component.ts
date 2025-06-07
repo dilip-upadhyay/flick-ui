@@ -69,8 +69,10 @@ export class DesignerComponent implements OnInit, OnDestroy {
     this.designerService.getCurrentConfig()
       .pipe(takeUntil(this.destroy$))
       .subscribe((config: UIConfig) => {
+        console.log('DesignerComponent: Received config update:', config);
         if (config) {
           this.currentConfig = config;
+          console.log('DesignerComponent: currentConfig updated:', this.currentConfig);
         }
       });
 

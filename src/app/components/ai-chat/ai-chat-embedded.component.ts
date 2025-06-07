@@ -34,15 +34,14 @@ export class AiChatEmbeddedComponent implements OnInit, OnDestroy {
   isLoading = false;
   currentConfig: UIConfig | null = null;
   selectedComponent: UIComponent | null = null;
-
   // Quick action suggestions
   quickActions = [
-    { label: 'Add a form', command: 'add a form with name, email, and submit button' },
-    { label: 'Create dashboard', command: 'create a dashboard with charts and cards' },
-    { label: 'Add navigation', command: 'add horizontal navigation menu' },
-    { label: 'Style components', command: 'make the layout more modern and colorful' },
-    { label: 'Add grid layout', command: 'convert to 3-column grid layout' },
-    { label: 'Add button row', command: 'add a row of action buttons at the bottom' }
+    { label: 'Set grid to 1 column', command: 'set grid to 1 column' },
+    { label: 'Set grid to 3 columns', command: 'set grid to 3 columns' },
+    { label: 'Add form with fields', command: 'add a form with name, email, and submit button' },
+    { label: 'Add save button', command: 'add a save button' },
+    { label: 'Create dashboard card', command: 'create a dashboard with cards' },
+    { label: 'Add action buttons', command: 'add action buttons' }
   ];
 
   constructor() {
@@ -108,18 +107,27 @@ export class AiChatEmbeddedComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       this.processAIResponse(content);
     }, 1000);
-  }
+  }  private processAIResponse(userMessage: string) {
+    const message = userMessage.toLowerCase();
+    let aiResponse = '';
+    let actionPerformed = false;
 
-  private processAIResponse(userMessage: string) {
-    // Simple AI response simulation
-    let aiResponse = this.generateAIResponse(userMessage);
+    try {
+      const result = this.executeCommand(message);
+      actionPerformed = result.actionPerformed;
+      aiResponse = result.response;
+    } catch (error) {
+      console.error('Error processing AI response:', error);
+      aiResponse = "I encountered an error while processing your request. Please try again with a different command.";
+    }
     
     const aiMessage: ChatMessage = {
       id: this.generateMessageId(),
       content: aiResponse,
       sender: 'ai',
       timestamp: new Date(),
-      type: 'text'
+      type: 'text',
+      metadata: { actionPerformed }
     };
 
     this.messages.push(aiMessage);
@@ -128,29 +136,257 @@ export class AiChatEmbeddedComponent implements OnInit, OnDestroy {
     setTimeout(() => this.scrollToBottom(), 100);
   }
 
-  private generateAIResponse(userMessage: string): string {
-    const message = userMessage.toLowerCase();
+  private executeCommand(message: string): { actionPerformed: boolean; response: string } {
+    if (message.includes('grid') && (message.includes('row') || message.includes('column'))) {
+      return this.handleGridCommand(message);
+    }
     
     if (message.includes('form')) {
-      return "I can help you create a form! I'll add a form component with the fields you specified. This will include proper validation and styling.";
-    } else if (message.includes('dashboard')) {
-      return "Let me create a dashboard layout for you. I'll add cards, charts, and data visualization components arranged in a responsive grid.";
-    } else if (message.includes('navigation')) {
-      return "I'll add a navigation component to your layout. This will include menu items and proper routing structure.";
-    } else if (message.includes('style') || message.includes('color')) {
-      return "I can help you improve the styling! I'll update the components with modern colors, better spacing, and improved typography.";
-    } else if (message.includes('grid') || message.includes('layout')) {
-      return "I'll convert your layout to use a responsive grid system. This will make your components organize better across different screen sizes.";
-    } else if (message.includes('button')) {
-      return "I'll add action buttons to your layout. These will be properly styled and positioned for the best user experience.";
-    } else {
-      return "I understand you want to modify your UI components. Could you be more specific about what you'd like me to add or change? For example, you can ask me to add forms, create dashboards, modify layouts, or improve styling.";
+      return this.handleFormCommand(message);
     }
+    
+    if (message.includes('button')) {
+      return this.handleButtonCommand(message);
+    }
+    
+    if (message.includes('card') || message.includes('dashboard')) {
+      return this.handleDashboardCommand(message);
+    }
+    
+    return this.getHelpResponse();
+  }
+
+  private handleGridCommand(message: string): { actionPerformed: boolean; response: string } {
+    const actionPerformed = this.handleGridModification(message);
+    if (actionPerformed) {
+      return {
+        actionPerformed: true,
+        response: "✅ I've updated the grid layout as requested. The changes have been applied to your design."
+      };
+    }
+    return {
+      actionPerformed: false,
+      response: "I understand you want to modify the grid layout. Could you specify the number of columns? For example: 'set grid to 3 columns' or 'make it 1 column'."
+    };
+  }
+
+  private handleFormCommand(message: string): { actionPerformed: boolean; response: string } {
+    const actionPerformed = this.handleFormCreation(message);
+    if (actionPerformed) {
+      return {
+        actionPerformed: true,
+        response: "✅ I've added a form component with the requested fields to your layout."
+      };
+    }
+    return {
+      actionPerformed: false,
+      response: "I can help you create a form! Please specify what fields you'd like, for example: 'add a form with name, email, and submit button'."
+    };
+  }
+
+  private handleButtonCommand(message: string): { actionPerformed: boolean; response: string } {
+    const actionPerformed = this.handleButtonCreation(message);
+    if (actionPerformed) {
+      return {
+        actionPerformed: true,
+        response: "✅ I've added button components to your layout."
+      };
+    }
+    return {
+      actionPerformed: false,
+      response: "I can add buttons to your layout. Please specify what type of buttons you'd like, for example: 'add a save button' or 'add action buttons'."
+    };
+  }
+
+  private handleDashboardCommand(message: string): { actionPerformed: boolean; response: string } {
+    const actionPerformed = this.handleDashboardCreation(message);
+    if (actionPerformed) {
+      return {
+        actionPerformed: true,
+        response: "✅ I've added dashboard components with cards to your layout."
+      };
+    }
+    return {
+      actionPerformed: false,
+      response: "I can create dashboard components for you. Please specify what you'd like to include."
+    };
+  }
+
+  private getHelpResponse(): { actionPerformed: boolean; response: string } {
+    return {
+      actionPerformed: false,
+      response: "I can help you modify your UI layout! Here are some things I can do:\n\n" +
+               "🔲 **Grid Layout**: 'set grid to 2 columns'\n" +
+               "📝 **Forms**: 'add a form with name and email fields'\n" +
+               "🔘 **Buttons**: 'add a save button' or 'add action buttons'\n" +
+               "📊 **Dashboard**: 'create a dashboard with cards'\n\n" +
+               "What would you like me to help you with?"
+    };
+  }private handleGridModification(message: string): boolean {
+    console.log('AiChatEmbedded: handleGridModification called with message:', message);
+    const colRegex = /(\d+)\s*column/;
+    const colMatch = colRegex.exec(message);
+    
+    if (colMatch) {
+      const currentConfig = this.currentConfig;
+      console.log('AiChatEmbedded: Current config before update:', currentConfig);
+      if (currentConfig) {
+        const columns = parseInt(colMatch[1], 10);
+        console.log('AiChatEmbedded: Parsed columns:', columns);
+        
+        const newGridConfig = {
+          type: 'grid' as const,
+          columns: columns,
+          gap: '16px'
+        };
+
+        const updatedConfig = {
+          ...currentConfig,
+          layout: newGridConfig
+        };
+
+        console.log('AiChatEmbedded: Updated config to be sent:', updatedConfig);
+        this.designerService.updateConfig(updatedConfig);
+        console.log('AiChatEmbedded: updateConfig called successfully');
+        return true;
+      }
+    }
+    
+    // Handle "1 row 1 column" case as 1 column
+    if (message.includes('1 row') && message.includes('1 column')) {
+      const currentConfig = this.currentConfig;
+      console.log('AiChatEmbedded: Handling 1 row 1 column case, current config:', currentConfig);
+      if (currentConfig) {
+        const newGridConfig = {
+          type: 'grid' as const,
+          columns: 1,
+          gap: '16px'
+        };
+
+        const updatedConfig = {
+          ...currentConfig,
+          layout: newGridConfig
+        };
+
+        console.log('AiChatEmbedded: Updated config for 1 column:', updatedConfig);
+        this.designerService.updateConfig(updatedConfig);
+        console.log('AiChatEmbedded: updateConfig called for 1 column');
+        return true;
+      }
+    }
+    
+    console.log('AiChatEmbedded: No grid modification performed');
+    return false;
+  }
+  private handleFormCreation(message: string): boolean {
+    if (this.currentConfig) {
+      const formComponent: UIComponent = {
+        id: `form_${Date.now()}`,
+        type: 'form',
+        props: {
+          title: 'New Form',
+          fields: this.extractFormFields(message)
+        }
+      };
+
+      const updatedConfig = {
+        ...this.currentConfig,
+        components: [...this.currentConfig.components, formComponent]
+      };
+
+      this.designerService.updateConfig(updatedConfig);
+      return true;
+    }
+    return false;
+  }
+
+  private handleButtonCreation(message: string): boolean {
+    if (this.currentConfig) {
+      const buttonComponent: UIComponent = {
+        id: `button_${Date.now()}`,
+        type: 'button',
+        props: {
+          text: this.extractButtonText(message),
+          variant: 'contained',
+          color: 'primary'
+        }
+      };
+
+      const updatedConfig = {
+        ...this.currentConfig,
+        components: [...this.currentConfig.components, buttonComponent]
+      };
+
+      this.designerService.updateConfig(updatedConfig);
+      return true;
+    }
+    return false;
+  }
+
+  private handleDashboardCreation(message: string): boolean {
+    if (this.currentConfig) {
+      const cardComponent: UIComponent = {
+        id: `card_${Date.now()}`,
+        type: 'card',
+        props: {
+          title: 'Dashboard Card',
+          content: 'Card content goes here'
+        }
+      };
+
+      const updatedConfig = {
+        ...this.currentConfig,
+        components: [...this.currentConfig.components, cardComponent]
+      };
+
+      this.designerService.updateConfig(updatedConfig);
+      return true;
+    }
+    return false;
+  }
+
+  private extractFormFields(message: string): any[] {
+    const fields = [];
+    if (message.includes('name')) {
+      fields.push({ type: 'text', label: 'Name', required: true });
+    }
+    if (message.includes('email')) {
+      fields.push({ type: 'email', label: 'Email', required: true });
+    }
+    if (message.includes('submit')) {
+      fields.push({ type: 'submit', label: 'Submit' });
+    }
+    
+    // Default fields if none specified
+    if (fields.length === 0) {
+      fields.push(
+        { type: 'text', label: 'Name', required: true },
+        { type: 'email', label: 'Email', required: true },
+        { type: 'submit', label: 'Submit' }
+      );
+    }
+    
+    return fields;
+  }
+
+  private extractButtonText(message: string): string {
+    if (message.includes('save')) return 'Save';
+    if (message.includes('submit')) return 'Submit';
+    if (message.includes('cancel')) return 'Cancel';
+    if (message.includes('delete')) return 'Delete';
+    return 'Button';
   }
 
   useQuickAction(action: any) {
+    console.log('AiChatEmbedded: useQuickAction called with:', action);
     this.chatForm.get('message')?.setValue(action.command);
     this.onSubmit();
+  }
+
+  // Test method to verify the pipeline works
+  testGridChange() {
+    console.log('AiChatEmbedded: testGridChange called');
+    this.sendMessage('set grid to 1 column');
   }
 
   clearChat() {

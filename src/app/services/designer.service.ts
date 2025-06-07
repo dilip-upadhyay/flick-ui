@@ -59,9 +59,12 @@ export class DesignerService {
   }
 
   updateConfig(config: UIConfig): void {
+    console.log('DesignerService: updateConfig called with:', config);
+    console.log('DesignerService: Previous config:', this.currentConfig$.value);
     this.currentConfig$.next(config);
     this.saveToHistory(config);
     this.setUnsavedChanges(true);
+    console.log('DesignerService: Config updated and emitted');
   }
 
   exportConfig(): string {

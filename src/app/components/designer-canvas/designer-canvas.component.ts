@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, OnChanges, SimpleChanges, Input, Output, EventEmitter, ViewChild, ElementRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MaterialModule } from '../../shared/material.module';
@@ -37,7 +37,7 @@ export interface ComponentWithPosition extends UIComponent {
   templateUrl: './designer-canvas.component.html',
   styleUrls: ['./designer-canvas.component.css']
 })
-export class DesignerCanvasComponent implements OnInit, OnDestroy {
+export class DesignerCanvasComponent implements OnInit, OnDestroy, OnChanges {
   @Input() config: UIConfig | null = null;
   @Input() selectedComponent: UIComponent | null = null;
   @Input() viewMode: 'desktop' | 'tablet' | 'mobile' = 'desktop';
@@ -83,8 +83,23 @@ export class DesignerCanvasComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    console.log('DesignerCanvasComponent: ngOnInit - Initial config:', this.config);
     // Ensure we have a proper grid layout configuration first
     this.ensureGridLayoutConfiguration();
+    
+    // Subscribe to config changes from designer service as well as input changes
+    this.designerService.getCurrentConfig()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(config => {
+        console.log('DesignerCanvasComponent: Direct config update from service:', config);
+        if (config && config !== this.config) {
+          console.log('DesignerCanvasComponent: Config differs, updating local config');
+          this.config = config;
+          this.ensureGridLayoutConfiguration();
+          this.generateGridCells();
+          this.initializeComponentPositions();
+        }
+      });
     
     // Subscribe to drag events from component palette
     this.designerService.getDraggedComponent()
@@ -109,6 +124,20 @@ export class DesignerCanvasComponent implements OnInit, OnDestroy {
     
     // Debug grid configuration
     setTimeout(() => this.debugGridConfiguration(), 1000);
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['config']) {
+      console.log('DesignerCanvasComponent: Config input changed!');
+      console.log('Previous config:', changes['config'].previousValue);
+      console.log('Current config:', changes['config'].currentValue);
+      
+      if (changes['config'].currentValue) {
+        this.ensureGridLayoutConfiguration();
+        this.generateGridCells();
+        this.initializeComponentPositions();
+      }
+    }
   }
 
   ngOnDestroy() {
