@@ -285,16 +285,27 @@ export class DesignerService {
     } else {
       this.snackBar.open('No saved layout found', 'Close', { duration: 3000 });
     }
-  }
-
-  showPreview(): void {
+  }  showPreview(): void {
     console.log('DesignerService: showPreview() called');
-    
-    // Temporary debug notification
-    this.snackBar.open('Preview function called - check console for details', 'Close', { duration: 5000 });
     
     const config = this.currentConfig$.value;
     console.log('DesignerService: Current config:', config);
+    console.log('DesignerService: Config components count:', config?.components?.length || 0);
+    
+    // Log each component in detail
+    if (config?.components) {
+      console.log('DesignerService: Components details:');
+      config.components.forEach((comp, index) => {
+        console.log(`  Component ${index}:`, comp);
+        if (comp.type === 'form' && comp.props && comp.props.fields) {
+          console.log(`    Form component has ${comp.props.fields.length} fields:`, comp.props.fields);
+        }
+        if (comp.gridPosition) {
+          console.log(`    Component has gridPosition:`, comp.gridPosition);
+        }
+      });
+    }
+    
     if (!config) {
       console.warn('No configuration available for preview');
       this.snackBar.open('No configuration available for preview', 'Close', { duration: 5000 });
@@ -344,7 +355,6 @@ export class DesignerService {
       this.snackBar.open('Error loading test configuration', 'Close', { duration: 3000 });
     }
   }
-
   async loadConfigurationFromAssets(filename: string): Promise<void> {
     try {
       const response = await fetch(`/assets/configs/${filename}`);
@@ -353,12 +363,18 @@ export class DesignerService {
       }
       
       const config = await response.json();
+      console.log('DesignerService: Loaded config from assets:', config);
       this.loadConfig(config);
       this.snackBar.open(`Configuration ${filename} loaded successfully`, 'Close', { duration: 3000 });
     } catch (error) {
       console.error(`Error loading configuration ${filename}:`, error);
       this.snackBar.open(`Error loading configuration ${filename}`, 'Close', { duration: 3000 });
     }
+  }
+
+  // Method to load our test grid form configuration
+  async loadGridFormPreviewTest(): Promise<void> {
+    await this.loadConfigurationFromAssets('grid-form-preview-test.json');
   }
 
   // Private Helper Methods

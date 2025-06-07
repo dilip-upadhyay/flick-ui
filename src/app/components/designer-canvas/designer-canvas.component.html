@@ -22,14 +22,17 @@
         </div>
 
         <!-- Grid Layout Canvas -->
-        <div class="grid-canvas" *ngIf="gridLayoutMode === 'grid'">
-          <app-form-grid-layout
+        <div class="grid-canvas" *ngIf="gridLayoutMode === 'grid'">          <app-form-grid-layout
             [formFields]="convertToFormFieldsWithPosition()"
             [editMode]="true"
             [showPalette]="true"
+            [initialGridCols]="getFormLayoutCols()"
+            [initialGridRows]="getFormLayoutRows()"
+            [initialGridGap]="getFormLayoutGap()"
             (fieldsChange)="onGridFieldsChange($event)"
             (fieldSelected)="onGridFieldSelected($event)"
-            (fieldEdit)="onGridFieldEdit($event)">
+            (fieldEdit)="onGridFieldEdit($event)"
+            (gridSettingsChange)="onFormGridSettingsChange($event)">
           </app-form-grid-layout>
         </div>
 

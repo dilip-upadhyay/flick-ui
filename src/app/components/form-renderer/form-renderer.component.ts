@@ -34,15 +34,18 @@ export class FormRendererComponent implements OnInit, OnChanges, OnDestroy {
   private updateDeviceType() {
     this.currentDeviceType = this.getCurrentDeviceType();
   }
-
   ngOnInit() {
+    console.log('FormRendererComponent: ngOnInit called with config:', this.config);
     if (this.config) {
+      console.log('FormRendererComponent: Config has fields:', this.config.fields?.length || 0);
       this.buildForm();
     }
   }
 
   ngOnChanges() {
+    console.log('FormRendererComponent: ngOnChanges called with config:', this.config);
     if (this.config) {
+      console.log('FormRendererComponent: Config has fields:', this.config.fields?.length || 0);
       this.buildForm();
     }
   }
@@ -50,13 +53,18 @@ export class FormRendererComponent implements OnInit, OnChanges, OnDestroy {
   ngOnDestroy() {
     // Cleanup if needed
   }
-
   private buildForm() {
-    if (!this.config) return;
+    console.log('FormRendererComponent: buildForm called');
+    if (!this.config) {
+      console.log('FormRendererComponent: No config available for buildForm');
+      return;
+    }
 
+    console.log('FormRendererComponent: Building form with fields:', this.config.fields);
     const formControls: any = {};
 
     this.config.fields.forEach(field => {
+      console.log('FormRendererComponent: Processing field:', field);
       const validators = this.getValidators(field);
       const defaultValue = this.getDefaultValue(field);
       
@@ -71,6 +79,8 @@ export class FormRendererComponent implements OnInit, OnChanges, OnDestroy {
     });
 
     this.formGroup = this.formBuilder.group(formControls);
+    console.log('FormRendererComponent: FormGroup created:', this.formGroup);
+    console.log('FormRendererComponent: FormGroup controls:', Object.keys(this.formGroup.controls));
 
     // Add custom validator for confirm password
     this.addConfirmPasswordValidator();

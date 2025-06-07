@@ -81,21 +81,19 @@ export class DesignerCanvasComponent implements OnInit, OnDestroy, OnChanges {
     private navigationAlignmentService: NavigationAlignmentService,
     private formBuilderService: FormBuilderService
   ) {}
-
   ngOnInit() {
     console.log('DesignerCanvasComponent: ngOnInit - Initial config:', this.config);
-    // Ensure we have a proper grid layout configuration first
-    this.ensureGridLayoutConfiguration();
+    // Ensure we have a basic configuration without forcing grid layout
+    this.ensureBasicConfiguration();
     
     // Subscribe to config changes from designer service as well as input changes
     this.designerService.getCurrentConfig()
       .pipe(takeUntil(this.destroy$))
       .subscribe(config => {
-        console.log('DesignerCanvasComponent: Direct config update from service:', config);
-        if (config && config !== this.config) {
+        console.log('DesignerCanvasComponent: Direct config update from service:', config);        if (config && config !== this.config) {
           console.log('DesignerCanvasComponent: Config differs, updating local config');
           this.config = config;
-          this.ensureGridLayoutConfiguration();
+          this.ensureBasicConfiguration();
           this.generateGridCells();
           this.initializeComponentPositions();
         }
@@ -131,9 +129,8 @@ export class DesignerCanvasComponent implements OnInit, OnDestroy, OnChanges {
       console.log('DesignerCanvasComponent: Config input changed!');
       console.log('Previous config:', changes['config'].previousValue);
       console.log('Current config:', changes['config'].currentValue);
-      
-      if (changes['config'].currentValue) {
-        this.ensureGridLayoutConfiguration();
+        if (changes['config'].currentValue) {
+        this.ensureBasicConfiguration();
         this.generateGridCells();
         this.initializeComponentPositions();
       }
@@ -148,27 +145,14 @@ export class DesignerCanvasComponent implements OnInit, OnDestroy, OnChanges {
   trackByComponentId(index: number, component: UIComponent): string {
     return component.id;
   }
-
-  // Method to ensure we have a grid layout configuration
-  ensureGridLayoutConfiguration() {
+  // Method to ensure we have a basic configuration (without forcing grid layout)
+  ensureBasicConfiguration() {
     if (!this.config) {
       this.config = {
         type: 'layout',
-        layout: {
-          type: 'grid',
-          columns: 3,
-          gap: '16px'
-        },
         components: []
       };
-      console.log('Created default grid configuration:', this.config);
-    } else if (!this.config.layout || this.config.layout.type !== 'grid') {
-      this.config.layout = {
-        type: 'grid',
-        columns: 3,
-        gap: '16px'
-      };
-      console.log('Updated layout to grid configuration:', this.config.layout);
+      console.log('Created default basic configuration:', this.config);
     }
     
     // Ensure components array exists
@@ -479,7 +463,6 @@ export class DesignerCanvasComponent implements OnInit, OnDestroy, OnChanges {
       this.componentSelected.emit(component);
     }
   }
-
   onGridFieldEdit(field: FormFieldWithPosition | null): void {
     if (!field || !this.formBuilderState?.formElements) {
       return;
@@ -489,6 +472,34 @@ export class DesignerCanvasComponent implements OnInit, OnDestroy, OnChanges {
     if (component) {
       this.componentSelected.emit(component);
     }
+  }
+
+  onFormGridSettingsChange(settings: { columns: number; rows: number; gap: number }): void {
+    console.log('Form grid settings changed:', settings);
+    
+    if (!this.formBuilderState?.activeForm) {
+      return;
+    }
+
+    // Update the form's layout configuration
+    if (!this.formBuilderState.activeForm.props) {
+      this.formBuilderState.activeForm.props = {};
+    }
+    
+    if (!this.formBuilderState.activeForm.props.layout) {
+      this.formBuilderState.activeForm.props.layout = { type: 'grid' };
+    }
+    
+    // Update layout properties
+    this.formBuilderState.activeForm.props.layout = {
+      type: 'grid',
+      columns: settings.columns,
+      rows: settings.rows,
+      gap: `${settings.gap}px`
+    };    console.log('Updated form layout:', this.formBuilderState.activeForm.props.layout);
+
+    // Update the form through the designer service
+    this.designerService.updateComponent(this.formBuilderState.activeForm);
   }
 
   isComponentSelected(component: UIComponent): boolean {
@@ -813,5 +824,21 @@ export class DesignerCanvasComponent implements OnInit, OnDestroy, OnChanges {
   getCanvasAlignmentStyles(): { [key: string]: string } {
     const styles = this.navigationAlignmentService.getCanvasAlignmentStyles(this.config);
     return styles || {};
+  }
+
+  getFormLayoutCols(): number {
+    const layout = this.formBuilderState?.activeForm?.props?.layout;
+    return layout?.columns || 1;
+  }
+
+  getFormLayoutRows(): number {
+    const layout = this.formBuilderState?.activeForm?.props?.layout;
+    return layout?.rows || 1;
+  }
+
+  getFormLayoutGap(): number {
+    const layout = this.formBuilderState?.activeForm?.props?.layout;
+    const gap = layout?.gap || '10px';
+    return parseInt(gap.replace('px', ''), 10) || 10;
   }
 }

@@ -126,9 +126,9 @@ export class DesignerComponent implements OnInit, OnDestroy {
         this.designerService.redo();
         break;      case 'load-test-config':
         this.loadTestConfig();
-        break;
-      case 'load-grid-test':
-        this.loadGridTestScenario();
+        break;      case 'load-grid-test':
+        console.log('Designer: Calling testLoadGridFormConfig()');
+        this.testLoadGridFormConfig();
         break;
     }
   }
@@ -228,18 +228,22 @@ export class DesignerComponent implements OnInit, OnDestroy {
     console.log('Designer: previewLayout() called');
     console.log('Designer: Current config:', this.currentConfig);
     this.designerService.showPreview();
-  }
-  private loadTestConfig() {
+  }  public loadTestConfig() {
     this.designerService.loadTestConfiguration();
   }
 
-  private loadGridTestScenario() {
+  public loadGridTestScenario() {
     this.designerService.loadConfigurationFromAssets('grid-test-scenario.json');
   }
-
   // TEMPORARY: Test method for preview functionality
-  private testPreviewFunctionality() {
+  public testPreviewFunctionality() {
     console.log('TEMP TEST: Simulating preview button click...');
     this.onToolbarAction('preview');
+  }
+
+  // TEMPORARY: Test method to load grid form test configuration
+  public async testLoadGridFormConfig() {
+    console.log('TEMP TEST: Loading grid form test configuration...');
+    await this.designerService.loadGridFormPreviewTest();
   }
 }

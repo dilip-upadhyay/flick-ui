@@ -1,0 +1,69 @@
+{
+  "type": "layout",
+  "version": "1.0",
+  "theme": "default",
+  "layout": {
+    "direction": "column",
+    "gap": "medium",
+    "padding": "medium"
+  },
+  "components": [
+    {
+      "id": "test-form",
+      "type": "form",
+      "props": {
+        "title": "Test Form with Children Array",
+        "description": "This form has fields in children array instead of fields array",
+        "submitText": "Submit Form",
+        "layout": "vertical"
+      },
+      "children": [
+        {
+          "id": "firstName",
+          "type": "text-input",
+          "props": {
+            "label": "First Name",
+            "placeholder": "Enter your first name",
+            "required": true,
+            "gridPosition": {
+              "row": 0,
+              "col": 0,
+              "width": 1,
+              "height": 1
+            }
+          }
+        },
+        {
+          "id": "email",
+          "type": "email-input",
+          "props": {
+            "label": "Email Address",
+            "placeholder": "Enter your email",
+            "required": true,
+            "gridPosition": {
+              "row": 1,
+              "col": 0,
+              "width": 1,
+              "height": 1
+            }
+          }
+        },
+        {
+          "id": "message",
+          "type": "textarea",
+          "props": {
+            "label": "Message",
+            "placeholder": "Enter your message",
+            "required": false,
+            "gridPosition": {
+              "row": 2,
+              "col": 0,
+              "width": 2,
+              "height": 1
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -19,9 +19,8 @@ export class PreviewComponent implements OnInit {
   fullscreen = false;
 
   constructor(private readonly route: ActivatedRoute, private readonly configService: ConfigService) {}
-
   ngOnInit(): void {
-    debugger
+    console.log('PreviewComponent: ngOnInit called');
     this.loadPreviewConfig();
   }
 
@@ -66,12 +65,12 @@ export class PreviewComponent implements OnInit {
             }
           } else {
             this.error = 'No configuration provided for preview';
-          }
-        } else {
+          }        } else {
           this.error = 'Preview not available in server-side rendering mode';
         }
       }
-      console.log("config: " + this.config);
+      console.log('PreviewComponent: Final config:', this.config);
+      console.log('PreviewComponent: Final error:', this.error);
     });
   }
 

@@ -314,13 +314,19 @@ export interface FormFieldWithPosition extends FormElementConfig {
     }
   `]
 })
-export class FormGridLayoutComponent implements OnInit, OnDestroy {
-  @Input() formFields: FormFieldWithPosition[] = [];
+export class FormGridLayoutComponent implements OnInit, OnDestroy {  @Input() formFields: FormFieldWithPosition[] = [];
   @Input() editMode: boolean = false;
   @Input() showPalette: boolean = true;
-  @Output() fieldsChange = new EventEmitter<FormFieldWithPosition[]>();
+  @Input() initialGridCols: number = 3;
+  @Input() initialGridRows: number = 5;
+  @Input() initialGridGap: number = 16;@Output() fieldsChange = new EventEmitter<FormFieldWithPosition[]>();
   @Output() fieldSelected = new EventEmitter<FormFieldWithPosition | null>();
   @Output() fieldEdit = new EventEmitter<FormFieldWithPosition>();
+  @Output() gridSettingsChange = new EventEmitter<{
+    columns: number;
+    rows: number;
+    gap: number;
+  }>();
 
   // Grid settings
   gridCols: number = 3;
@@ -354,8 +360,12 @@ export class FormGridLayoutComponent implements OnInit, OnDestroy {
   private resizing = false;
   private resizeStartPos = { x: 0, y: 0 };
   private resizeStartSize = { width: 1, height: 1 };
-
   ngOnInit() {
+    // Initialize grid settings from inputs
+    this.gridCols = this.initialGridCols;
+    this.gridRows = this.initialGridRows;
+    this.gridGap = this.initialGridGap;
+    
     this.generateGridCells();
     this.initializeFieldPositions();
   }
@@ -384,9 +394,16 @@ export class FormGridLayoutComponent implements OnInit, OnDestroy {
       }
     });
   }
-
   onGridSettingsChange() {
     this.generateGridCells();
+    
+    // Emit grid settings changes to parent
+    this.gridSettingsChange.emit({
+      columns: this.gridCols,
+      rows: this.gridRows,
+      gap: this.gridGap
+    });
+    
     // Adjust field positions if they're outside the new grid
     this.formFields.forEach(field => {
       if (field.gridPosition) {

@@ -1,0 +1,35 @@
+{
+  "type": "layout",
+  "components": [
+    {
+      "id": "form-1",
+      "type": "form",
+      "props": {
+        "title": "Grid Layout Test Form",
+        "layout": {
+          "type": "grid",
+          "columns": 1,
+          "rows": 1,
+          "gap": "10px"
+        }
+      },
+      "children": [
+        {
+          "id": "field-1",
+          "type": "text-input",
+          "props": {
+            "label": "Test Field",
+            "placeholder": "Enter text",
+            "required": false,
+            "gridPosition": {
+              "row": 0,
+              "col": 0,
+              "width": 1,
+              "height": 1
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

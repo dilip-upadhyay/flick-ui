@@ -1,0 +1,83 @@
+{
+  "type": "layout",
+  "layout": {
+    "type": "grid",
+    "columns": 2,
+    "rows": 3,
+    "gap": "16px"
+  },
+  "metadata": {
+    "title": "Grid Form Preview Test"
+  },
+  "components": [
+    {
+      "id": "form-container-1",
+      "type": "form",
+      "props": {
+        "title": "Contact Form",        "fields": [
+          {
+            "id": "name-field",
+            "type": "text",
+            "label": "Full Name",
+            "placeholder": "Enter your full name",
+            "required": true,
+            "modelField": "fullName"
+          },
+          {
+            "id": "email-field", 
+            "type": "email",
+            "label": "Email Address",
+            "placeholder": "Enter your email",
+            "required": true,
+            "modelField": "email"
+          },
+          {
+            "id": "phone-field",
+            "type": "text", 
+            "label": "Phone Number",
+            "placeholder": "Enter your phone number",
+            "required": false,
+            "modelField": "phone"
+          },
+          {
+            "id": "message-field",
+            "type": "text",
+            "label": "Message",
+            "placeholder": "Enter your message",
+            "required": true,
+            "modelField": "message"
+          }
+        ],
+        "actions": [
+          {
+            "type": "submit",
+            "label": "Submit Form",
+            "variant": "primary"
+          },
+          {
+            "type": "reset",
+            "label": "Reset",
+            "variant": "secondary"
+          }
+        ],
+        "model": {
+          "name": "ContactForm",
+          "apiEndpoint": "/api/contact",
+          "method": "POST",
+          "fields": {
+            "fullName": "",
+            "email": "",
+            "phone": "",
+            "message": ""
+          }
+        }
+      },
+      "gridPosition": {
+        "row": 0,
+        "col": 0,
+        "width": 2,
+        "height": 3
+      }
+    }
+  ]
+}

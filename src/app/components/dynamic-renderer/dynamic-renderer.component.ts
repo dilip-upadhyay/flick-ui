@@ -48,8 +48,12 @@ export class DynamicRendererComponent implements OnInit, OnDestroy {
     private navigationAlignmentService: NavigationAlignmentService,
     private cdr: ChangeDetectorRef
   ) {}
-
   ngOnInit(): void {
+    console.log('DynamicRenderer: ngOnInit called');
+    console.log('DynamicRenderer: Input config:', this.config);
+    console.log('DynamicRenderer: Input configSource:', this.configSource);
+    console.log('DynamicRenderer: Input context:', this.context);
+    
     // Set initial context if provided
     if (this.context) {
       this.rendererService.setContext(this.context);
@@ -58,12 +62,15 @@ export class DynamicRendererComponent implements OnInit, OnDestroy {
     // Load configuration
     if (this.config) {
       // Use provided config
+      console.log('DynamicRenderer: Using provided config');
       this.loadStaticConfig(this.config);
     } else if (this.configSource) {
       // Load config from source
+      console.log('DynamicRenderer: Loading config from source');
       this.loadConfigFromSource(this.configSource);
     } else {
       // Subscribe to config service for changes
+      console.log('DynamicRenderer: Subscribing to config changes');
       this.subscribeToConfigChanges();
     }
   }
@@ -111,8 +118,8 @@ export class DynamicRendererComponent implements OnInit, OnDestroy {
 
   /**
    * Load configuration from static object
-   */
-  private loadStaticConfig(config: UIConfig): void {
+   */  private loadStaticConfig(config: UIConfig): void {
+    console.log('DynamicRenderer: loadStaticConfig called with:', config);
     this.isLoading = true;
     this.error = null;
 
@@ -120,14 +127,16 @@ export class DynamicRendererComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (loadedConfig) => {
+          console.log('DynamicRenderer: Config loaded successfully:', loadedConfig);
+          console.log('DynamicRenderer: Components in loaded config:', loadedConfig?.components?.length || 0);
           this.currentConfig = loadedConfig;
           this.isLoading = false;
           this.cdr.detectChanges();
         },
         error: (error) => {
+          console.error('DynamicRenderer: Configuration loading error:', error);
           this.error = 'Failed to load configuration';
           this.isLoading = false;
-          console.error('Configuration loading error:', error);
           this.cdr.detectChanges();
         }
       });
