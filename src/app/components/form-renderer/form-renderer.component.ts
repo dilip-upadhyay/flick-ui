@@ -33,38 +33,28 @@ export class FormRendererComponent implements OnInit, OnChanges, OnDestroy {
 
   private updateDeviceType() {
     this.currentDeviceType = this.getCurrentDeviceType();
-  }
-  ngOnInit() {
-    console.log('FormRendererComponent: ngOnInit called with config:', this.config);
+  }  ngOnInit() {
     if (this.config) {
-      console.log('FormRendererComponent: Config has fields:', this.config.fields?.length || 0);
       this.buildForm();
     }
   }
 
   ngOnChanges() {
-    console.log('FormRendererComponent: ngOnChanges called with config:', this.config);
     if (this.config) {
-      console.log('FormRendererComponent: Config has fields:', this.config.fields?.length || 0);
       this.buildForm();
     }
   }
 
   ngOnDestroy() {
     // Cleanup if needed
-  }
-  private buildForm() {
-    console.log('FormRendererComponent: buildForm called');
+  }  private buildForm() {
     if (!this.config) {
-      console.log('FormRendererComponent: No config available for buildForm');
       return;
     }
 
-    console.log('FormRendererComponent: Building form with fields:', this.config.fields);
     const formControls: any = {};
 
     this.config.fields.forEach(field => {
-      console.log('FormRendererComponent: Processing field:', field);
       const validators = this.getValidators(field);
       const defaultValue = this.getDefaultValue(field);
       
@@ -79,8 +69,6 @@ export class FormRendererComponent implements OnInit, OnChanges, OnDestroy {
     });
 
     this.formGroup = this.formBuilder.group(formControls);
-    console.log('FormRendererComponent: FormGroup created:', this.formGroup);
-    console.log('FormRendererComponent: FormGroup controls:', Object.keys(this.formGroup.controls));
 
     // Add custom validator for confirm password
     this.addConfirmPasswordValidator();
@@ -171,22 +159,16 @@ export class FormRendererComponent implements OnInit, OnChanges, OnDestroy {
     }
     return false; // Default for SSR
   }
-
   hasGridPositioning(): boolean {
     // Check if any field has grid positioning
-    const hasGrid = this.config?.fields?.some(field => field.gridColumn) || false;
-    console.log('hasGridPositioning:', hasGrid, 'fields with gridColumn:', 
-      this.config?.fields?.filter(field => field.gridColumn)?.map(f => ({ id: f.id, gridColumn: f.gridColumn })));
-    return hasGrid;
+    return this.config?.fields?.some(field => field.gridColumn) || false;
   }
 
   getFieldGridStyle(field: FormField): any {
     if (field.gridColumn) {
-      const style = {
+      return {
         'grid-area': field.gridColumn
       };
-      console.log(`Grid style for field ${field.id}:`, style);
-      return style;
     }
     return {};
   }
@@ -250,13 +232,7 @@ export class FormRendererComponent implements OnInit, OnChanges, OnDestroy {
       // For email and tel fields
       else if ((field.type === 'email' || field.type === 'tel') && screenWidth >= 1024) {
         classes.push('text-responsive');
-      }
-    }
-    
-    // Debug logging to help troubleshoot
-    if (field.id === 'confirmPassword' || field.id === 'dateOfBirth' || field.id === 'password') {
-      console.log(`Field ${field.id} classes:`, classes.join(' '), 'Screen width:', typeof window !== 'undefined' ? window.innerWidth : 'SSR');
-    }
+      }    }
     
     return classes.join(' ');
   }
