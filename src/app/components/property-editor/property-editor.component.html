@@ -1,5 +1,4 @@
-<div class="property-editor" *ngIf="selectedComponent; else noSelection">
-  <!-- Component Info -->
+<div class="property-editor" *ngIf="selectedComponent; else noSelection">  <!-- Component Info -->
   <div class="component-info">
     <div class="component-header">
       <mat-icon>{{ getComponentIcon(selectedComponent.type) }}</mat-icon>
@@ -8,6 +7,41 @@
         <span class="component-id">ID: {{ selectedComponent.id }}</span>
       </div>
     </div>
+  </div>
+
+  <!-- Quick Label Editor for Form Fields -->
+  <div class="quick-label-editor" *ngIf="isFormField(selectedComponent.type)">
+    <mat-card class="label-editor-card">
+      <mat-card-header>
+        <mat-icon mat-card-avatar class="label-icon">label</mat-icon>
+        <mat-card-title>Quick Label Edit</mat-card-title>
+        <mat-card-subtitle>Edit the display label for this form field</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-form-field appearance="outline" class="full-width-field">
+          <mat-label>Field Label</mat-label>
+          <input matInput 
+                 [value]="selectedComponent.props?.label || ''"
+                 (input)="updateLabel($event)"
+                 placeholder="Enter field label..."
+                 #labelInput>
+          <mat-hint>This label will be displayed above the form field</mat-hint>
+          <button mat-icon-button matSuffix 
+                  (click)="clearLabel()" 
+                  *ngIf="selectedComponent.props?.label"
+                  matTooltip="Clear label">
+            <mat-icon>clear</mat-icon>
+          </button>
+        </mat-form-field>
+        <div class="label-preview" *ngIf="selectedComponent.props?.label">
+          <span class="preview-label">Preview:</span>
+          <mat-form-field appearance="outline" class="preview-field">
+            <mat-label>{{ selectedComponent.props.label }}</mat-label>
+            <input matInput placeholder="{{ selectedComponent.props?.placeholder || 'Sample input...' }}" disabled>
+          </mat-form-field>
+        </div>
+      </mat-card-content>
+    </mat-card>
   </div>
 
   <!-- Property Categories -->
@@ -156,11 +190,109 @@
           </ng-container>
         </div>
       </form>
+    </mat-expansion-panel>    <!-- Enhanced Form Field Properties -->
+    <mat-expansion-panel 
+      *ngIf="isFormField(selectedComponent.type)"
+      [expanded]="true"
+      class="property-panel enhanced-form-panel">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <mat-icon>settings_input_component</mat-icon>
+          Form Field Configuration
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      
+      <form [formGroup]="specificForm" class="property-form enhanced-form-config">
+        <!-- Label Section -->
+        <div class="config-section">
+          <h4 class="section-title">
+            <mat-icon>label</mat-icon>
+            Display & Text
+          </h4>
+          <div class="config-grid">
+            <mat-form-field appearance="outline" class="primary-field">
+              <mat-label>Field Label</mat-label>
+              <input matInput formControlName="label" placeholder="Enter field label">
+              <mat-icon matSuffix>text_fields</mat-icon>
+              <mat-hint>Main label displayed above the field</mat-hint>
+            </mat-form-field>
+            
+            <mat-form-field appearance="outline" *ngIf="selectedComponent.type !== 'checkbox' && selectedComponent.type !== 'radio'">
+              <mat-label>Placeholder Text</mat-label>
+              <input matInput formControlName="placeholder" placeholder="Enter placeholder...">
+              <mat-icon matSuffix>help_outline</mat-icon>
+              <mat-hint>Hint text shown inside the field</mat-hint>
+            </mat-form-field>
+            
+            <mat-form-field appearance="outline">
+              <mat-label>Help Text</mat-label>
+              <input matInput formControlName="helpText" placeholder="Additional help information">
+              <mat-icon matSuffix>info</mat-icon>
+              <mat-hint>Helper text displayed below the field</mat-hint>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Validation & Behavior Section -->
+        <div class="config-section">
+          <h4 class="section-title">
+            <mat-icon>rule</mat-icon>
+            Validation & Behavior
+          </h4>
+          <div class="config-grid">
+            <div class="toggle-group">
+              <mat-slide-toggle formControlName="required" class="config-toggle">
+                <span class="toggle-label">
+                  <mat-icon>star</mat-icon>
+                  Required Field
+                </span>
+              </mat-slide-toggle>
+              <mat-hint>Mark this field as mandatory</mat-hint>
+            </div>
+            
+            <div class="toggle-group">
+              <mat-slide-toggle formControlName="disabled" class="config-toggle">
+                <span class="toggle-label">
+                  <mat-icon>block</mat-icon>
+                  Disabled
+                </span>
+              </mat-slide-toggle>
+              <mat-hint>Disable field interaction</mat-hint>
+            </div>
+          </div>
+        </div>
+
+        <!-- Default Values Section -->
+        <div class="config-section" *ngIf="selectedComponent.type !== 'submit-button' && selectedComponent.type !== 'reset-button'">
+          <h4 class="section-title">
+            <mat-icon>auto_awesome</mat-icon>
+            Default Values
+          </h4>
+          <div class="config-grid">
+            <mat-form-field appearance="outline" *ngIf="selectedComponent.type === 'checkbox'">
+              <mat-label>Default State</mat-label>
+              <mat-select formControlName="defaultValue">
+                <mat-option [value]="true">Checked</mat-option>
+                <mat-option [value]="false">Unchecked</mat-option>
+              </mat-select>
+              <mat-hint>Initial checkbox state</mat-hint>
+            </mat-form-field>
+            
+            <mat-form-field appearance="outline" *ngIf="selectedComponent.type !== 'checkbox' && selectedComponent.type !== 'radio'">
+              <mat-label>Default Value</mat-label>
+              <input matInput formControlName="defaultValue" 
+                     [type]="selectedComponent.type === 'number-input' ? 'number' : 'text'"
+                     placeholder="Enter default value">
+              <mat-hint>Pre-filled value when form loads</mat-hint>
+            </mat-form-field>
+          </div>
+        </div>
+      </form>
     </mat-expansion-panel>
 
     <!-- Component-Specific Properties -->
     <mat-expansion-panel 
-      *ngIf="specificProperties.length > 0"
+      *ngIf="specificProperties.length > 0 && !isFormField(selectedComponent.type)"
       class="property-panel">
       <mat-expansion-panel-header>
         <mat-panel-title>

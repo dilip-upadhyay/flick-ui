@@ -549,4 +549,53 @@ export class PropertyEditorComponent implements OnInit, OnDestroy, OnChanges {
     };
     return icons[componentType] || 'widgets';
   }
+
+  // Form field helper methods for enhanced label editing
+  isFormField(componentType: ComponentType): boolean {
+    const formFieldTypes: ComponentType[] = [
+      'text-input',
+      'email-input', 
+      'password-input',
+      'number-input',
+      'textarea',
+      'checkbox',
+      'radio',
+      'date-input',
+      'file-input'
+    ];
+    return formFieldTypes.includes(componentType);
+  }
+
+  updateLabel(event: any): void {
+    const newLabel = event.target.value;
+    if (this.selectedComponent) {
+      this.propertyChanged.emit({
+        component: this.selectedComponent,
+        property: 'props.label',
+        value: newLabel
+      });
+      
+      // Update the form control if it exists
+      const labelControl = this.specificForm.get('label');
+      if (labelControl && labelControl.value !== newLabel) {
+        labelControl.setValue(newLabel, { emitEvent: false });
+      }
+    }
+  }
+
+  clearLabel(): void {
+    if (this.selectedComponent) {
+      this.propertyChanged.emit({
+        component: this.selectedComponent,
+        property: 'props.label',
+        value: ''
+      });
+      
+      // Update the form control if it exists
+      const labelControl = this.specificForm.get('label');
+      if (labelControl) {
+        labelControl.setValue('', { emitEvent: false });
+      }
+    }
+  }
 }

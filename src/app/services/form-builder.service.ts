@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { UIComponent, ComponentType, FormConfig, FormField, FormModel } from '../models/ui-config.interface';
+import { UIComponent, ComponentType, FormField, FormModel } from '../models/ui-config.interface';
 import { DesignerService } from './designer.service';
 
 export interface FormBuilderState {
@@ -13,13 +13,13 @@ export interface FormBuilderState {
   providedIn: 'root'
 })
 export class FormBuilderService {
-  private formBuilderState$ = new BehaviorSubject<FormBuilderState>({
+  private readonly formBuilderState$ = new BehaviorSubject<FormBuilderState>({
     activeForm: null,
     formElements: [],
     modelBinding: null
   });
 
-  constructor(private designerService: DesignerService) {}
+  constructor(private readonly designerService: DesignerService) {}
 
   /**
    * Get the current form builder state
@@ -37,7 +37,7 @@ export class FormBuilderService {
     if (formComponent && formComponent.type === 'form') {
       // Extract form elements from form children
       const formElements = formComponent.children || [];
-      const modelBinding = formComponent.props.model || null;
+      const modelBinding = formComponent.props?.model ?? null;
       
       this.formBuilderState$.next({
         ...currentState,
@@ -68,22 +68,20 @@ export class FormBuilderService {
 
     // Create the form element component
     const newElement = this.designerService.createComponent(elementType);
-    
-    // Add element to form
-    if (!currentState.activeForm.children) {
-      currentState.activeForm.children = [];
-    }
+      // Add element to form    
+    currentState.activeForm.children ??= [];
+    const children = currentState.activeForm.children;
 
     if (index !== undefined) {
-      currentState.activeForm.children.splice(index, 0, newElement);
+      children.splice(index, 0, newElement);
     } else {
-      currentState.activeForm.children.push(newElement);
+      children.push(newElement);
     }
 
     // Update form builder state
     this.formBuilderState$.next({
       ...currentState,
-      formElements: [...currentState.activeForm.children]
+      formElements: [...children]
     });
 
     // Update the form component in the designer
@@ -98,7 +96,7 @@ export class FormBuilderService {
   removeFormElement(elementId: string): void {
     const currentState = this.formBuilderState$.value;
     
-    if (!currentState.activeForm || !currentState.activeForm.children) {
+    if (!currentState.activeForm?.children) {
       return;
     }
 
@@ -123,7 +121,7 @@ export class FormBuilderService {
   reorderFormElements(previousIndex: number, currentIndex: number): void {
     const currentState = this.formBuilderState$.value;
     
-    if (!currentState.activeForm || !currentState.activeForm.children) {
+    if (!currentState.activeForm?.children) {
       return;
     }
 
@@ -145,20 +143,19 @@ export class FormBuilderService {
   }
 
   /**
-   * Update form element properties
-   */
-  updateFormElement(elementId: string, properties: any): void {
+   * Update properties of a form element
+   */  updateFormElement(elementId: string, properties: any): void {
     const currentState = this.formBuilderState$.value;
     
-    if (!currentState.activeForm || !currentState.activeForm.children) {
+    if (!currentState.activeForm?.children) {
       return;
     }
 
-    // Find and update element
+    // Find and update the element
     const element = currentState.activeForm.children.find(el => el.id === elementId);
     if (element) {
       element.props = { ...element.props, ...properties };
-      
+
       // Update form builder state
       this.formBuilderState$.next({
         ...currentState,
@@ -171,16 +168,56 @@ export class FormBuilderService {
   }
 
   /**
-   * Set form model binding configuration
+   * Update the label of a form element
+   */  updateFormElementLabel(elementId: string, newLabel: string): void {
+    const currentState = this.formBuilderState$.value;
+    
+    if (!currentState.activeForm?.children) {
+      return;
+    }
+
+    // Find and update the element
+    const element = currentState.activeForm.children.find(el => el.id === elementId);    if (element) {
+      element.props ??= {};
+      element.props.label = newLabel;
+
+      // Update form builder state
+      this.formBuilderState$.next({
+        ...currentState,
+        formElements: [...currentState.activeForm.children]
+      });
+
+      // Update the form component in the designer
+      this.designerService.updateComponent(currentState.activeForm);
+      
+      // Also update individual component property in designer for real-time sync
+      this.designerService.updateComponentProperty(element, 'props.label', newLabel);
+    }
+  }
+
+  /**
+   * Get a specific form element by ID
+   */
+  getFormElement(elementId: string): UIComponent | null {
+    const currentState = this.formBuilderState$.value;
+    
+    if (!currentState.activeForm?.children) {
+      return null;
+    }
+
+    return currentState.activeForm.children.find(el => el.id === elementId) || null;
+  }
+
+  /**
+   * Set the form model for data binding
    */
   setFormModel(model: FormModel): void {
     const currentState = this.formBuilderState$.value;
     
     if (!currentState.activeForm) {
       return;
-    }
-
-    // Update form model
+    }    // Update form model
+    currentState.activeForm.props ??= {};
     currentState.activeForm.props.model = model;
 
     // Update form builder state
@@ -194,12 +231,12 @@ export class FormBuilderService {
   }
 
   /**
-   * Generate form fields configuration from form elements
+   * Generate form fields configuration for the current form
    */
   generateFormFieldsConfig(): FormField[] {
     const currentState = this.formBuilderState$.value;
     
-    if (!currentState.activeForm || !currentState.activeForm.children) {
+    if (!currentState.activeForm?.children) {
       return [];
     }
 
@@ -209,44 +246,48 @@ export class FormBuilderService {
   }
 
   /**
-   * Generate model field mapping from form elements
+   * Generate model field mapping for form binding
    */
   generateModelFieldMapping(): { [fieldId: string]: string } {
     const currentState = this.formBuilderState$.value;
-    
-    if (!currentState.activeForm || !currentState.activeForm.children) {
-      return {};
-    }
-
     const mapping: { [fieldId: string]: string } = {};
     
+    if (!currentState.activeForm?.children) {
+      return mapping;
+    }
+
     currentState.activeForm.children.forEach(element => {
-      if (this.isFormFieldElement(element.type) && element.props.modelField) {
+      if (this.isFormFieldElement(element.type) && element.props?.modelField) {
         mapping[element.id] = element.props.modelField;
       }
     });
 
     return mapping;
   }
-
   /**
-   * Check if component type is a form field element
+   * Check if a component type is a form field element
    */
   private isFormFieldElement(type: ComponentType): boolean {
-    return [
-      'text-input', 'email-input', 'password-input', 'number-input',
-      'textarea', 'checkbox', 'radio', 'date-input', 'file-input'
-    ].includes(type);
+    const formFieldTypes: ComponentType[] = [
+      'text-input',
+      'email-input',
+      'password-input',
+      'number-input',
+      'textarea',
+      'checkbox',
+      'radio',
+      'date-input',
+      'file-input'
+    ];
+    
+    return formFieldTypes.includes(type);
   }
 
   /**
-   * Convert form element component to FormField configuration
+   * Convert a UI component to a form field configuration
    */
   private convertElementToFormField(element: UIComponent): FormField {
-    const props = element.props;
-    
-    // Map component type to form field type
-    const typeMapping: { [key: string]: string } = {
+    const typeMapping: { [key: string]: FormField['type'] } = {
       'text-input': 'text',
       'email-input': 'email',
       'password-input': 'password',
@@ -256,18 +297,19 @@ export class FormBuilderService {
       'radio': 'radio',
       'date-input': 'date',
       'file-input': 'file'
-    };
-
-    return {
+    };    return {
       id: element.id,
-      type: typeMapping[element.type] as any,
-      label: props.label || 'Field Label',
-      placeholder: props.placeholder,
-      required: props.required || false,
-      disabled: props.disabled || false,
-      options: props.options,
-      defaultValue: props.defaultValue,
-      helpText: props.helpText
+      type: typeMapping[element.type] ?? 'text',
+      label: element.props?.label ?? '',
+      placeholder: element.props?.placeholder ?? '',
+      required: element.props?.required ?? false,
+      disabled: element.props?.disabled ?? false,
+      options: element.props?.options ?? [],
+      validation: element.props?.validation ?? undefined,
+      defaultValue: element.props?.defaultValue ?? element.props?.value ?? '',
+      helpText: element.props?.helpText ?? '',
+      accept: element.props?.accept ?? undefined,
+      multiple: element.props?.multiple ?? false
     };
   }
 
@@ -277,15 +319,13 @@ export class FormBuilderService {
   createFormWithModel(title: string, modelConfig: Partial<FormModel>): UIComponent {
     const formComponent = this.designerService.createComponent('form');
     
-    // Set up form configuration
+    // Set form properties
     formComponent.props = {
       ...formComponent.props,
-      title,
-      model: {
-        name: modelConfig.name || 'FormModel',
-        apiEndpoint: modelConfig.apiEndpoint || '/api/form-submit',
-        method: modelConfig.method || 'POST',
-        fields: {},
+      title,      model: {
+        name: modelConfig.name ?? 'FormModel',
+        apiEndpoint: modelConfig.apiEndpoint ?? '/api/form-submit',
+        method: modelConfig.method ?? 'POST',
         ...modelConfig
       }
     };
@@ -294,7 +334,7 @@ export class FormBuilderService {
   }
 
   /**
-   * Set the form elements order (used by grid layout)
+   * Set form elements directly
    */
   setFormElements(elements: UIComponent[]): void {
     const currentState = this.formBuilderState$.value;
@@ -303,7 +343,7 @@ export class FormBuilderService {
       return;
     }
 
-    // Update form children with new order
+    // Update form children
     currentState.activeForm.children = [...elements];
 
     // Update form builder state
