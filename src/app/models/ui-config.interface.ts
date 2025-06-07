@@ -45,6 +45,7 @@ export type ComponentType =
 export interface LayoutConfig {
   type: 'grid' | 'flex' | 'stack';
   columns?: number;
+  rows?: number;
   gap?: string;
   direction?: 'row' | 'column';
   justify?: string;

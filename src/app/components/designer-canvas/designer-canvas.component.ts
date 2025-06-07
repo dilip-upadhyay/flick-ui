@@ -210,15 +210,16 @@ export class DesignerCanvasComponent implements OnInit, OnDestroy, OnChanges {
     this.generateGridCells();
     
     // Update the configuration's layout properties
-    if (this.config) {
-      if (!this.config.layout) {
+    if (this.config) {      if (!this.config.layout) {
         this.config.layout = {
           type: 'grid',
           columns: this.gridCols,
+          rows: this.gridRows,
           gap: `${this.gridGap}px`
         };
       } else {
         this.config.layout.columns = this.gridCols;
+        this.config.layout.rows = this.gridRows;
         this.config.layout.gap = `${this.gridGap}px`;
       }
       
