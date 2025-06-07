@@ -47,12 +47,10 @@
           *ngIf="component.type === 'navigation'"
           [config]="component.props"
           (event)="onComponentEvent($event, component)">
-        </app-navigation-renderer>
-
-        <!-- Form Component -->
+        </app-navigation-renderer>        <!-- Form Component -->
         <app-form-renderer 
           *ngIf="component.type === 'form'"
-          [config]="component.props"
+          [config]="getFormConfig(component)"
           (event)="onComponentEvent($event, component)">
         </app-form-renderer>
 

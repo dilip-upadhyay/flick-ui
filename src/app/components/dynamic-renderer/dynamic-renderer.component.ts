@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subject, takeUntil } from 'rxjs';
-import { UIConfig, UIComponent } from '../../models/ui-config.interface';
+import { UIConfig, UIComponent, FormConfig, FormField } from '../../models/ui-config.interface';
 import { ConfigService } from '../../services/config.service';
 import { RendererService } from '../../services/renderer.service';
 import { NavigationAlignmentService } from '../../services/navigation-alignment.service';
@@ -367,12 +367,109 @@ export class DynamicRendererComponent implements OnInit, OnDestroy {
       this.onComponentEvent({ action: 'buttonClick', data: { ...component.props, buttonType: event.type } }, component);
     }
   }
-
   /**
    * Handle form element file selection
    */
   onFormElementFileSelected(event: { files: FileList; config: any }, component: UIComponent): void {
     console.log('Form element file selected:', event, component);
     this.onComponentEvent({ action: 'fileSelected', data: { files: event.files, component: component.props } }, component);
+  }
+
+  /**
+   * Get form configuration, converting children to fields if necessary
+   */
+  getFormConfig(component: UIComponent): FormConfig {
+    const props = component.props ?? {};
+
+    // If it already has proper fields array, return as is
+    if (props.fields && Array.isArray(props.fields)) {
+      return props as FormConfig;
+    }
+
+    // If it has children array, convert them to fields
+    if (component.children && Array.isArray(component.children)) {
+      return this.convertFormComponentToConfig(component);
+    }
+
+    // Fallback to empty form config
+    return {
+      title: props.title ?? 'Form',
+      description: props.description ?? '',
+      fields: [],
+      actions: props.actions ?? []
+    };
+  }
+
+  /**
+   * Convert form component with children array to FormConfig
+   */
+  private convertFormComponentToConfig(formComponent: UIComponent): FormConfig {
+    const props = formComponent.props ?? {};
+    const fields: FormField[] = [];
+
+    // Convert children to FormField objects
+    if (formComponent.children && Array.isArray(formComponent.children)) {
+      formComponent.children.forEach((child: UIComponent) => {
+        if (this.isFormFieldElement(child.type)) {
+          fields.push(this.convertElementToFormField(child));
+        }
+      });
+    }
+
+    // Extract fields from props.fields if they exist
+    if (props.fields && Array.isArray(props.fields)) {
+      fields.push(...props.fields);
+    }
+
+    return {
+      title: props.title ?? 'Form',
+      description: props.description ?? '',
+      fields: fields,
+      actions: props.actions ?? []
+    };
+  }
+
+  /**
+   * Check if component type is a form field element
+   */
+  private isFormFieldElement(type: string): boolean {
+    return [
+      'text-input', 'email-input', 'password-input', 'number-input',
+      'textarea', 'checkbox', 'radio', 'date-input', 'file-input', 'text'
+    ].includes(type);
+  }
+
+  /**
+   * Convert form element component to FormField configuration
+   */
+  private convertElementToFormField(element: UIComponent): FormField {
+    const props = element.props ?? {};
+    
+    // Map component type to form field type
+    const typeMapping: { [key: string]: string } = {
+      'text-input': 'text',
+      'email-input': 'email', 
+      'password-input': 'password',
+      'number-input': 'number',
+      'textarea': 'textarea',
+      'checkbox': 'checkbox',
+      'radio': 'radio',
+      'date-input': 'date',
+      'file-input': 'file',
+      'text': 'text' // Handle 'text' type components in children
+    };
+
+    return {
+      id: element.id,
+      type: typeMapping[element.type] as any ?? 'text',
+      label: props.label ?? props.content ?? 'Field Label', // Use content for text elements
+      placeholder: props.placeholder,
+      required: props.required ?? false,
+      disabled: props.disabled ?? false,
+      options: props.options,
+      defaultValue: props.defaultValue,
+      helpText: props.helpText,
+      gridColumn: props.gridPosition ? `${props.gridPosition.row + 1} / ${props.gridPosition.row + props.gridPosition.height + 1} / ${props.gridPosition.col + 1} / ${props.gridPosition.col + props.gridPosition.width + 1}` : undefined
+    };
   }
 }
