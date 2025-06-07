@@ -223,12 +223,11 @@ export class DynamicRendererComponent implements OnInit, OnDestroy {
 
     return styles;
   }
-
   /**
    * Get component styles
    */
   getComponentStyles(component: UIComponent): { [key: string]: string } {
-    const props = component.props || {};
+    const props = component.props ?? {};
     const styles: { [key: string]: any } = {};
     
     // Extract layout and style properties from props
@@ -247,6 +246,20 @@ export class DynamicRendererComponent implements OnInit, OnDestroy {
     // Also include any existing styles from component.styles
     if (component.styles) {
       Object.assign(styles, component.styles);
+    }
+
+    // Apply CSS grid positioning if the component has gridPosition
+    if (component.props?.gridPosition) {
+      const gridPos = component.props.gridPosition;
+      console.log('Applying grid positioning for component:', component.id, gridPos);
+      
+      // Apply grid positioning styles      styles['grid-column'] = `${gridPos.column + 1} / ${gridPos.column + (gridPos.width ?? 1) + 1}`;
+      styles['grid-row'] = `${gridPos.row + 1} / ${gridPos.row + (gridPos.height ?? 1) + 1}`;
+      
+      console.log('Grid styles applied:', {
+        'grid-column': styles['grid-column'],
+        'grid-row': styles['grid-row']
+      });
     }
 
     // Apply context-specific styling adjustments

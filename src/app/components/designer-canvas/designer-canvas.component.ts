@@ -200,25 +200,49 @@ export class DesignerCanvasComponent implements OnInit, OnDestroy, OnChanges {
       });
     }
   }
-
   onGridSettingsChange() {
+    console.log('onGridSettingsChange called with:', {
+      gridCols: this.gridCols,
+      gridRows: this.gridRows,
+      gridGap: this.gridGap
+    });
+    
     this.generateGridCells();
-    // Adjust component positions if they're outside the new grid
-    if (this.config?.components) {
-      this.config.components.forEach(component => {
-        const compWithPos = component as ComponentWithPosition;
-        if (compWithPos.gridPosition) {
-          if (compWithPos.gridPosition.col >= this.gridCols) {
-            compWithPos.gridPosition.col = this.gridCols - 1;
+    
+    // Update the configuration's layout properties
+    if (this.config) {
+      if (!this.config.layout) {
+        this.config.layout = {
+          type: 'grid',
+          columns: this.gridCols,
+          gap: `${this.gridGap}px`
+        };
+      } else {
+        this.config.layout.columns = this.gridCols;
+        this.config.layout.gap = `${this.gridGap}px`;
+      }
+      
+      console.log('Updated config layout:', this.config.layout);
+      
+      // Adjust component positions if they're outside the new grid
+      if (this.config.components) {
+        this.config.components.forEach(component => {
+          const compWithPos = component as ComponentWithPosition;
+          if (compWithPos.gridPosition) {
+            if (compWithPos.gridPosition.col >= this.gridCols) {
+              compWithPos.gridPosition.col = this.gridCols - 1;
+            }
+            if (compWithPos.gridPosition.row >= this.gridRows) {
+              compWithPos.gridPosition.row = this.gridRows - 1;
+            }
           }
-          if (compWithPos.gridPosition.row >= this.gridRows) {
-            compWithPos.gridPosition.row = this.gridRows - 1;
-          }
-        }
-      });
+        });
+      }
+      
+      // Persist the updated configuration through the DesignerService
+      this.designerService.updateConfig(this.config);
+      console.log('Configuration updated through DesignerService');
     }
-    // Emit configuration change
-    this.componentUpdated.emit(this.config as any);
   }
 
   onGridControlsToggle() {

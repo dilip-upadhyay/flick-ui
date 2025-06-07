@@ -240,12 +240,16 @@ export class AiChatEmbeddedComponent implements OnInit, OnDestroy {
           gap: '16px'
         };
 
+        // Validate and fix component positions
+        const validatedComponents = this.validateAndFixComponentPositions(currentConfig.components, columns);
+
         const updatedConfig = {
           ...currentConfig,
-          layout: newGridConfig
+          layout: newGridConfig,
+          components: validatedComponents
         };
 
-        console.log('AiChatEmbedded: Updated config to be sent:', updatedConfig);
+        console.log('AiChatEmbedded: Updated config with validated components:', updatedConfig);
         this.designerService.updateConfig(updatedConfig);
         console.log('AiChatEmbedded: updateConfig called successfully');
         return true;
@@ -263,12 +267,16 @@ export class AiChatEmbeddedComponent implements OnInit, OnDestroy {
           gap: '16px'
         };
 
+        // Validate and fix component positions for 1 column
+        const validatedComponents = this.validateAndFixComponentPositions(currentConfig.components, 1);
+
         const updatedConfig = {
           ...currentConfig,
-          layout: newGridConfig
+          layout: newGridConfig,
+          components: validatedComponents
         };
 
-        console.log('AiChatEmbedded: Updated config for 1 column:', updatedConfig);
+        console.log('AiChatEmbedded: Updated config for 1 column with validated components:', updatedConfig);
         this.designerService.updateConfig(updatedConfig);
         console.log('AiChatEmbedded: updateConfig called for 1 column');
         return true;
@@ -424,5 +432,48 @@ export class AiChatEmbeddedComponent implements OnInit, OnDestroy {
 
   trackByMessageId(index: number, message: ChatMessage): string {
     return message.id;
+  }
+
+  private validateAndFixComponentPositions(components: UIComponent[], maxColumns: number): UIComponent[] {
+    console.log('AiChatEmbedded: Validating component positions for', maxColumns, 'columns');
+    
+    return components.map(component => {
+      // If component has gridPosition, validate and fix it
+      if (component.props?.gridPosition) {
+        const gridPos = component.props.gridPosition;
+        console.log('AiChatEmbedded: Checking component', component.id, 'with gridPosition:', gridPos);
+        
+        // Fix column position if it exceeds maxColumns
+        if (gridPos.column >= maxColumns) {
+          console.log('AiChatEmbedded: Component', component.id, 'column', gridPos.column, 'exceeds maxColumns', maxColumns, 'fixing to 0');
+          return {
+            ...component,
+            props: {
+              ...component.props,              gridPosition: {
+                ...gridPos,
+                column: 0, // Move to first column
+                width: Math.min(gridPos.width ?? 1, maxColumns) // Ensure width doesn't exceed columns
+              }
+            }
+          };
+        }
+          // Fix width if it extends beyond grid
+        if (gridPos.column + (gridPos.width ?? 1) > maxColumns) {
+          console.log('AiChatEmbedded: Component', component.id, 'width extends beyond grid, fixing');
+          return {
+            ...component,
+            props: {
+              ...component.props,
+              gridPosition: {
+                ...gridPos,
+                width: maxColumns - gridPos.column
+              }
+            }
+          };
+        }
+      }
+      
+      return component;
+    });
   }
 }
