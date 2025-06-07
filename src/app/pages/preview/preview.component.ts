@@ -23,7 +23,6 @@ export class PreviewComponent implements OnInit {
     console.log('PreviewComponent: ngOnInit called');
     this.loadPreviewConfig();
   }
-
   private loadPreviewConfig(): void {
     // Try to get config from route query params
     this.route.queryParams.subscribe(params => {
@@ -32,8 +31,14 @@ export class PreviewComponent implements OnInit {
         
         // Check if it's a filename (doesn't start with { and doesn't contain spaces in JSON-like format)
         if (!configParam.trim().startsWith('{') && !configParam.includes('"type"')) {
-          // Treat as filename - load from assets/configs/
-          const configPath = `assets/configs/${configParam}.json`;
+          // Treat as filename - check if it already includes .json extension
+          let configPath: string;
+          if (configParam.endsWith('.json')) {
+            configPath = configParam; // Already includes .json extension
+          } else {
+            configPath = `assets/configs/${configParam}.json`; // Add .json extension
+          }
+          
           this.configService.loadConfig(configPath).subscribe({
             next: (config) => {
               this.config = config;

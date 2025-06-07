@@ -117,8 +117,7 @@ export class FormComponent implements OnInit {
     };
 
     return {
-      id: element.id,
-      type: typeMapping[element.type] as any ?? 'text',
+      id: element.id,      type: typeMapping[element.type] as any ?? 'text',
       label: props.label ?? 'Field Label',
       placeholder: props.placeholder,
       required: props.required ?? false,
@@ -126,7 +125,7 @@ export class FormComponent implements OnInit {
       options: props.options,
       defaultValue: props.defaultValue,
       helpText: props.helpText,
-      gridColumn: props.gridPosition ? `${props.gridPosition.row + 1} / ${props.gridPosition.row + props.gridPosition.height + 1} / ${props.gridPosition.col + 1} / ${props.gridPosition.col + props.gridPosition.width + 1}` : undefined
+      gridColumn: props.gridPosition ? `${props.gridPosition.row + 1} / ${props.gridPosition.col + 1} / ${props.gridPosition.row + props.gridPosition.height + 1} / ${props.gridPosition.col + props.gridPosition.width + 1}` : undefined
     };
   }
 

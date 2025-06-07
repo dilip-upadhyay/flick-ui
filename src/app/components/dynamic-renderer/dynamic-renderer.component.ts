@@ -373,25 +373,29 @@ export class DynamicRendererComponent implements OnInit, OnDestroy {
   onFormElementFileSelected(event: { files: FileList; config: any }, component: UIComponent): void {
     console.log('Form element file selected:', event, component);
     this.onComponentEvent({ action: 'fileSelected', data: { files: event.files, component: component.props } }, component);
-  }
-
-  /**
+  }  /**
    * Get form configuration, converting children to fields if necessary
    */
   getFormConfig(component: UIComponent): FormConfig {
+    console.log('DynamicRenderer: getFormConfig called for component:', component);
     const props = component.props ?? {};
 
-    // If it already has proper fields array, return as is
-    if (props.fields && Array.isArray(props.fields)) {
+    // If it already has proper fields array with content, return as is
+    if (props.fields && Array.isArray(props.fields) && props.fields.length > 0) {
+      console.log('DynamicRenderer: Component has proper fields array with content, returning as is. Fields count:', props.fields.length);
       return props as FormConfig;
     }
 
     // If it has children array, convert them to fields
     if (component.children && Array.isArray(component.children)) {
-      return this.convertFormComponentToConfig(component);
+      console.log('DynamicRenderer: Component has children array, converting to FormConfig. Children count:', component.children.length);
+      const convertedConfig = this.convertFormComponentToConfig(component);
+      console.log('DynamicRenderer: Converted FormConfig:', convertedConfig);
+      return convertedConfig;
     }
 
     // Fallback to empty form config
+    console.log('DynamicRenderer: Using fallback empty form config for component');
     return {
       title: props.title ?? 'Form',
       description: props.description ?? '',
@@ -399,34 +403,46 @@ export class DynamicRendererComponent implements OnInit, OnDestroy {
       actions: props.actions ?? []
     };
   }
-
   /**
    * Convert form component with children array to FormConfig
    */
   private convertFormComponentToConfig(formComponent: UIComponent): FormConfig {
+    console.log('DynamicRenderer: convertFormComponentToConfig called with:', formComponent);
     const props = formComponent.props ?? {};
     const fields: FormField[] = [];
 
     // Convert children to FormField objects
     if (formComponent.children && Array.isArray(formComponent.children)) {
-      formComponent.children.forEach((child: UIComponent) => {
+      console.log('DynamicRenderer: Processing children array with', formComponent.children.length, 'children');
+      formComponent.children.forEach((child: UIComponent, index: number) => {
+        console.log(`DynamicRenderer: Processing child ${index}:`, child);
         if (this.isFormFieldElement(child.type)) {
-          fields.push(this.convertElementToFormField(child));
+          const convertedField = this.convertElementToFormField(child);
+          console.log(`DynamicRenderer: Converted child ${index} to field:`, convertedField);
+          fields.push(convertedField);
+        } else {
+          console.log(`DynamicRenderer: Child ${index} type '${child.type}' is not a form field element, skipping`);
         }
       });
     }
 
     // Extract fields from props.fields if they exist
     if (props.fields && Array.isArray(props.fields)) {
+      console.log('DynamicRenderer: Adding fields from props.fields:', props.fields.length);
       fields.push(...props.fields);
     }
 
-    return {
+    const finalConfig = {
       title: props.title ?? 'Form',
       description: props.description ?? '',
       fields: fields,
       actions: props.actions ?? []
     };
+    
+    console.log('DynamicRenderer: Final converted FormConfig:', finalConfig);
+    console.log('DynamicRenderer: Total fields in converted config:', finalConfig.fields.length);
+    
+    return finalConfig;
   }
 
   /**
@@ -438,11 +454,11 @@ export class DynamicRendererComponent implements OnInit, OnDestroy {
       'textarea', 'checkbox', 'radio', 'date-input', 'file-input', 'text'
     ].includes(type);
   }
-
   /**
    * Convert form element component to FormField configuration
    */
   private convertElementToFormField(element: UIComponent): FormField {
+    console.log('DynamicRenderer: convertElementToFormField called with element:', element);
     const props = element.props ?? {};
     
     // Map component type to form field type
@@ -458,10 +474,22 @@ export class DynamicRendererComponent implements OnInit, OnDestroy {
       'file-input': 'file',
       'text': 'text' // Handle 'text' type components in children
     };
+    
+    const mappedType = typeMapping[element.type] as any ?? 'text';
+    console.log(`DynamicRenderer: Mapping type '${element.type}' to '${mappedType}'`);
+    
+    // Fix grid positioning format: row-start / col-start / row-end / col-end
+    let gridColumn: string | undefined;
+    if (props.gridPosition) {
+      const { row, col, height, width } = props.gridPosition;
+      gridColumn = `${row + 1} / ${col + 1} / ${row + height + 1} / ${col + width + 1}`;
+      console.log(`DynamicRenderer: Grid positioning for ${element.id}:`, 
+        `gridPosition=${JSON.stringify(props.gridPosition)} -> gridColumn=${gridColumn}`);
+    }
 
-    return {
+    const convertedField: FormField = {
       id: element.id,
-      type: typeMapping[element.type] as any ?? 'text',
+      type: mappedType,
       label: props.label ?? props.content ?? 'Field Label', // Use content for text elements
       placeholder: props.placeholder,
       required: props.required ?? false,
@@ -469,7 +497,10 @@ export class DynamicRendererComponent implements OnInit, OnDestroy {
       options: props.options,
       defaultValue: props.defaultValue,
       helpText: props.helpText,
-      gridColumn: props.gridPosition ? `${props.gridPosition.row + 1} / ${props.gridPosition.row + props.gridPosition.height + 1} / ${props.gridPosition.col + 1} / ${props.gridPosition.col + props.gridPosition.width + 1}` : undefined
+      gridColumn: gridColumn
     };
+    
+    console.log('DynamicRenderer: Converted FormField:', convertedField);
+    return convertedField;
   }
 }

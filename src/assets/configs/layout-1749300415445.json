@@ -1,0 +1,78 @@
+{
+  "type": "layout",
+  "components": [
+    {
+      "id": "form-1749300363292-jywj4",
+      "type": "form",
+      "props": {
+        "title": "Form Title",
+        "fields": [],
+        "actions": [],
+        "model": {
+          "name": "FormModel",
+          "apiEndpoint": "/api/form-submit",
+          "method": "POST",
+          "fields": {}
+        },
+        "layout": {
+          "type": "grid",
+          "columns": 2,
+          "rows": 1,
+          "gap": "10px"
+        }
+      },
+      "gridPosition": {
+        "row": 0,
+        "col": 0,
+        "width": 1,
+        "height": 1
+      },
+      "children": [
+        {
+          "id": "text-1749300372029-uexjq",
+          "type": "text",
+          "props": {
+            "content": "Text content",
+            "variant": "body1",
+            "label": "Text-input Field",
+            "placeholder": "Enter text-input",
+            "required": false,
+            "disabled": false,
+            "defaultValue": "",
+            "options": [],
+            "gridPosition": {
+              "row": 0,
+              "col": 0,
+              "width": 1,
+              "height": 1
+            }
+          }
+        },
+        {
+          "id": "text-1749300373998-4jyx5",
+          "type": "text",
+          "props": {
+            "content": "Text content",
+            "variant": "body1",
+            "label": "Text-input Field",
+            "placeholder": "Enter text-input",
+            "required": false,
+            "gridPosition": {
+              "row": 0,
+              "col": 1,
+              "width": 1,
+              "height": 1
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "layout": {
+    "type": "stack",
+    "direction": "column"
+  },
+  "metadata": {
+    "title": "New Layout"
+  }
+}
