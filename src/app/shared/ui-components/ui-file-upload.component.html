@@ -1,0 +1,44 @@
+<div class="file-field">
+  <div class="field-label" *ngIf="label">
+    {{ label }}
+    <span *ngIf="required" class="required-indicator">*</span>
+  </div>
+  
+  <button 
+    type="button" 
+    mat-raised-button 
+    color="primary"
+    (click)="fileInput.click()">
+    <mat-icon>upload</mat-icon>
+    {{ buttonLabel }}
+  </button>
+  
+  <input 
+    #fileInput
+    type="file"
+    [id]="id"
+    [multiple]="multiple"
+    [accept]="accept"
+    style="display: none"
+    (change)="onFileChange($event)">
+  
+  <div *ngIf="selectedFiles.length > 0" class="selected-files">
+    <div *ngFor="let file of selectedFiles" class="file-item">
+      <mat-icon>description</mat-icon>
+      <span class="file-name">{{ file.name }}</span>
+      <span class="file-size">({{ formatFileSize(file.size) }})</span>
+      <button 
+        type="button" 
+        mat-icon-button 
+        color="warn"
+        (click)="removeFile(file)">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  </div>
+  
+  <div *ngIf="hint" class="field-hint">{{ hint }}</div>
+  <div *ngIf="errors.length > 0" class="field-errors">
+    <div *ngFor="let error of errors" class="error-message">{{ error }}</div>
+  </div>
+</div>

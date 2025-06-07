@@ -1,0 +1,117 @@
+<!-- Raised Button -->
+<button 
+  *ngIf="appearance === 'raised'"
+  mat-raised-button
+  [type]="type"
+  [disabled]="disabled || loading"
+  [color]="getMatColor()"
+  [class]="getCustomClasses()"
+  (click)="onClick()">
+  
+  <mat-icon *ngIf="loading && type === 'submit'">hourglass_empty</mat-icon>
+  <mat-icon *ngIf="!loading && icon">{{ icon }}</mat-icon>
+  
+  <span *ngIf="label" [class.button-label-with-icon]="icon || (loading && type === 'submit')">
+    {{ label }}
+  </span>
+</button>
+
+<!-- Flat Button -->
+<button 
+  *ngIf="appearance === 'flat'"
+  mat-flat-button
+  [type]="type"
+  [disabled]="disabled || loading"
+  [color]="getMatColor()"
+  [class]="getCustomClasses()"
+  (click)="onClick()">
+  
+  <mat-icon *ngIf="loading && type === 'submit'">hourglass_empty</mat-icon>
+  <mat-icon *ngIf="!loading && icon">{{ icon }}</mat-icon>
+  
+  <span *ngIf="label" [class.button-label-with-icon]="icon || (loading && type === 'submit')">
+    {{ label }}
+  </span>
+</button>
+
+<!-- Stroked Button -->
+<button 
+  *ngIf="appearance === 'stroked'"
+  mat-stroked-button
+  [type]="type"
+  [disabled]="disabled || loading"
+  [color]="getMatColor()"
+  [class]="getCustomClasses()"
+  (click)="onClick()">
+  
+  <mat-icon *ngIf="loading && type === 'submit'">hourglass_empty</mat-icon>
+  <mat-icon *ngIf="!loading && icon">{{ icon }}</mat-icon>
+  
+  <span *ngIf="label" [class.button-label-with-icon]="icon || (loading && type === 'submit')">
+    {{ label }}
+  </span>
+</button>
+
+<!-- FAB Button -->
+<button 
+  *ngIf="appearance === 'fab'"
+  mat-fab
+  [type]="type"
+  [disabled]="disabled || loading"
+  [color]="getMatColor()"
+  [class]="getCustomClasses()"
+  (click)="onClick()">
+  
+  <mat-icon *ngIf="loading && type === 'submit'">hourglass_empty</mat-icon>
+  <mat-icon *ngIf="!loading && icon">{{ icon }}</mat-icon>
+  
+  <span *ngIf="label && appearance !== 'fab' && appearance !== 'mini-fab'" [class.button-label-with-icon]="icon || (loading && type === 'submit')">
+    {{ label }}
+  </span>
+</button>
+
+<!-- Mini FAB Button -->
+<button 
+  *ngIf="appearance === 'mini-fab'"
+  mat-mini-fab
+  [type]="type"
+  [disabled]="disabled || loading"
+  [color]="getMatColor()"
+  [class]="getCustomClasses()"
+  (click)="onClick()">
+  
+  <mat-icon *ngIf="loading && type === 'submit'">hourglass_empty</mat-icon>
+  <mat-icon *ngIf="!loading && icon">{{ icon }}</mat-icon>
+</button>
+
+<!-- Icon Button -->
+<button 
+  *ngIf="appearance === 'icon'"
+  mat-icon-button
+  [type]="type"
+  [disabled]="disabled || loading"
+  [color]="getMatColor()"
+  [class]="getCustomClasses()"
+  (click)="onClick()">
+  
+  <mat-icon *ngIf="loading && type === 'submit'">hourglass_empty</mat-icon>
+  <mat-icon *ngIf="!loading && icon">{{ icon }}</mat-icon>
+</button>
+
+<!-- Default Button (no directive) -->
+<button 
+  *ngIf="!appearance || (appearance !== 'raised' && appearance !== 'flat' && appearance !== 'stroked' && appearance !== 'fab' && appearance !== 'mini-fab' && appearance !== 'icon')"
+  mat-button
+  [type]="type"
+  [disabled]="disabled || loading"
+  [color]="getMatColor()"
+  [class]="getCustomClasses()"
+  (click)="onClick()">
+  
+  <mat-icon *ngIf="loading && type === 'submit'">hourglass_empty</mat-icon>
+  <mat-icon *ngIf="!loading && icon">{{ icon }}</mat-icon>
+  
+  <span *ngIf="label" [class.button-label-with-icon]="icon || (loading && type === 'submit')">
+    {{ label }}
+  </span>
+</button>

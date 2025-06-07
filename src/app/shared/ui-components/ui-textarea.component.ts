@@ -8,29 +8,7 @@ export type TextareaAppearance = 'fill' | 'outline';
 @Component({
   selector: 'ui-textarea',
   standalone: true,
-  imports: [CommonModule, MaterialModule],
-  template: `
-    <mat-form-field 
-      [appearance]="appearance"
-      [class]="fieldClasses">
-      <mat-label>{{ label }}
-        <span *ngIf="required" class="required-indicator">*</span>
-      </mat-label>
-      <textarea 
-        matInput
-        [id]="id"
-        [placeholder]="placeholder"
-        [required]="required"
-        [rows]="rows"
-        [value]="value"
-        (input)="onInput($event)"
-        (blur)="onBlur()"
-        (focus)="onFocus()">
-      </textarea>
-      <mat-hint *ngIf="hint">{{ hint }}</mat-hint>
-      <mat-error *ngFor="let error of errors">{{ error }}</mat-error>
-    </mat-form-field>
-  `,
+  imports: [CommonModule, MaterialModule],  templateUrl: './ui-textarea.component.html',
   styleUrls: ['./ui-textarea.component.css'],
   providers: [
     {

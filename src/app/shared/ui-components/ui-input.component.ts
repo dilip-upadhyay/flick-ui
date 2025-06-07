@@ -9,29 +9,7 @@ export type InputAppearance = 'fill' | 'outline';
 @Component({
   selector: 'ui-input',
   standalone: true,
-  imports: [CommonModule, MaterialModule],
-  template: `
-    <mat-form-field 
-      [appearance]="appearance"
-      [class]="fieldClasses">
-      <mat-label>{{ label }}
-        <span *ngIf="required" class="required-indicator">*</span>
-      </mat-label>
-      <input 
-        matInput
-        [type]="type"
-        [id]="id"
-        [placeholder]="placeholder"
-        [required]="required"
-        [value]="value"
-        (input)="onInput($event)"
-        (blur)="onBlur()"
-        (focus)="onFocus()">
-      <mat-icon matSuffix *ngIf="suffixIcon">{{ suffixIcon }}</mat-icon>
-      <mat-hint *ngIf="hint">{{ hint }}</mat-hint>
-      <mat-error *ngFor="let error of errors">{{ error }}</mat-error>
-    </mat-form-field>
-  `,
+  imports: [CommonModule, MaterialModule],  templateUrl: './ui-input.component.html',
   styleUrls: ['./ui-input.component.css'],
   providers: [
     {

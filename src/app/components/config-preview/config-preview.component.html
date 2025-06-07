@@ -1,0 +1,202 @@
+<div class="config-preview">
+  <div class="preview-header">
+    <div class="header-left">
+      <mat-icon>code</mat-icon>
+      <span class="preview-title">Configuration JSON</span>
+      <mat-chip-set>
+        <mat-chip [highlighted]="isValidJson">
+          <mat-icon>{{ isValidJson ? 'check_circle' : 'error' }}</mat-icon>
+          {{ isValidJson ? 'Valid' : 'Invalid' }}
+        </mat-chip>
+      </mat-chip-set>
+    </div>
+    
+    <div class="header-actions">
+      <button mat-icon-button 
+              (click)="formatJson()"
+              matTooltip="Format JSON"
+              [disabled]="!isValidJson">
+        <mat-icon>auto_fix_high</mat-icon>
+      </button>
+      
+      <button mat-icon-button 
+              (click)="copyToClipboard()"
+              matTooltip="Copy to Clipboard"
+              [disabled]="!isValidJson">
+        <mat-icon>content_copy</mat-icon>
+      </button>
+      
+      <button mat-icon-button 
+              (click)="downloadConfig()"
+              matTooltip="Download JSON"
+              [disabled]="!isValidJson">
+        <mat-icon>download</mat-icon>
+      </button>
+      
+      <button mat-icon-button 
+              (click)="showImportDialog = true"
+              matTooltip="Import Configuration">
+        <mat-icon>upload</mat-icon>
+      </button>
+      
+      <button mat-icon-button 
+              [class.active]="editMode"
+              (click)="toggleEditMode()"
+              matTooltip="Toggle Edit Mode">
+        <mat-icon>{{ editMode ? 'visibility' : 'edit' }}</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <div class="preview-content">
+    <!-- Read-only display -->
+    <div class="json-display" *ngIf="!editMode" #jsonDisplay>
+      <pre><code [innerHTML]="highlightedJson"></code></pre>
+    </div>
+
+    <!-- Editable textarea -->
+    <div class="json-editor" *ngIf="editMode">
+      <textarea 
+        #jsonEditor
+        class="json-textarea"
+        [(ngModel)]="editableJson"
+        (input)="onJsonEdit($event)"
+        (blur)="validateAndApplyJson()"
+        placeholder="Paste or edit your JSON configuration here..."
+        spellcheck="false">
+      </textarea>
+      
+      <div class="editor-footer">
+        <div class="editor-info">
+          <span class="line-count">Lines: {{ getLineCount() }}</span>
+          <span class="char-count">Characters: {{ editableJson.length }}</span>
+        </div>
+        
+        <div class="editor-actions">
+          <button mat-stroked-button 
+                  (click)="resetJson()"
+                  color="warn">
+            Reset
+          </button>
+          <button mat-raised-button 
+                  (click)="applyJson()"
+                  color="primary"
+                  [disabled]="!isValidJson">
+            Apply Changes
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Error display -->
+  <div class="error-panel" *ngIf="jsonError">
+    <mat-icon class="error-icon">error</mat-icon>
+    <div class="error-content">
+      <div class="error-title">JSON Syntax Error</div>
+      <div class="error-message">{{ jsonError }}</div>
+    </div>
+    <button mat-icon-button (click)="jsonError = null">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+</div>
+
+<!-- Import Dialog -->
+<div class="import-overlay" *ngIf="showImportDialog" (click)="closeImportDialog()">
+  <div class="import-dialog" (click)="$event.stopPropagation()">
+    <div class="dialog-header">
+      <h2>Import Configuration</h2>
+      <button mat-icon-button (click)="closeImportDialog()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    
+    <div class="dialog-content">
+      <mat-tab-group>
+        <!-- Paste JSON Tab -->
+        <mat-tab label="Paste JSON">
+          <div class="tab-content">
+            <textarea 
+              class="import-textarea"
+              [(ngModel)]="importJson"
+              placeholder="Paste your JSON configuration here..."
+              rows="12">
+            </textarea>
+            
+            <div class="import-actions">
+              <button mat-stroked-button (click)="closeImportDialog()">
+                Cancel
+              </button>
+              <button mat-raised-button 
+                      color="primary"
+                      (click)="importFromText()"
+                      [disabled]="!importJson.trim()">
+                Import
+              </button>
+            </div>
+          </div>
+        </mat-tab>
+
+        <!-- Upload File Tab -->
+        <mat-tab label="Upload File">
+          <div class="tab-content">
+            <div class="file-upload-area" 
+                 (dragover)="onDragOver($event)"
+                 (dragleave)="onDragLeave($event)"
+                 (drop)="onFileDrop($event)"
+                 [class.drag-over]="isDragOver"
+                 (click)="fileInput.click()">
+              <mat-icon class="upload-icon">cloud_upload</mat-icon>
+              <h3>Drop JSON file here or click to browse</h3>
+              <p>Supported formats: .json</p>
+              
+              <input 
+                #fileInput 
+                type="file" 
+                accept=".json"
+                (change)="onFileSelected($event)"
+                style="display: none;">
+            </div>
+            
+            <div class="selected-file" *ngIf="selectedFile">
+              <mat-icon>insert_drive_file</mat-icon>
+              <span>{{ selectedFile.name }}</span>
+              <button mat-icon-button (click)="selectedFile = null">
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
+            
+            <div class="import-actions">
+              <button mat-stroked-button (click)="closeImportDialog()">
+                Cancel
+              </button>
+              <button mat-raised-button 
+                      color="primary"
+                      (click)="importFromFile()"
+                      [disabled]="!selectedFile">
+                Import File
+              </button>
+            </div>
+          </div>
+        </mat-tab>
+
+        <!-- Examples Tab -->
+        <mat-tab label="Examples">
+          <div class="tab-content">
+            <div class="examples-grid">
+              <div class="example-card" 
+                   *ngFor="let example of configExamples"
+                   (click)="loadExample(example)">
+                <mat-icon>{{ example.icon }}</mat-icon>
+                <h4>{{ example.name }}</h4>
+                <p>{{ example.description }}</p>
+                <button mat-button color="primary">Load Example</button>
+              </div>
+            </div>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </div>
+  </div>
+</div>

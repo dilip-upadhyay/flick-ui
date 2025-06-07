@@ -1,0 +1,135 @@
+<div class="ai-chat-container" [class.expanded]="isChatExpanded">
+  <!-- Chat Toggle Button -->
+  <button 
+    mat-fab 
+    color="primary" 
+    class="chat-toggle-btn"
+    (click)="toggleChat()"
+    [attr.aria-label]="isChatExpanded ? 'Close AI Chat' : 'Open AI Chat'">
+    <mat-icon>{{ isChatExpanded ? 'close' : 'smart_toy' }}</mat-icon>
+  </button>
+
+  <!-- Chat Panel -->
+  <div class="chat-panel" [class.visible]="isChatExpanded">
+    <!-- Chat Header -->
+    <div class="chat-header">
+      <div class="header-content">
+        <mat-icon>smart_toy</mat-icon>
+        <h3>AI Design Assistant</h3>
+      </div>
+      <div class="header-actions">
+        <button mat-icon-button (click)="clearChat()" matTooltip="Clear chat">
+          <mat-icon>clear_all</mat-icon>
+        </button>
+        <button mat-icon-button (click)="exportChat()" matTooltip="Export chat">
+          <mat-icon>download</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <!-- Messages Container -->
+    <div class="messages-container" #messagesContainer>
+      <div class="messages-list">
+        <!-- Welcome Message -->
+        <div class="message ai-message" *ngIf="messages.length === 0">
+          <div class="message-avatar">
+            <mat-icon>smart_toy</mat-icon>
+          </div>
+          <div class="message-content">
+            <div class="message-text">
+              👋 Hi! I'm your AI design assistant. I can help you create and modify UI components. 
+              Try asking me to add forms, layouts, or modify existing components!
+            </div>
+          </div>
+        </div>
+
+        <!-- Chat Messages -->
+        <div 
+          *ngFor="let message of messages; trackBy: trackByMessageId" 
+          class="message"
+          [class.user-message]="message.sender === 'user'"
+          [class.ai-message]="message.sender === 'ai'">
+          
+          <div class="message-avatar">
+            <mat-icon *ngIf="message.sender === 'ai'">smart_toy</mat-icon>
+            <mat-icon *ngIf="message.sender === 'user'">person</mat-icon>
+          </div>
+          
+          <div class="message-content">
+            <div class="message-text" [innerHTML]="formatMessageContent(message.content)"></div>
+            <div class="message-time">{{ formatTime(message.timestamp) }}</div>
+            
+            <!-- Config Changes Preview -->
+            <div *ngIf="message.metadata?.configChanges" class="config-preview">
+              <h4>Config Changes:</h4>
+              <pre>{{ message.metadata.configChanges | json }}</pre>
+              <button mat-stroked-button color="primary" (click)="applyConfigChanges(message.metadata.configChanges)">
+                Apply Changes
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Loading Indicator -->
+        <div class="message ai-message" *ngIf="isLoading">
+          <div class="message-avatar">
+            <mat-icon>smart_toy</mat-icon>
+          </div>
+          <div class="message-content">
+            <div class="typing-indicator">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>    <!-- Quick Actions -->
+    <div class="quick-actions" *ngIf="messages.length === 0">
+      <h4>Try these suggestions:</h4>
+      <div class="action-chips">
+        <mat-chip-listbox>
+          <mat-chip-option 
+            *ngFor="let action of quickActions" 
+            (click)="useQuickAction(action.command)">
+            {{ action.label }}
+          </mat-chip-option>
+        </mat-chip-listbox>
+      </div>
+    </div>
+
+    <!-- Chat Input -->
+    <div class="chat-input-container">
+      <form [formGroup]="chatForm" (ngSubmit)="sendMessage()" class="chat-form">
+        <mat-form-field appearance="outline" class="message-input">
+          <mat-label>Ask me anything about your UI design...</mat-label>          <textarea 
+            matInput 
+            #chatInput
+            formControlName="message"
+            rows="2"
+            placeholder="e.g., 'Add a contact form' or 'Make this layout responsive'"
+            (keydown)="onEnterKeydown($event)"></textarea>
+          <mat-hint align="start">Press Ctrl+Enter to send, Enter for new line</mat-hint>
+        </mat-form-field>
+        
+        <button 
+          mat-fab 
+          color="primary" 
+          type="submit" 
+          [disabled]="isLoading || chatForm.invalid"
+          class="send-btn">
+          <mat-icon>send</mat-icon>
+        </button>
+      </form>
+    </div>
+
+    <!-- Context Info -->
+    <div class="context-info" *ngIf="selectedComponent">
+      <mat-icon>info</mat-icon>
+      <span>Selected: {{ selectedComponent.type }} ({{ selectedComponent.id }})</span>
+      <button mat-icon-button (click)="clearSelection()" matTooltip="Clear selection">
+        <mat-icon>clear</mat-icon>
+      </button>
+    </div>
+  </div>
+</div>

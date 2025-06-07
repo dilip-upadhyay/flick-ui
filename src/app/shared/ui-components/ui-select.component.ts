@@ -14,31 +14,7 @@ export type SelectAppearance = 'fill' | 'outline';
 @Component({
   selector: 'ui-select',
   standalone: true,
-  imports: [CommonModule, MaterialModule],
-  template: `
-    <mat-form-field 
-      [appearance]="appearance"
-      [class]="fieldClasses">
-      <mat-label>{{ label }}
-        <span *ngIf="required" class="required-indicator">*</span>
-      </mat-label>
-      <mat-select 
-        [id]="id"
-        [required]="required"
-        [value]="value"
-        (selectionChange)="onSelectionChange($event)">
-        <mat-option value="" disabled *ngIf="placeholder">{{ placeholder }}</mat-option>
-        <mat-option 
-          *ngFor="let option of options"
-          [value]="option.value"
-          [disabled]="option.disabled || false">
-          {{ option.label }}
-        </mat-option>
-      </mat-select>
-      <mat-hint *ngIf="hint">{{ hint }}</mat-hint>
-      <mat-error *ngFor="let error of errors">{{ error }}</mat-error>
-    </mat-form-field>
-  `,
+  imports: [CommonModule, MaterialModule],  templateUrl: './ui-select.component.html',
   styleUrls: ['./ui-select.component.css'],
   providers: [
     {

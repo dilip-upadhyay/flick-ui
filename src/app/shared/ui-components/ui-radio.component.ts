@@ -12,33 +12,7 @@ export interface RadioOption {
 @Component({
   selector: 'ui-radio',
   standalone: true,
-  imports: [CommonModule, MaterialModule],
-  template: `
-    <div class="radio-field">
-      <div class="field-label" *ngIf="label">
-        {{ label }}
-        <span *ngIf="required" class="required-indicator">*</span>
-      </div>
-      
-      <mat-radio-group 
-        [value]="value"
-        (change)="onRadioChange($event)"
-        class="radio-group">
-        <mat-radio-button 
-          *ngFor="let option of options"
-          [value]="option.value"
-          [disabled]="option.disabled || false"
-          class="radio-option">
-          {{ option.label }}
-        </mat-radio-button>
-      </mat-radio-group>
-      
-      <div *ngIf="hint" class="field-hint">{{ hint }}</div>
-      <div *ngIf="errors.length > 0" class="field-errors">
-        <div *ngFor="let error of errors" class="error-message">{{ error }}</div>
-      </div>
-    </div>
-  `,
+  imports: [CommonModule, MaterialModule],  templateUrl: './ui-radio.component.html',
   styleUrls: ['./ui-radio.component.css'],
   providers: [
     {

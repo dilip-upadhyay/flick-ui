@@ -12,44 +12,7 @@ export interface CheckboxOption {
 @Component({
   selector: 'ui-checkbox',
   standalone: true,
-  imports: [CommonModule, MaterialModule],
-  template: `
-    <div class="checkbox-field">
-      <div class="field-label" *ngIf="label">
-        {{ label }}
-        <span *ngIf="required" class="required-indicator">*</span>
-      </div>
-      
-      <!-- Single checkbox (no options) -->
-      <mat-checkbox 
-        *ngIf="!options || options.length === 0"
-        [id]="id"
-        [checked]="value"
-        (change)="onSingleCheckboxChange($event)"
-        class="checkbox-item">
-        {{ checkboxLabel || label }}
-      </mat-checkbox>
-      
-      <!-- Multiple checkboxes (with options) -->
-      <div *ngIf="options && options.length > 0" class="checkbox-group">
-        <mat-checkbox 
-          *ngFor="let option of options; let i = index"
-          [id]="id + '_' + i"
-          [value]="option.value"
-          [checked]="isOptionChecked(option.value)"
-          [disabled]="option.disabled"
-          (change)="onMultipleCheckboxChange(option.value, $event)"
-          class="checkbox-item">
-          {{ option.label }}
-        </mat-checkbox>
-      </div>
-      
-      <div *ngIf="hint" class="field-hint">{{ hint }}</div>
-      <div *ngIf="errors.length > 0" class="field-errors">
-        <div *ngFor="let error of errors" class="error-message">{{ error }}</div>
-      </div>
-    </div>
-  `,
+  imports: [CommonModule, MaterialModule],  templateUrl: './ui-checkbox.component.html',
   styleUrls: ['./ui-checkbox.component.css'],
   providers: [
     {

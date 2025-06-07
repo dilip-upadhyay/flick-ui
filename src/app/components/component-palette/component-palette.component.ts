@@ -22,64 +22,7 @@ export interface ComponentDefinition {
   selector: 'app-component-palette',
   standalone: true,
   imports: [CommonModule, FormsModule, MaterialModule],
-  template: `
-    <div class="component-palette">
-      <!-- Search Bar -->
-      <div class="palette-search">
-        <mat-form-field appearance="outline" class="search-field">
-          <mat-label>Search components</mat-label>
-          <input matInput [(ngModel)]="searchTerm" (input)="filterComponents()" placeholder="Type to search...">
-          <mat-icon matSuffix>search</mat-icon>
-        </mat-form-field>
-      </div>
-
-      <!-- Categories -->
-      <div class="palette-categories">
-        <mat-accordion>
-          @for (category of filteredCategories; track category.name) {
-            <mat-expansion-panel [expanded]="category.name === 'Layout'" class="category-panel">
-              <mat-expansion-panel-header>
-                <mat-panel-title>
-                  <mat-icon>{{ category.icon }}</mat-icon>
-                  <span>{{ category.name }}</span>
-                  <mat-chip class="component-count">{{ category.components.length }}</mat-chip>
-                </mat-panel-title>
-              </mat-expansion-panel-header>
-
-              <div class="components-grid">
-                @for (component of category.components; track component.type) {
-                  <div 
-                    class="component-item"
-                    draggable="true"
-                    (dragstart)="onDragStart($event, component)"
-                    (click)="onComponentClick(component)"
-                    matTooltip="{{ component.description }}"
-                    matTooltipPosition="right">
-                    
-                    <div class="component-icon">
-                      <mat-icon>{{ component.icon }}</mat-icon>
-                    </div>
-                    
-                    <div class="component-info">
-                      <div class="component-name">{{ component.name }}</div>
-                      <div class="component-description">{{ component.description }}</div>
-                    </div>
-                  </div>
-                }
-              </div>
-            </mat-expansion-panel>
-          }
-        </mat-accordion>
-      </div>
-
-      <!-- Empty State -->
-      <div class="empty-state" *ngIf="filteredCategories.length === 0">
-        <mat-icon>search_off</mat-icon>
-        <p>No components found</p>
-        <small>Try adjusting your search terms</small>
-      </div>
-    </div>
-  `,
+  templateUrl: './component-palette.component.html',
   styleUrls: ['./component-palette.component.css']
 })
 export class ComponentPaletteComponent {

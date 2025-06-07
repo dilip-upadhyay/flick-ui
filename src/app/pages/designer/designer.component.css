@@ -110,6 +110,40 @@
   color: #333;
 }
 
+.sidebar-tabs {
+  display: flex;
+  gap: 4px;
+  flex: 1;
+}
+
+.sidebar-tabs button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  min-height: 36px;
+  color: #666;
+  transition: all 0.2s ease;
+}
+
+.sidebar-tabs button.active {
+  background: #e3f2fd;
+  color: #1976d2;
+}
+
+.sidebar-tabs button:hover:not(.active) {
+  background: #f5f5f5;
+  color: #333;
+}
+
+.sidebar-tabs button mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
 .sidebar-content {
   flex: 1;
   overflow-y: auto;
@@ -205,6 +239,25 @@
 .panel-content {
   height: calc(100% - 48px);
   overflow: auto;
+}
+
+/* Tab content styling */
+.tab-content {
+  padding: 16px;
+  height: calc(100vh - 140px);
+  overflow-y: auto;
+  background: white;
+}
+
+.tab-content app-property-editor,
+.tab-content app-ai-chat {
+  display: block;
+  height: 100%;
+}
+
+/* Ensure AI chat component fits properly */
+.tab-content app-ai-chat {
+  overflow: hidden;
 }
 
 /* Responsive Design */

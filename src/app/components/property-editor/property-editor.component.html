@@ -1,0 +1,268 @@
+<div class="property-editor" *ngIf="selectedComponent; else noSelection">
+  <!-- Component Info -->
+  <div class="component-info">
+    <div class="component-header">
+      <mat-icon>{{ getComponentIcon(selectedComponent.type) }}</mat-icon>
+      <div class="component-details">
+        <h3>{{ getComponentLabel(selectedComponent.type) }}</h3>
+        <span class="component-id">ID: {{ selectedComponent.id }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Property Categories -->
+  <mat-accordion multi="true" class="property-accordion">
+    <!-- Basic Properties -->
+    <mat-expansion-panel 
+      *ngIf="basicProperties.length > 0"
+      [expanded]="true"
+      class="property-panel">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <mat-icon>settings</mat-icon>
+          Basic Properties
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      
+      <form [formGroup]="propertyForm" class="property-form">
+        <div *ngFor="let prop of basicProperties" class="property-field">
+          <ng-container [ngSwitch]="prop.type">
+            <!-- Text Input -->
+            <mat-form-field *ngSwitchCase="'text'" appearance="outline">
+              <mat-label>{{ prop.label }}</mat-label>
+              <input matInput [formControlName]="prop.key" [placeholder]="prop.description || ''">
+              <mat-hint *ngIf="prop.description">{{ prop.description }}</mat-hint>
+            </mat-form-field>
+
+            <!-- Number Input -->
+            <mat-form-field *ngSwitchCase="'number'" appearance="outline">
+              <mat-label>{{ prop.label }}</mat-label>
+              <input matInput type="number" [formControlName]="prop.key" [placeholder]="prop.description || ''">
+              <mat-hint *ngIf="prop.description">{{ prop.description }}</mat-hint>
+            </mat-form-field>
+
+            <!-- Boolean Toggle -->
+            <div *ngSwitchCase="'boolean'" class="boolean-field">
+              <mat-slide-toggle [formControlName]="prop.key">
+                {{ prop.label }}
+              </mat-slide-toggle>
+              <mat-hint *ngIf="prop.description">{{ prop.description }}</mat-hint>
+            </div>
+
+            <!-- Select Dropdown -->
+            <mat-form-field *ngSwitchCase="'select'" appearance="outline">
+              <mat-label>{{ prop.label }}</mat-label>
+              <mat-select [formControlName]="prop.key">
+                <mat-option *ngFor="let option of prop.options" [value]="option.value">
+                  {{ option.label }}
+                </mat-option>
+              </mat-select>
+              <mat-hint *ngIf="prop.description">{{ prop.description }}</mat-hint>
+            </mat-form-field>
+
+            <!-- Color Picker -->
+            <mat-form-field *ngSwitchCase="'color'" appearance="outline">
+              <mat-label>{{ prop.label }}</mat-label>
+              <input matInput type="color" [formControlName]="prop.key">
+              <mat-hint *ngIf="prop.description">{{ prop.description }}</mat-hint>
+            </mat-form-field>
+          </ng-container>
+        </div>
+      </form>
+    </mat-expansion-panel>
+
+    <!-- Layout Properties -->
+    <mat-expansion-panel 
+      *ngIf="layoutProperties.length > 0"
+      class="property-panel">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <mat-icon>view_quilt</mat-icon>
+          Layout & Spacing
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      
+      <form [formGroup]="layoutForm" class="property-form">
+        <div *ngFor="let prop of layoutProperties" class="property-field">
+          <ng-container [ngSwitch]="prop.type">
+            <mat-form-field *ngSwitchCase="'text'" appearance="outline">
+              <mat-label>{{ prop.label }}</mat-label>
+              <input matInput [formControlName]="prop.key" [placeholder]="prop.description || ''">
+              <mat-hint *ngIf="prop.description">{{ prop.description }}</mat-hint>
+            </mat-form-field>
+
+            <mat-form-field *ngSwitchCase="'number'" appearance="outline">
+              <mat-label>{{ prop.label }}</mat-label>
+              <input matInput type="number" [formControlName]="prop.key" [placeholder]="prop.description || ''">
+              <mat-hint *ngIf="prop.description">{{ prop.description }}</mat-hint>
+            </mat-form-field>
+
+            <mat-form-field *ngSwitchCase="'select'" appearance="outline">
+              <mat-label>{{ prop.label }}</mat-label>
+              <mat-select [formControlName]="prop.key">
+                <mat-option *ngFor="let option of prop.options" [value]="option.value">
+                  {{ option.label }}
+                </mat-option>
+              </mat-select>
+              <mat-hint *ngIf="prop.description">{{ prop.description }}</mat-hint>
+            </mat-form-field>
+          </ng-container>
+        </div>
+      </form>
+    </mat-expansion-panel>
+
+    <!-- Style Properties -->
+    <mat-expansion-panel 
+      *ngIf="styleProperties.length > 0"
+      class="property-panel">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <mat-icon>palette</mat-icon>
+          Styling & Appearance
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      
+      <form [formGroup]="styleForm" class="property-form">
+        <div *ngFor="let prop of styleProperties" class="property-field">
+          <ng-container [ngSwitch]="prop.type">
+            <mat-form-field *ngSwitchCase="'color'" appearance="outline">
+              <mat-label>{{ prop.label }}</mat-label>
+              <input matInput type="color" [formControlName]="prop.key">
+              <mat-hint *ngIf="prop.description">{{ prop.description }}</mat-hint>
+            </mat-form-field>
+
+            <mat-form-field *ngSwitchCase="'select'" appearance="outline">
+              <mat-label>{{ prop.label }}</mat-label>
+              <mat-select [formControlName]="prop.key">
+                <mat-option *ngFor="let option of prop.options" [value]="option.value">
+                  {{ option.label }}
+                </mat-option>
+              </mat-select>
+              <mat-hint *ngIf="prop.description">{{ prop.description }}</mat-hint>
+            </mat-form-field>
+
+            <mat-form-field *ngSwitchCase="'text'" appearance="outline">
+              <mat-label>{{ prop.label }}</mat-label>
+              <input matInput [formControlName]="prop.key" [placeholder]="prop.description || ''">
+              <mat-hint *ngIf="prop.description">{{ prop.description }}</mat-hint>
+            </mat-form-field>
+
+            <div *ngSwitchCase="'boolean'" class="boolean-field">
+              <mat-slide-toggle [formControlName]="prop.key">
+                {{ prop.label }}
+              </mat-slide-toggle>
+              <mat-hint *ngIf="prop.description">{{ prop.description }}</mat-hint>
+            </div>
+          </ng-container>
+        </div>
+      </form>
+    </mat-expansion-panel>
+
+    <!-- Component-Specific Properties -->
+    <mat-expansion-panel 
+      *ngIf="specificProperties.length > 0"
+      class="property-panel">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <mat-icon>tune</mat-icon>
+          {{ getComponentLabel(selectedComponent.type) }} Settings
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      
+      <form [formGroup]="specificForm" class="property-form">
+        <div *ngFor="let prop of specificProperties" class="property-field">
+          <ng-container [ngSwitch]="prop.type">
+            <!-- Array Properties (like form fields, navigation items) -->
+            <div *ngSwitchCase="'array'" class="array-field">
+              <div class="array-header">
+                <mat-label>{{ prop.label }}</mat-label>
+                <button mat-icon-button type="button" (click)="addArrayItem(prop.key)">
+                  <mat-icon>add</mat-icon>
+                </button>
+              </div>
+              
+              <div formArrayName="{{ prop.key }}" class="array-items">
+                <div *ngFor="let item of getFormArray(prop.key).controls; let i = index" 
+                     class="array-item">
+                  <ng-container [formGroupName]="i">
+                    <div class="array-item-fields">
+                      <mat-form-field appearance="outline">
+                        <mat-label>Label</mat-label>
+                        <input matInput formControlName="label">
+                      </mat-form-field>
+                      
+                      <mat-form-field appearance="outline" *ngIf="prop.key === 'items'">
+                        <mat-label>Link/Action</mat-label>
+                        <input matInput formControlName="href">
+                      </mat-form-field>
+                      
+                      <mat-form-field appearance="outline" *ngIf="prop.key === 'fields'">
+                        <mat-label>Type</mat-label>
+                        <mat-select formControlName="type">
+                          <mat-option value="text">Text</mat-option>
+                          <mat-option value="email">Email</mat-option>
+                          <mat-option value="number">Number</mat-option>
+                          <mat-option value="password">Password</mat-option>
+                          <mat-option value="tel">Phone</mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                    
+                    <button mat-icon-button type="button" 
+                            (click)="removeArrayItem(prop.key, i)"
+                            class="remove-item-btn">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </ng-container>
+                </div>
+              </div>
+              <mat-hint *ngIf="prop.description">{{ prop.description }}</mat-hint>
+            </div>
+
+            <!-- Other property types -->
+            <mat-form-field *ngSwitchDefault appearance="outline">
+              <mat-label>{{ prop.label }}</mat-label>
+              <input matInput [formControlName]="prop.key" [placeholder]="prop.description || ''">
+              <mat-hint *ngIf="prop.description">{{ prop.description }}</mat-hint>
+            </mat-form-field>
+          </ng-container>
+        </div>
+      </form>
+    </mat-expansion-panel>
+
+    <!-- Actions -->
+    <mat-expansion-panel class="property-panel">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <mat-icon>flash_on</mat-icon>
+          Actions
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      
+      <div class="action-buttons">
+        <button mat-raised-button color="primary" (click)="duplicateComponent()">
+          <mat-icon>content_copy</mat-icon>
+          Duplicate
+        </button>
+        
+        <button mat-raised-button color="accent" (click)="resetProperties()">
+          <mat-icon>refresh</mat-icon>
+          Reset
+        </button>
+        
+        <button mat-raised-button color="warn" (click)="deleteComponent()">
+          <mat-icon>delete</mat-icon>
+          Delete
+        </button>
+      </div>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>
+
+<ng-template #noSelection>
+  <div class="no-selection">
+    <mat-icon>touch_app</mat-icon>
+    <h3>No Component Selected</h3>
+    <p>Click on a component in the canvas to edit its properties</p>
+  </div>
+</ng-template>

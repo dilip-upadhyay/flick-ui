@@ -8,28 +8,7 @@ export type DatePickerAppearance = 'fill' | 'outline';
 @Component({
   selector: 'ui-datepicker',
   standalone: true,
-  imports: [CommonModule, MaterialModule],
-  template: `
-    <mat-form-field 
-      [appearance]="appearance"
-      [class]="fieldClasses">
-      <mat-label>{{ label }}
-        <span *ngIf="required" class="required-indicator">*</span>
-      </mat-label>
-      <input 
-        matInput
-        [matDatepicker]="picker"
-        [id]="id"
-        [required]="required"
-        [value]="value"
-        (dateInput)="onDateInput($event)"
-        (dateChange)="onDateChange($event)">
-      <mat-hint *ngIf="hint">{{ hint }}</mat-hint>
-      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-      <mat-datepicker #picker></mat-datepicker>
-      <mat-error *ngFor="let error of errors">{{ error }}</mat-error>
-    </mat-form-field>
-  `,
+  imports: [CommonModule, MaterialModule],  templateUrl: './ui-datepicker.component.html',
   styleUrls: ['./ui-datepicker.component.css'],
   providers: [
     {

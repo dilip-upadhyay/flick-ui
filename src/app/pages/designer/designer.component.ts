@@ -1,12 +1,13 @@
 import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { MaterialModule } from '../../shared/material.module';
 import { DesignerCanvasComponent } from '../../components/designer-canvas/designer-canvas.component';
 import { ComponentPaletteComponent } from '../../components/component-palette/component-palette.component';
 import { PropertyEditorComponent } from '../../components/property-editor/property-editor.component';
 import { DesignerToolbarComponent } from '../../components/designer-toolbar/designer-toolbar.component';
 import { ConfigPreviewComponent } from '../../components/config-preview/config-preview.component';
+import { AiChatComponent } from '../../components/ai-chat/ai-chat.component';
 import { UIConfig, UIComponent, ComponentType } from '../../models/ui-config.interface';
 import { DesignerService } from '../../services/designer.service';
 import { FormBuilderService } from '../../services/form-builder.service';
@@ -14,8 +15,7 @@ import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-designer',
-  standalone: true,
-  imports: [
+  standalone: true,  imports: [
     CommonModule,
     ReactiveFormsModule,
     MaterialModule,
@@ -23,8 +23,9 @@ import { Subject, takeUntil } from 'rxjs';
     ComponentPaletteComponent,
     PropertyEditorComponent,
     DesignerToolbarComponent,
-    ConfigPreviewComponent
-  ],  templateUrl: './designer.component.html',
+    ConfigPreviewComponent,
+    AiChatComponent
+  ],templateUrl: './designer.component.html',
   styleUrls: ['./designer.component.css']
 })
 export class DesignerComponent implements OnInit, OnDestroy {
@@ -50,6 +51,7 @@ export class DesignerComponent implements OnInit, OnDestroy {
   // UI State
   leftSidebarCollapsed = false;
   rightSidebarCollapsed = false;
+  rightSidebarTab: 'properties' | 'ai-chat' = 'properties';
   bottomPanelCollapsed = true;
   
   // Form Builder State
@@ -180,6 +182,14 @@ export class DesignerComponent implements OnInit, OnDestroy {
 
   toggleRightSidebar() {
     this.rightSidebarCollapsed = !this.rightSidebarCollapsed;
+  }
+
+  switchRightSidebarTab(tab: 'properties' | 'ai-chat') {
+    this.rightSidebarTab = tab;
+    // Ensure sidebar is open when switching tabs
+    if (this.rightSidebarCollapsed) {
+      this.rightSidebarCollapsed = false;
+    }
   }
 
   toggleBottomPanel() {
