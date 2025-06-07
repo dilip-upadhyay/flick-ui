@@ -323,6 +323,24 @@ export class PropertyEditorComponent implements OnInit, OnDestroy, OnChanges {
           { key: 'disabled', label: 'Disabled', type: 'boolean', description: 'Disable the button' }
         ];
 
+      case 'table-grid':
+        // Only show columns array editor, not form field configuration
+        return [
+          {
+            key: 'columns',
+            label: 'Columns',
+            type: 'array',
+            description: 'Configure table columns (add, remove, edit)',
+            options: [
+              { value: 'key', label: 'Key' },
+              { value: 'label', label: 'Label' },
+              { value: 'type', label: 'Type' },
+              { value: 'options', label: 'Options' },
+              { value: 'buttonLabel', label: 'Button Label' }
+            ]
+          }
+        ];
+
       default:
         return [];
     }
@@ -419,6 +437,14 @@ export class PropertyEditorComponent implements OnInit, OnDestroy, OnChanges {
         label: [item.label ?? ''],
         href: [item.href ?? '#'],
         icon: [item.icon ?? '']
+      });
+    } else if (arrayKey === 'columns') {
+      return this.fb.group({
+        key: [item.key ?? ''],
+        label: [item.label ?? ''],
+        type: [item.type ?? 'text'],
+        options: [item.options ?? []],
+        buttonLabel: [item.buttonLabel ?? '']
       });
     }    
     return this.fb.group({

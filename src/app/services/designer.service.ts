@@ -541,7 +541,38 @@ export class DesignerService {
             { value: 'user', label: 'User' }
           ] }
         ],
-        data: [],
+        data: [
+          { name: 'Alice Johnson', email: 'alice.johnson@example.com', role: 'admin' },
+          { name: 'Bob Smith', email: 'bob.smith@example.com', role: 'user' },
+          { name: 'Charlie Brown', email: 'charlie.brown@example.com', role: 'user' },
+          { name: 'Diana Prince', email: 'diana.prince@example.com', role: 'admin' },
+          { name: 'Ethan Hunt', email: 'ethan.hunt@example.com', role: 'user' },
+          { name: 'Fiona Glenanne', email: 'fiona.glenanne@example.com', role: 'user' },
+          { name: 'George Miller', email: 'george.miller@example.com', role: 'admin' },
+          { name: 'Hannah Lee', email: 'hannah.lee@example.com', role: 'user' },
+          { name: 'Ian Curtis', email: 'ian.curtis@example.com', role: 'user' },
+          { name: 'Julia Roberts', email: 'julia.roberts@example.com', role: 'admin' },
+          { name: 'Kevin Bacon', email: 'kevin.bacon@example.com', role: 'user' },
+          { name: 'Laura Palmer', email: 'laura.palmer@example.com', role: 'user' },
+          { name: 'Mike Ross', email: 'mike.ross@example.com', role: 'admin' },
+          { name: 'Nina Simone', email: 'nina.simone@example.com', role: 'user' },
+          { name: 'Oscar Wilde', email: 'oscar.wilde@example.com', role: 'user' },
+          { name: 'Paula Abdul', email: 'paula.abdul@example.com', role: 'admin' },
+          { name: 'Quentin Blake', email: 'quentin.blake@example.com', role: 'user' },
+          { name: 'Rachel Green', email: 'rachel.green@example.com', role: 'user' },
+          { name: 'Steve Jobs', email: 'steve.jobs@example.com', role: 'admin' },
+          { name: 'Tina Fey', email: 'tina.fey@example.com', role: 'user' },
+          { name: 'Uma Thurman', email: 'uma.thurman@example.com', role: 'user' },
+          { name: 'Victor Hugo', email: 'victor.hugo@example.com', role: 'admin' },
+          { name: 'Wendy Darling', email: 'wendy.darling@example.com', role: 'user' },
+          { name: 'Xander Harris', email: 'xander.harris@example.com', role: 'user' },
+          { name: 'Yara Greyjoy', email: 'yara.greyjoy@example.com', role: 'admin' },
+          { name: 'Zane Malik', email: 'zane.malik@example.com', role: 'user' },
+          { name: 'Ava Chen', email: 'ava.chen@example.com', role: 'user' },
+          { name: 'Ben Wyatt', email: 'ben.wyatt@example.com', role: 'admin' },
+          { name: 'Cleo Patra', email: 'cleo.patra@example.com', role: 'user' },
+          { name: 'Derek Shepherd', email: 'derek.shepherd@example.com', role: 'user' }
+        ],
         pagination: true,
         serverSide: false,
         pageSize: 10,
@@ -552,12 +583,12 @@ export class DesignerService {
       }
     };
 
-    return defaults[type] || {};
+    return defaults[type] ?? {};
   }
 
   private generateId(type: ComponentType): string {
     const timestamp = Date.now();
-    const random = Math.random().toString(36).substr(2, 5);
+    const random = Math.random().toString(36).substring(2, 7);
     return `${type}-${timestamp}-${random}`;
   }
 
