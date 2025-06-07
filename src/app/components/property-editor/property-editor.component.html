@@ -8,13 +8,9 @@
       </div>
     </div>
   </div>  <!-- Quick Label Editor for Form Fields -->
-  <div class="quick-label-editor" *ngIf="isFormField(selectedComponent.type)">
+  <div class="quick-label-editor" >
     <mat-card class="label-editor-card">
-      <mat-card-header>
-        <mat-icon mat-card-avatar class="label-icon">label</mat-icon>
-        <mat-card-title>Quick Label Edit</mat-card-title>
-        <mat-card-subtitle>Edit the display label for this form field</mat-card-subtitle>
-      </mat-card-header>
+      
       <mat-card-content>
         <mat-form-field appearance="outline" class="full-width-field">
           <mat-label>Field Label</mat-label>
@@ -261,7 +257,7 @@
       </form>
     </mat-expansion-panel>    <!-- Enhanced Form Field Properties -->
     <mat-expansion-panel 
-      *ngIf="isFormField(selectedComponent.type)"
+      
       [expanded]="true"
       class="property-panel enhanced-form-panel">
       <mat-expansion-panel-header>
@@ -272,36 +268,7 @@
       </mat-expansion-panel-header>
       
       <form [formGroup]="specificForm" class="property-form enhanced-form-config">
-        <!-- Label Section -->
-        <div class="config-section">
-          <h4 class="section-title">
-            <mat-icon>label</mat-icon>
-            Display & Text
-          </h4>
-          <div class="config-grid">
-            <mat-form-field appearance="outline" class="primary-field">
-              <mat-label>Field Label</mat-label>
-              <input matInput formControlName="label" placeholder="Enter field label">
-              <mat-icon matSuffix>text_fields</mat-icon>
-              <mat-hint>Main label displayed above the field</mat-hint>
-            </mat-form-field>
-            
-            <mat-form-field appearance="outline" *ngIf="selectedComponent.type !== 'checkbox' && selectedComponent.type !== 'radio'">
-              <mat-label>Placeholder Text</mat-label>
-              <input matInput formControlName="placeholder" placeholder="Enter placeholder...">
-              <mat-icon matSuffix>help_outline</mat-icon>
-              <mat-hint>Hint text shown inside the field</mat-hint>
-            </mat-form-field>
-            
-            <mat-form-field appearance="outline">
-              <mat-label>Help Text</mat-label>
-              <input matInput formControlName="helpText" placeholder="Additional help information">
-              <mat-icon matSuffix>info</mat-icon>
-              <mat-hint>Helper text displayed below the field</mat-hint>
-            </mat-form-field>
-          </div>
-        </div>
-
+       
         <!-- Validation & Behavior Section -->
         <div class="config-section">
           <h4 class="section-title">

@@ -456,13 +456,16 @@ export class PropertyEditorComponent implements OnInit, OnDestroy, OnChanges {
       if (value !== null && value !== undefined && value !== '') {
         if (formType === 'basic') {
           // Update component root properties
+          (this.selectedComponent as any)[key] = value;
           this.propertyChanged.emit({
             component: this.selectedComponent!,
             property: key,
             value: value
           });
         } else {
-          // Update component properties
+          // Update component properties (props)
+          (this.selectedComponent as any).props ??= {};
+          this.selectedComponent!.props![key] = value;
           this.propertyChanged.emit({
             component: this.selectedComponent!,
             property: `props.${key}`,

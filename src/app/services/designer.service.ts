@@ -128,19 +128,15 @@ export class DesignerService {
     this.updateConfig(config);
   }
 
-  updateComponentProperty(component: UIComponent, property: string, value: any): void {
-    const config = { ...this.currentConfig$.value };
-    const foundComponent = this.findComponentInConfig(config, component.id);
-    
+  // Utility: Update a property of a component in the config tree by id
+  private updateComponentPropertyInConfig(config: UIConfig, componentId: string, property: string, value: any): void {
+    const foundComponent = this.findComponentInConfig(config, componentId);
     if (foundComponent) {
       if (property.includes('.')) {
-        // Handle nested properties like 'props.title'
         const parts = property.split('.');
         let current: any = foundComponent;
         for (let i = 0; i < parts.length - 1; i++) {
-          if (!current[parts[i]]) {
-            current[parts[i]] = {};
-          }
+          current[parts[i]] ??= {};
           current = current[parts[i]];
         }
         current[parts[parts.length - 1]] = value;
@@ -148,7 +144,11 @@ export class DesignerService {
         (foundComponent as any)[property] = value;
       }
     }
+  }
 
+  updateComponentProperty(component: UIComponent, property: string, value: any): void {
+    const config = { ...this.currentConfig$.value };
+    this.updateComponentPropertyInConfig(config, component.id, property, value);
     this.updateConfig(config);
   }
 
