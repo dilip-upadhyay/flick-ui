@@ -46,7 +46,29 @@ export type ComponentType =
   | 'date-input'
   | 'file-input'
   | 'submit-button'
-  | 'reset-button';
+  | 'reset-button'
+  // Table Grid
+  | 'table-grid';
+
+export interface TableGridColumnConfig {
+  key: string;
+  label: string;
+  type: 'text' | 'input' | 'select' | 'email' | 'date' | 'button';
+  options?: { value: any; label: string }[];
+  buttonLabel?: string;
+}
+
+export interface TableGridComponentProps {
+  columns: TableGridColumnConfig[];
+  data: any[];
+  pagination?: boolean;
+  serverSide?: boolean;
+  pageSize?: number;
+  pageSizeOptions?: number[];
+  selectable?: boolean;
+  theme?: string;
+  alternateRowColor?: string;
+}
 
 export interface LayoutConfig {
   type: 'grid' | 'flex' | 'stack';

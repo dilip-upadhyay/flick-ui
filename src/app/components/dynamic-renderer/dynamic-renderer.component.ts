@@ -12,6 +12,7 @@ import { NavigationRendererComponent } from '../navigation-renderer/navigation-r
 import { DashboardRendererComponent } from '../dashboard-renderer/dashboard-renderer.component';
 import { FormRendererComponent } from '../form-renderer/form-renderer.component';
 import { FormElementRendererComponent } from '../form-element-renderer/form-element-renderer.component';
+import { TableGridComponent } from '../table-renderer/table-grid.component';
 
 @Component({
   selector: 'app-dynamic-renderer',
@@ -22,7 +23,8 @@ import { FormElementRendererComponent } from '../form-element-renderer/form-elem
     NavigationRendererComponent,
     DashboardRendererComponent,
     FormRendererComponent,
-    FormElementRendererComponent
+    FormElementRendererComponent,
+    TableGridComponent
   ],
   templateUrl: './dynamic-renderer.component.html',
   styleUrl: './dynamic-renderer.component.css'

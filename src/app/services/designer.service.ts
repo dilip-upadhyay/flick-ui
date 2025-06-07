@@ -531,6 +531,24 @@ export class DesignerService {
         label: 'Reset',
         type: 'reset',
         variant: 'secondary'
+      },
+      'table-grid': {
+        columns: [
+          { key: 'name', label: 'Name', type: 'text' },
+          { key: 'email', label: 'Email', type: 'email' },
+          { key: 'role', label: 'Role', type: 'select', options: [
+            { value: 'admin', label: 'Admin' },
+            { value: 'user', label: 'User' }
+          ] }
+        ],
+        data: [],
+        pagination: true,
+        serverSide: false,
+        pageSize: 10,
+        pageSizeOptions: [5, 10, 25, 100],
+        selectable: true,
+        theme: 'default',
+        alternateRowColor: '#f5f5f5'
       }
     };
 

@@ -201,6 +201,19 @@
           (fileSelected)="onFormElementFileSelected($event, component)">
         </app-form-element-renderer>
 
+        <!-- Table Grid Component -->
+        <app-table-grid
+          *ngIf="component.type === 'table-grid'"
+          [config]="component.props"
+          [data]="component.props.data"
+          [serverSide]="component.props.serverSide"
+          [theme]="component.props.theme"
+          [alternateRowColor]="component.props.alternateRowColor"
+          (pageChange)="onComponentEvent({ action: 'pageChange', data: $event }, component)"
+          (rowSelect)="onComponentEvent({ action: 'rowSelect', data: $event }, component)"
+          (selectAll)="onComponentEvent({ action: 'selectAll', data: $event }, component)">
+        </app-table-grid>
+
         <!-- Unknown Component Type -->
         <div *ngIf="!['header', 'navigation', 'form', 'table', 'dashboard', 'card', 'container', 'text', 'button', 'image', 'grid', 'modal', 'tabs', 'text-input', 'email-input', 'password-input', 'number-input', 'textarea', 'checkbox', 'radio', 'date-input', 'file-input', 'submit-button', 'reset-button'].includes(component.type)" 
              class="unknown-component">

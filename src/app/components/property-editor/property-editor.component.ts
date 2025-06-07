@@ -516,7 +516,8 @@ export class PropertyEditorComponent implements OnInit, OnDestroy, OnChanges {
       'date-input': 'Date Input',
       'file-input': 'File Input',
       'submit-button': 'Submit Button',
-      'reset-button': 'Reset Button'
+      'reset-button': 'Reset Button',
+      'table-grid': 'Table Grid'
     };
     return labels[componentType] || componentType;
   }
@@ -548,7 +549,8 @@ export class PropertyEditorComponent implements OnInit, OnDestroy, OnChanges {
       'date-input': 'calendar_today',
       'file-input': 'upload_file',
       'submit-button': 'send',
-      'reset-button': 'refresh'
+      'reset-button': 'refresh',
+      'table-grid': 'table_chart'
     };
     return icons[componentType] || 'widgets';
   }  // Form field helper methods for enhanced label editing
