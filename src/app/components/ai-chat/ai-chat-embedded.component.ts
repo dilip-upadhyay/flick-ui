@@ -391,12 +391,6 @@ export class AiChatEmbeddedComponent implements OnInit, OnDestroy {
     this.onSubmit();
   }
 
-  // Test method to verify the pipeline works
-  testGridChange() {
-    console.log('AiChatEmbedded: testGridChange called');
-    this.sendMessage('set grid to 1 column');
-  }
-
   clearChat() {
     this.messages = [];
   }

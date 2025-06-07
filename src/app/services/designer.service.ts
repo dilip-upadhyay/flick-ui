@@ -363,7 +363,6 @@ export class DesignerService {
       }
       
       const config = await response.json();
-      console.log('DesignerService: Loaded config from assets:', config);
       this.loadConfig(config);
       this.snackBar.open(`Configuration ${filename} loaded successfully`, 'Close', { duration: 3000 });
     } catch (error) {

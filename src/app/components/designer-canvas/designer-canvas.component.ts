@@ -82,7 +82,6 @@ export class DesignerCanvasComponent implements OnInit, OnDestroy, OnChanges {
     private formBuilderService: FormBuilderService
   ) {}
   ngOnInit() {
-    console.log('DesignerCanvasComponent: ngOnInit - Initial config:', this.config);
     // Ensure we have a basic configuration without forcing grid layout
     this.ensureBasicConfiguration();
     
@@ -90,8 +89,7 @@ export class DesignerCanvasComponent implements OnInit, OnDestroy, OnChanges {
     this.designerService.getCurrentConfig()
       .pipe(takeUntil(this.destroy$))
       .subscribe(config => {
-        console.log('DesignerCanvasComponent: Direct config update from service:', config);        if (config && config !== this.config) {
-          console.log('DesignerCanvasComponent: Config differs, updating local config');
+        if (config && config !== this.config) {
           this.config = config;
           this.ensureBasicConfiguration();
           this.generateGridCells();
@@ -119,17 +117,11 @@ export class DesignerCanvasComponent implements OnInit, OnDestroy, OnChanges {
     // Initialize enhanced grid
     this.generateGridCells();
     this.initializeComponentPositions();
-    
-    // Debug grid configuration
-    setTimeout(() => this.debugGridConfiguration(), 1000);
   }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['config']) {
-      console.log('DesignerCanvasComponent: Config input changed!');
-      console.log('Previous config:', changes['config'].previousValue);
-      console.log('Current config:', changes['config'].currentValue);
-        if (changes['config'].currentValue) {
+      if (changes['config'].currentValue) {
         this.ensureBasicConfiguration();
         this.generateGridCells();
         this.initializeComponentPositions();
@@ -152,7 +144,6 @@ export class DesignerCanvasComponent implements OnInit, OnDestroy, OnChanges {
         type: 'layout',
         components: []
       };
-      console.log('Created default basic configuration:', this.config);
     }
     
     // Ensure components array exists
@@ -729,22 +720,6 @@ export class DesignerCanvasComponent implements OnInit, OnDestroy, OnChanges {
                   'component at index:', this.config?.components?.[blockIndex] || 'undefined');
     }
     return isEmpty;
-  }
-
-  // Debug method to help with empty block placeholder visibility issues  
-  debugGridConfiguration() {
-    console.log('=== GRID DEBUG INFO ===');
-    console.log('isFormBuilderMode:', this.isFormBuilderMode);
-    console.log('config:', this.config);
-    console.log('config?.layout:', this.config?.layout);
-    console.log('config?.layout?.type:', this.config?.layout?.type);
-    console.log('config?.layout?.columns:', this.config?.layout?.columns);
-    console.log('config?.components:', this.config?.components);
-    console.log('config?.components?.length:', this.config?.components?.length);
-    console.log('gridBlocks array:', this.gridBlocks);
-    console.log('Enhanced Grid Mode Condition:', !this.isFormBuilderMode && this.config?.layout?.type === 'grid');
-    console.log('Regular Canvas Mode Condition:', !this.isFormBuilderMode && (!this.config?.layout || this.config?.layout?.type !== 'grid'));
-    console.log('=====================');
   }
 
   // Canvas styling and helper methods

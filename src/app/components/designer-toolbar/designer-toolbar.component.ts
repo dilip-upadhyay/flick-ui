@@ -35,19 +35,10 @@ export class DesignerToolbarComponent {
   selectedTool = 'select';
   showShortcuts = false;
   onAction(actionId: string) {
-    console.log('DesignerToolbar: onAction called with:', actionId);
-    
-  
-    // Handle grid test scenario loading
-    if (actionId === 'load-grid-test') {
-      console.log('DesignerToolbar: Loading grid test scenario');
-    }
-    
     if (actionId === 'settings-shortcuts' || actionId === 'help-shortcuts') {
       this.showShortcuts = true;
       return;
     }
-    console.log('DesignerToolbar: Emitting action:', actionId);
     this.action.emit(actionId);
   }
 
