@@ -212,8 +212,7 @@
           (pageChange)="onComponentEvent({ action: 'pageChange', data: $event }, component)"
           (rowSelect)="onComponentEvent({ action: 'rowSelect', data: $event }, component)"
           (selectAll)="onComponentEvent({ action: 'selectAll', data: $event }, component)">
-        </app-table-grid>
-
+        </app-table-grid>       
         <!-- Responsive Grid Component -->
         <app-responsive-grid
           *ngIf="component.type === 'responsive-grid'"
@@ -224,9 +223,8 @@
           (externalDrop)="onResponsiveGridExternalDrop($event, component)"
         >
         </app-responsive-grid>
-
         <!-- Unknown Component Type -->
-        <div *ngIf="!['header', 'navigation', 'form', 'table', 'dashboard', 'card', 'container', 'text', 'button', 'image', 'grid', 'modal', 'tabs', 'text-input', 'email-input', 'password-input', 'number-input', 'textarea', 'checkbox', 'radio', 'date-input', 'file-input', 'submit-button', 'reset-button'].includes(component.type)" 
+        <div *ngIf="!['header', 'navigation', 'form', 'table', 'dashboard', 'card', 'container', 'text', 'button', 'image', 'grid', 'modal', 'tabs', 'text-input', 'email-input', 'password-input', 'number-input', 'textarea', 'checkbox', 'radio', 'date-input', 'file-input', 'submit-button', 'reset-button', 'table-grid', 'responsive-grid'].includes(component.type)" 
              class="unknown-component">
           <p class="error">Unknown component type: {{ component.type }}</p>
         </div>

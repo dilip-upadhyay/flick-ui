@@ -459,6 +459,5 @@ export class DynamicRendererComponent implements OnInit, OnDestroy {
         ...gridComponent.props,
         gridData: newGridData
       }
-    });
-  }
+    });  }
 }

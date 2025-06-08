@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Responsive Grid Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 20px; border: 1px solid #ccc; }
+        .status { padding: 10px; margin: 10px 0; border-radius: 4px; }
+        .success { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
+        .error { background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
+        .info { background: #d1ecf1; border: 1px solid #bee5eb; color: #0c5460; }
+    </style>
+</head>
+<body>
+    <h1>Responsive Grid Component Test</h1>
+    
+    <div class="test-section">
+        <h2>Test Instructions</h2>
+        <ol>
+            <li>Open the designer page at <a href="http://localhost:4200/designer" target="_blank">http://localhost:4200/designer</a></li>
+            <li>Look for "Responsive Grid" in the Layout section of the component palette</li>
+            <li>Drag the "Responsive Grid" component onto the canvas</li>
+            <li>Verify that you can see grid cells with "Drop here" text</li>
+            <li>Try dragging a "Table Grid" or "Form" component into one of the grid cells</li>
+            <li>Check the browser console for any errors or debug messages</li>
+        </ol>
+    </div>
+
+    <div class="test-section">
+        <h2>Expected Behavior</h2>
+        <div class="info status">
+            ✓ Responsive grid should appear as a 3x3 grid with visible cells<br>
+            ✓ Each cell should show "Drop here" text with blue styling<br>
+            ✓ Cells should have dashed blue borders and light background<br>
+            ✓ Components should be droppable into grid cells<br>
+            ✓ Console should show initialization messages
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Recent Changes Made</h2>
+        <ul>
+            <li>✅ Fixed default configuration in designer.service.ts to include proper 2D grid array</li>
+            <li>✅ Enhanced CSS styling for better cell visibility (thicker borders, larger size)</li>
+            <li>✅ Improved grid initialization logic with better error handling</li>
+            <li>✅ Added more prominent "Drop here" styling</li>
+            <li>✅ Added debug logging for troubleshooting</li>
+        </ul>
+    </div>
+
+    <div class="test-section">
+        <h2>Test Configuration</h2>
+        <p>You can also test by loading this configuration:</p>
+        <pre>{
+  "type": "layout",
+  "components": [
+    {
+      "id": "responsive-grid-test",
+      "type": "responsive-grid",
+      "props": {
+        "rows": 2,
+        "cols": 2,
+        "gap": "16px",
+        "gridData": [
+          [null, null],
+          [null, null]
+        ]
+      }
+    }
+  ]
+}</pre>
+    </div>
+
+    <script>
+        // Add some basic functionality to make this page more interactive
+        console.log('Responsive Grid Test Page Loaded');
+        
+        // Check if the app is running
+        fetch('http://localhost:4200/designer')
+            .then(response => {
+                if (response.ok) {
+                    document.body.insertAdjacentHTML('afterbegin', 
+                        '<div class="success status">✅ Angular app is running on localhost:4200</div>');
+                } else {
+                    document.body.insertAdjacentHTML('afterbegin', 
+                        '<div class="error status">❌ Angular app may not be running on localhost:4200</div>');
+                }
+            })
+            .catch(error => {
+                document.body.insertAdjacentHTML('afterbegin', 
+                    '<div class="error status">❌ Cannot connect to Angular app on localhost:4200</div>');
+            });
+    </script>
+</body>
+</html>

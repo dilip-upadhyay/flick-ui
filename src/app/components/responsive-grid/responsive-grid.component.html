@@ -1,12 +1,19 @@
-<div class="responsive-grid" [style.gridTemplateColumns]="'repeat(' + cols + ', 1fr)'" [style.gridTemplateRows]="'repeat(' + rows + ', 1fr)'">
+<div class="responsive-grid" 
+     [style.gridTemplateColumns]="'repeat(' + cols + ', 1fr)'"
+     [style.gridTemplateRows]="'repeat(' + rows + ', 1fr)'"
+     [style.--grid-cols]="cols"
+     [style.--grid-rows]="rows">
   <ng-container *ngFor="let row of gridData; let rowIdx = index">
-    <ng-container *ngFor="let cell of row; let colIdx = index">
-      <div class="grid-cell" cdkDropList [cdkDropListData]="[cell]" (cdkDropListDropped)="drop($event, rowIdx, colIdx)" [attr.data-row]="rowIdx" [attr.data-col]="colIdx">
-        <ng-container *ngIf="cell && cell.type">
-          <app-form-element-renderer 
-            [config]="cell"
-            (valueChange)="onFieldValueChange($event)">
-          </app-form-element-renderer>
+    <ng-container *ngFor="let cell of row; let colIdx = index">      <div class="grid-cell" 
+           cdkDropList 
+           [cdkDropListData]="[cell]" 
+           (cdkDropListDropped)="drop($event, rowIdx, colIdx)" 
+           [attr.data-row]="rowIdx" 
+           [attr.data-col]="colIdx"><ng-container *ngIf="cell && cell.type">
+          <div class="grid-cell-content" [attr.data-component-type]="cell.type">
+            <!-- Component content will be rendered by parent dynamic renderer -->
+            <span class="component-placeholder">{{ cell.type }} component</span>
+          </div>
         </ng-container>
         <ng-container *ngIf="!cell || !cell.type">
           <span class="empty-cell">Drop here</span>

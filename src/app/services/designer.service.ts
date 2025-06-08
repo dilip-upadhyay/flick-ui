@@ -580,12 +580,15 @@ export class DesignerService {
         selectable: true,
         theme: 'default',
         alternateRowColor: '#f5f5f5'
-      },
-      'responsive-grid': {
+      },      'responsive-grid': {
         rows: 3,
         cols: 3,
         gap: '8px',
-        gridData: []
+        gridData: [
+          [null, null, null],
+          [null, null, null],
+          [null, null, null]
+        ]
       }
     };
 

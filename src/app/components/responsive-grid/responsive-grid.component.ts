@@ -1,15 +1,13 @@
 import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
-import { FormElementRendererComponent } from '../form-element-renderer/form-element-renderer.component';
 
 @Component({
   selector: 'app-responsive-grid',
   standalone: true,
   imports: [
     CommonModule,
-    DragDropModule,
-    FormElementRendererComponent
+    DragDropModule
   ],
   templateUrl: './responsive-grid.component.html',
   styleUrls: ['./responsive-grid.component.css']
@@ -29,15 +27,23 @@ export class ResponsiveGridComponent implements OnInit, OnChanges {
     if (changes['rows'] || changes['cols']) {
       this.ensureGridData();
     }
-  }
-
-  private ensureGridData() {
-    // Rebuild gridData if rows/cols change
-    if (!this.gridData || this.gridData.length !== this.rows || this.gridData.some(row => row.length !== this.cols)) {
-      const newGrid = Array.from({ length: this.rows }, (_, r) =>
-        Array.from({ length: this.cols }, (_, c) => (this.gridData[r]?.[c] ?? null))
+  }  private ensureGridData() {
+    console.log('ensureGridData called - Current gridData:', this.gridData, 'rows:', this.rows, 'cols:', this.cols);
+    
+    // Always ensure we have a proper 2D array structure
+    const needsInitialization = !this.gridData || 
+      !Array.isArray(this.gridData) || 
+      this.gridData.length !== this.rows || 
+      this.gridData.some((row, idx) => !Array.isArray(row) || row.length !== this.cols);
+    
+    if (needsInitialization) {
+      const newGrid = Array.from({ length: this.rows }, (_, r) =>        Array.from({ length: this.cols }, (_, c) => {
+          // Preserve existing data if available
+          return this.gridData?.[r]?.[c] ?? null;
+        })
       );
       this.gridData = newGrid;
+      console.log('Grid data initialized/rebuilt:', this.gridData);
       this.gridChange.emit(this.gridData);
     }
   }
@@ -51,7 +57,6 @@ export class ResponsiveGridComponent implements OnInit, OnChanges {
       this.gridChange.emit(this.gridData);
     }
   }
-
   onFieldValueChange(value: any) {
     // Handle field value changes if needed
     console.log('Field value changed:', value);
