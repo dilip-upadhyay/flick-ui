@@ -439,4 +439,26 @@ export class DynamicRendererComponent implements OnInit, OnDestroy {
       actions: component.props?.actions || []
     };
   }
+
+  /**
+   * Handle external drop into responsive grid
+   */
+  onResponsiveGridExternalDrop(event: { row: number, col: number, event: any }, gridComponent: UIComponent) {
+    // Try to extract the dropped component from the event
+    const droppedData = event.event?.item?.data;
+    if (!droppedData) {
+      console.warn('No dropped data found for grid cell drop.');
+      return;
+    }
+    // Clone gridData to avoid mutation
+    const newGridData = (gridComponent.props.gridData || []).map((row: any[]) => [...row]);
+    newGridData[event.row][event.col] = droppedData;
+    // Update the config for this grid component
+    this.updateComponent(gridComponent.id, {
+      props: {
+        ...gridComponent.props,
+        gridData: newGridData
+      }
+    });
+  }
 }

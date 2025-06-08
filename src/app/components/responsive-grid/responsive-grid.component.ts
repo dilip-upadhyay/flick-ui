@@ -1,7 +1,6 @@
 import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges } from '@angular/core';
-import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
-import { DragDropModule } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-responsive-grid',
@@ -15,6 +14,7 @@ export class ResponsiveGridComponent implements OnInit, OnChanges {
   @Input() cols: number = 3;
   @Input() gridData: any[][] = [];
   @Output() gridChange = new EventEmitter<any[][]>();
+  @Output() externalDrop = new EventEmitter<{row: number, col: number, event: CdkDragDrop<any[]>}>();
 
   ngOnInit() {
     this.ensureGridData();
@@ -38,8 +38,12 @@ export class ResponsiveGridComponent implements OnInit, OnChanges {
   }
 
   drop(event: CdkDragDrop<any[]>, rowIdx: number, colIdx: number) {
-    // Implement logic to move/transfer items between cells
-    // For now, just emit gridChange
-    this.gridChange.emit(this.gridData);
+    // If the source is external (not from this grid), emit externalDrop
+    if (event.previousContainer !== event.container) {
+      this.externalDrop.emit({ row: rowIdx, col: colIdx, event });
+    } else {
+      // Move/transfer within grid (future: support moving between cells)
+      this.gridChange.emit(this.gridData);
+    }
   }
 }
