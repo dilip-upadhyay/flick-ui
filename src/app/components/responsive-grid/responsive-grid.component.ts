@@ -1,11 +1,16 @@
 import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
+import { FormElementRendererComponent } from '../form-element-renderer/form-element-renderer.component';
 
 @Component({
   selector: 'app-responsive-grid',
   standalone: true,
-  imports: [CommonModule, DragDropModule],
+  imports: [
+    CommonModule,
+    DragDropModule,
+    FormElementRendererComponent
+  ],
   templateUrl: './responsive-grid.component.html',
   styleUrls: ['./responsive-grid.component.css']
 })
@@ -45,5 +50,10 @@ export class ResponsiveGridComponent implements OnInit, OnChanges {
       // Move/transfer within grid (future: support moving between cells)
       this.gridChange.emit(this.gridData);
     }
+  }
+
+  onFieldValueChange(value: any) {
+    // Handle field value changes if needed
+    console.log('Field value changed:', value);
   }
 }
