@@ -167,6 +167,13 @@ export class PropertyEditorComponent implements OnInit, OnDestroy, OnChanges {
           { key: 'title', label: 'Grid Title', type: 'text', description: 'Optional grid title' }
         ];
 
+      case 'responsive-grid':
+        return [
+          { key: 'rows', label: 'Rows', type: 'number', description: 'Number of grid rows', defaultValue: 3 },
+          { key: 'cols', label: 'Columns', type: 'number', description: 'Number of grid columns', defaultValue: 3 },
+          { key: 'gap', label: 'Gap', type: 'text', description: 'Space between grid cells (e.g., 8px)', defaultValue: '8px' }
+        ];
+
       case 'form':
         return [
           { key: 'title', label: 'Form Title', type: 'text', description: 'Form title' },
@@ -543,7 +550,8 @@ export class PropertyEditorComponent implements OnInit, OnDestroy, OnChanges {
       'file-input': 'File Input',
       'submit-button': 'Submit Button',
       'reset-button': 'Reset Button',
-      'table-grid': 'Table Grid'
+      'table-grid': 'Table Grid',
+      'responsive-grid': 'Responsive Grid'
     };
     return labels[componentType] || componentType;
   }
@@ -576,7 +584,8 @@ export class PropertyEditorComponent implements OnInit, OnDestroy, OnChanges {
       'file-input': 'upload_file',
       'submit-button': 'send',
       'reset-button': 'refresh',
-      'table-grid': 'table_chart'
+      'table-grid': 'table_chart',
+      'responsive-grid': 'grid_on'
     };
     return icons[componentType] || 'widgets';
   }  // Form field helper methods for enhanced label editing

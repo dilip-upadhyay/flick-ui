@@ -214,6 +214,15 @@
           (selectAll)="onComponentEvent({ action: 'selectAll', data: $event }, component)">
         </app-table-grid>
 
+        <!-- Responsive Grid Component -->
+        <app-responsive-grid
+          *ngIf="component.type === 'responsive-grid'"
+          [rows]="component.props.rows"
+          [cols]="component.props.cols"
+          [gridData]="component.props.gridData"
+          (gridChange)="onComponentEvent({ action: 'gridChange', data: $event }, component)">
+        </app-responsive-grid>
+
         <!-- Unknown Component Type -->
         <div *ngIf="!['header', 'navigation', 'form', 'table', 'dashboard', 'card', 'container', 'text', 'button', 'image', 'grid', 'modal', 'tabs', 'text-input', 'email-input', 'password-input', 'number-input', 'textarea', 'checkbox', 'radio', 'date-input', 'file-input', 'submit-button', 'reset-button'].includes(component.type)" 
              class="unknown-component">

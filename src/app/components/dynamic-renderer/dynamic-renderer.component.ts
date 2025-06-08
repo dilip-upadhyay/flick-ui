@@ -13,6 +13,7 @@ import { DashboardRendererComponent } from '../dashboard-renderer/dashboard-rend
 import { FormRendererComponent } from '../form-renderer/form-renderer.component';
 import { FormElementRendererComponent } from '../form-element-renderer/form-element-renderer.component';
 import { TableGridComponent } from '../table-renderer/table-grid.component';
+import { ResponsiveGridComponent } from '../responsive-grid/responsive-grid.component';
 
 @Component({
   selector: 'app-dynamic-renderer',
@@ -24,7 +25,8 @@ import { TableGridComponent } from '../table-renderer/table-grid.component';
     DashboardRendererComponent,
     FormRendererComponent,
     FormElementRendererComponent,
-    TableGridComponent
+    TableGridComponent,
+    ResponsiveGridComponent
   ],
   templateUrl: './dynamic-renderer.component.html',
   styleUrl: './dynamic-renderer.component.css'

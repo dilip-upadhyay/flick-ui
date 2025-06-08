@@ -1,0 +1,14 @@
+<div class="responsive-grid" [style.gridTemplateColumns]="'repeat(' + cols + ', 1fr)'" [style.gridTemplateRows]="'repeat(' + rows + ', 1fr)'">
+  <ng-container *ngFor="let row of gridData; let rowIdx = index">
+    <ng-container *ngFor="let cell of row; let colIdx = index">
+      <div class="grid-cell" cdkDropList [cdkDropListData]="[cell]" (cdkDropListDropped)="drop($event, rowIdx, colIdx)">
+        <ng-container *ngIf="cell">
+          <div cdkDrag>{{ cell.label || 'Element' }}</div>
+        </ng-container>
+        <ng-container *ngIf="!cell">
+          <span class="empty-cell">Drop here</span>
+        </ng-container>
+      </div>
+    </ng-container>
+  </ng-container>
+</div>

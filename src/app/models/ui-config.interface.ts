@@ -48,7 +48,9 @@ export type ComponentType =
   | 'submit-button'
   | 'reset-button'
   // Table Grid
-  | 'table-grid';
+  | 'table-grid'
+  // Responsive Grid
+  | 'responsive-grid';
 
 export interface TableGridColumnConfig {
   key: string;

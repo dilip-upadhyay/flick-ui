@@ -47,6 +47,13 @@ export class ComponentPaletteComponent {
           icon: 'grid_view',
           description: 'Responsive grid layout system',
           category: 'Layout'
+        },
+        {
+          type: 'responsive-grid',
+          name: 'Responsive Grid',
+          icon: 'grid_on',
+          description: 'Responsive grid with drag-and-drop and adaptive layout',
+          category: 'Layout'
         }
       ]
     },
