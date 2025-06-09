@@ -21,6 +21,7 @@ export class TableGridComponent implements OnInit, AfterViewInit {
   @Output() pageChange = new EventEmitter<PageEvent>();
   @Output() rowSelect = new EventEmitter<any[]>();
   @Output() selectAll = new EventEmitter<boolean>();
+  @Output() filterChange = new EventEmitter<string>();
 
   displayedColumns: string[] = [];
   dataSource = new MatTableDataSource<any>();
@@ -29,6 +30,8 @@ export class TableGridComponent implements OnInit, AfterViewInit {
 
   // Keep a reference to full data for client-side pagination
   private fullData: Record<string, any>[] = [];
+
+  filterValue: string = '';
 
   ngOnInit() {
     this.displayedColumns = this.config?.columns?.map((col: TableGridColumnConfig) => col.key) || [];
@@ -39,6 +42,16 @@ export class TableGridComponent implements OnInit, AfterViewInit {
     this.fullData = this.data as Record<string, any>[];
     // For client-side pagination, always set full data; paginator will handle slicing
     this.dataSource.data = this.fullData;
+    if (!this.serverSide) {
+      this.dataSource.filterPredicate = (data: any, filter: string) => {
+        // Simple filter: checks if any value contains the filter string
+        return Object.values(data).some(val =>
+          typeof val === 'string' ? val.toLowerCase().includes(filter.trim().toLowerCase()) :
+          typeof val === 'number' ? val.toString().includes(filter.trim()) :
+          false
+        );
+      };
+    }
   }
 
   ngAfterViewInit() {
@@ -73,5 +86,19 @@ export class TableGridComponent implements OnInit, AfterViewInit {
 
   isSelected(row: Record<string, any>): boolean {
     return this.selection.has(row);
+  }
+
+  applyFilter(filterValue: string) {
+    this.filterValue = filterValue;
+    if (this.serverSide) {
+      this.filterChange.emit(filterValue);
+    } else {
+      this.dataSource.filter = filterValue.trim().toLowerCase();
+    }
+  }
+
+  onFilterInput(event: Event) {
+    const value = (event.target as HTMLInputElement)?.value || '';
+    this.applyFilter(value);
   }
 }

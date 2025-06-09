@@ -1,4 +1,13 @@
 <div [ngClass]="theme">
+  <div style="margin-bottom: 8px;">
+    <mat-form-field appearance="outline" style="width: 300px;">
+      <mat-label>Filter</mat-label>
+      <input matInput [value]="filterValue" (input)="onFilterInput($event)" placeholder="Type to filter...">
+      <button *ngIf="filterValue" matSuffix mat-icon-button aria-label="Clear" (click)="applyFilter('')">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-form-field>
+  </div>
   <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
     <ng-container *ngIf="config?.selectable" matColumnDef="select">
       <th mat-header-cell *matHeaderCellDef>
