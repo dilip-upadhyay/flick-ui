@@ -1,13 +1,33 @@
 <div [ngClass]="theme">
-  <div style="margin-bottom: 8px;">
-    <mat-form-field appearance="outline" style="width: 300px;">
-      <mat-label>Filter</mat-label>
-      <input matInput [value]="filterValue" (input)="onFilterInput($event)" placeholder="Type to filter...">
-      <button *ngIf="filterValue" matSuffix mat-icon-button aria-label="Clear" (click)="applyFilter('')">
-        <mat-icon>close</mat-icon>
-      </button>
-    </mat-form-field>
-  </div>  <table mat-table [dataSource]="dataSource" matSort (matSortChange)="onSortChange($event)" class="mat-elevation-z8">
+  <!-- Table Header with Collapse Button -->
+  <div class="table-header" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <mat-form-field appearance="outline" style="width: 300px;">
+        <mat-label>Filter</mat-label>
+        <input matInput [value]="filterValue" (input)="onFilterInput($event)" placeholder="Type to filter...">
+        <button *ngIf="filterValue" matSuffix mat-icon-button aria-label="Clear" (click)="applyFilter('')">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+    </div>
+    
+    <button *ngIf="collapsible" 
+            mat-icon-button 
+            (click)="toggleCollapse()" 
+            [attr.aria-label]="collapsed ? 'Expand table' : 'Collapse table'"
+            matTooltip="{{ collapsed ? 'Expand table' : 'Collapse table' }}">
+      <mat-icon>{{ collapsed ? 'expand_more' : 'expand_less' }}</mat-icon>
+    </button>  </div>
+  
+  <!-- Table Content with Collapse Animation -->
+  <div class="table-content" 
+       [class.collapsed]="collapsed"
+       [style.transition]="'max-height 0.3s ease-in-out, opacity 0.3s ease-in-out'"
+       [style.max-height]="collapsed ? '0px' : '2000px'"
+       [style.overflow]="collapsed ? 'hidden' : 'visible'"
+       [style.opacity]="collapsed ? '0' : '1'">
+    
+    <table mat-table [dataSource]="dataSource" matSort (matSortChange)="onSortChange($event)" class="mat-elevation-z8">
     <ng-container *ngIf="config?.selectable" matColumnDef="select">
       <th mat-header-cell *matHeaderCellDef>
         <mat-checkbox (change)="onSelectAll($event.source.checked)"></mat-checkbox>
@@ -56,4 +76,6 @@
                 [pageSizeOptions]="config.pageSizeOptions || [5, 10, 25, 100]"
                 (page)="onPage($event)">
   </mat-paginator>
+  
+  </div> <!-- End table-content -->
 </div>

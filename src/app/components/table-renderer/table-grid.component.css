@@ -15,3 +15,38 @@
   background: #fff;
   color: #222;
 }
+
+/* Table header styling */
+.table-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+/* Table content with collapse animation */
+.table-content {
+  transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+  max-height: 2000px; /* Large enough for most tables */
+  overflow: visible;
+  opacity: 1;
+}
+
+.table-content.collapsed {
+  max-height: 0px !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .table-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+  
+  .table-header > div {
+    width: 100%;
+  }
+}

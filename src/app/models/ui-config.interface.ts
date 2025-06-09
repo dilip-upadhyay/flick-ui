@@ -71,6 +71,8 @@ export interface TableGridComponentProps {
   selectable?: boolean;
   theme?: string;
   alternateRowColor?: string;
+  collapsible?: boolean;
+  collapsed?: boolean;
 }
 
 export interface LayoutConfig {

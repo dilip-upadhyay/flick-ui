@@ -199,9 +199,7 @@
           }"
           (buttonClick)="onFormElementButtonClick($event, component)"
           (fileSelected)="onFormElementFileSelected($event, component)">
-        </app-form-element-renderer>
-
-        <!-- Table Grid Component -->
+        </app-form-element-renderer>        <!-- Table Grid Component -->
         <app-table-grid
           *ngIf="component.type === 'table-grid'"
           [config]="component.props"
@@ -209,10 +207,15 @@
           [serverSide]="component.props.serverSide"
           [theme]="component.props.theme"
           [alternateRowColor]="component.props.alternateRowColor"
+          [collapsible]="component.props.collapsible"
+          [collapsed]="component.props.collapsed"
           (pageChange)="onComponentEvent({ action: 'pageChange', data: $event }, component)"
           (rowSelect)="onComponentEvent({ action: 'rowSelect', data: $event }, component)"
-          (selectAll)="onComponentEvent({ action: 'selectAll', data: $event }, component)">
-        </app-table-grid>       
+          (selectAll)="onComponentEvent({ action: 'selectAll', data: $event }, component)"
+          (filterChange)="onComponentEvent({ action: 'filterChange', data: $event }, component)"
+          (sortChange)="onComponentEvent({ action: 'sortChange', data: $event }, component)"
+          (collapseToggle)="onComponentEvent({ action: 'collapseToggle', data: $event }, component)">
+        </app-table-grid>
         <!-- Responsive Grid Component -->
         <app-responsive-grid
           *ngIf="component.type === 'responsive-grid'"

@@ -19,11 +19,14 @@ export class TableGridComponent implements OnInit, AfterViewInit {
   @Input() serverSide: boolean = false;
   @Input() theme: string = 'default';
   @Input() alternateRowColor: string = '';
+  @Input() collapsible: boolean = false;
+  @Input() collapsed: boolean = false;
   @Output() pageChange = new EventEmitter<PageEvent>();
   @Output() rowSelect = new EventEmitter<any[]>();
   @Output() selectAll = new EventEmitter<boolean>();
   @Output() filterChange = new EventEmitter<string>();
   @Output() sortChange = new EventEmitter<Sort>();
+  @Output() collapseToggle = new EventEmitter<boolean>();
 
   displayedColumns: string[] = [];
   filterColumns: string[] = [];
@@ -41,6 +44,14 @@ export class TableGridComponent implements OnInit, AfterViewInit {
   filterValue: string = '';
 
   ngOnInit() {
+    // Initialize collapse state from config if provided
+    if (this.config?.collapsed !== undefined) {
+      this.collapsed = this.config.collapsed;
+    }
+    if (this.config?.collapsible !== undefined) {
+      this.collapsible = this.config.collapsible;
+    }
+    
     this.displayedColumns = this.config?.columns?.map((col: TableGridColumnConfig) => col.key) || [];
     if (this.config?.selectable) {
       this.displayedColumns.unshift('select');
@@ -154,6 +165,11 @@ export class TableGridComponent implements OnInit, AfterViewInit {
       this.sortChange.emit(sortState);
     }
     // For client-side sorting, MatTableDataSource handles it automatically
+  }
+
+  toggleCollapse() {
+    this.collapsed = !this.collapsed;
+    this.collapseToggle.emit(this.collapsed);
   }
 
   shouldShowColumnFilters(): boolean {
