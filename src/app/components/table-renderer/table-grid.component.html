@@ -31,8 +31,22 @@
           <span *ngSwitchDefault>{{ row[col.key] }}</span>
         </ng-container>
       </td>
+    </ng-container>    <!-- Column filter row definition -->
+    <ng-container *ngIf="config?.selectable" matColumnDef="select-filter">
+      <th mat-header-cell *matHeaderCellDef></th>
     </ng-container>
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <ng-container *ngFor="let col of config?.columns" [matColumnDef]="col.key + '-filter'">
+      <th mat-header-cell *matHeaderCellDef>
+        <mat-form-field appearance="outline" style="width: 100%; margin: 0;">
+          <input matInput
+                 [placeholder]="'Filter ' + col.label"
+                 [value]="columnFilters[col.key] || ''"
+                 (input)="onColumnFilterInput(col.key, $event)"
+                 style="font-size: 12px;" />
+        </mat-form-field>
+      </th>
+    </ng-container>    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-header-row *matHeaderRowDef="filterColumns; when: shouldShowColumnFilters"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;" [ngClass]="{'alternate-row': alternateRowColor && (dataSource.data.indexOf(row) % 2 === 1)}"></tr>
   </table>
   <mat-paginator *ngIf="config?.pagination !== false"

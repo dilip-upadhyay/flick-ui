@@ -24,12 +24,16 @@ export class TableGridComponent implements OnInit, AfterViewInit {
   @Output() filterChange = new EventEmitter<string>();
 
   displayedColumns: string[] = [];
+  filterColumns: string[] = [];
   dataSource = new MatTableDataSource<any>();
   selection = new Set<Record<string, any>>();
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   // Keep a reference to full data for client-side pagination
   private fullData: Record<string, any>[] = [];
+
+  // Store per-column filter values
+  columnFilters: { [key: string]: string } = {};
 
   filterValue: string = '';
 
@@ -38,18 +42,43 @@ export class TableGridComponent implements OnInit, AfterViewInit {
     if (this.config?.selectable) {
       this.displayedColumns.unshift('select');
     }
+    
+    // Setup filter columns
+    this.filterColumns = this.config?.columns?.map((col: TableGridColumnConfig) => col.key + '-filter') || [];
+    if (this.config?.selectable) {
+      this.filterColumns.unshift('select-filter');
+    }
     // Store full data
     this.fullData = this.data as Record<string, any>[];
     // For client-side pagination, always set full data; paginator will handle slicing
     this.dataSource.data = this.fullData;
     if (!this.serverSide) {
       this.dataSource.filterPredicate = (data: any, filter: string) => {
-        // Simple filter: checks if any value contains the filter string
-        return Object.values(data).some(val =>
-          typeof val === 'string' ? val.toLowerCase().includes(filter.trim().toLowerCase()) :
-          typeof val === 'number' ? val.toString().includes(filter.trim()) :
-          false
-        );
+        // Parse filter string as JSON for column filters
+        let global = '';
+        let columns: { [key: string]: string } = {};
+        try {
+          const parsed = JSON.parse(filter);
+          global = parsed.global ?? '';
+          columns = parsed.columns ?? {};
+        } catch {
+          global = filter;
+        }
+        // Global filter
+        const globalMatch = !global || Object.values(data).some(val => {
+          if (typeof val === 'string') return val.toLowerCase().includes(global.trim().toLowerCase());
+          if (typeof val === 'number') return val.toString().includes(global.trim());
+          return false;
+        });
+        // Per-column filter
+        const columnMatch = Object.entries(columns).every(([key, val]) => {
+          if (!val) return true;
+          const cell = data[key];
+          if (typeof cell === 'string') return cell.toLowerCase().includes(val.trim().toLowerCase());
+          if (typeof cell === 'number') return cell.toString().includes(val.trim());
+          return false;
+        });
+        return globalMatch && columnMatch;
       };
     }
   }
@@ -88,17 +117,35 @@ export class TableGridComponent implements OnInit, AfterViewInit {
     return this.selection.has(row);
   }
 
+  applyColumnFilter(columnKey: string, value: string) {
+    this.columnFilters[columnKey] = value;
+    if (this.serverSide) {
+      this.filterChange.emit(JSON.stringify({ global: this.filterValue, columns: this.columnFilters }));
+    } else {
+      this.dataSource.filter = JSON.stringify({ global: this.filterValue, columns: this.columnFilters });
+    }
+  }
+
   applyFilter(filterValue: string) {
     this.filterValue = filterValue;
     if (this.serverSide) {
-      this.filterChange.emit(filterValue);
+      this.filterChange.emit(JSON.stringify({ global: filterValue, columns: this.columnFilters }));
     } else {
-      this.dataSource.filter = filterValue.trim().toLowerCase();
+      this.dataSource.filter = JSON.stringify({ global: filterValue, columns: this.columnFilters });
     }
   }
 
   onFilterInput(event: Event) {
     const value = (event.target as HTMLInputElement)?.value || '';
     this.applyFilter(value);
+  }
+
+  onColumnFilterInput(columnKey: string, event: Event) {
+    const value = (event.target as HTMLInputElement)?.value || '';
+    this.applyColumnFilter(columnKey, value);
+  }
+
+  shouldShowColumnFilters(): boolean {
+    return !!(this.config?.columns?.length);
   }
 }
