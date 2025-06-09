@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { PageEvent, MatPaginator } from '@angular/material/paginator';
+import { MatSort, Sort } from '@angular/material/sort';
 import { TableGridComponentProps, TableGridColumnConfig } from '../../models/ui-config.interface';
 import { CommonModule } from '@angular/common';
 import { MaterialModule } from '../../shared/material.module';
@@ -22,12 +23,14 @@ export class TableGridComponent implements OnInit, AfterViewInit {
   @Output() rowSelect = new EventEmitter<any[]>();
   @Output() selectAll = new EventEmitter<boolean>();
   @Output() filterChange = new EventEmitter<string>();
+  @Output() sortChange = new EventEmitter<Sort>();
 
   displayedColumns: string[] = [];
   filterColumns: string[] = [];
   dataSource = new MatTableDataSource<any>();
   selection = new Set<Record<string, any>>();
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
 
   // Keep a reference to full data for client-side pagination
   private fullData: Record<string, any>[] = [];
@@ -86,6 +89,7 @@ export class TableGridComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     if (!this.serverSide) {
       this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort;
     }
   }
 
@@ -143,6 +147,13 @@ export class TableGridComponent implements OnInit, AfterViewInit {
   onColumnFilterInput(columnKey: string, event: Event) {
     const value = (event.target as HTMLInputElement)?.value || '';
     this.applyColumnFilter(columnKey, value);
+  }
+
+  onSortChange(sortState: Sort) {
+    if (this.serverSide) {
+      this.sortChange.emit(sortState);
+    }
+    // For client-side sorting, MatTableDataSource handles it automatically
   }
 
   shouldShowColumnFilters(): boolean {

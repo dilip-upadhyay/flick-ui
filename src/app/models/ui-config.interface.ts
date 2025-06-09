@@ -56,6 +56,7 @@ export interface TableGridColumnConfig {
   key: string;
   label: string;
   type: 'text' | 'input' | 'select' | 'email' | 'date' | 'button';
+  sortable?: boolean;
   options?: { value: any; label: string }[];
   buttonLabel?: string;
 }
