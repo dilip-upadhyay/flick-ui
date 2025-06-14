@@ -251,12 +251,11 @@ export class ComponentPaletteComponent {
     {
       name: 'Data Table',
       icon: 'table_chart',
-      components: [
-        {
+      components: [        {
           type: 'table-grid',
           name: 'Table Grid',
           icon: 'table_chart',
-          description: 'Highly customizable data table with pagination, selection, and cell customization',
+          description: 'Highly customizable data table with pagination, selection, and collapsible by default',
           category: 'Data Table'
         }
       ]

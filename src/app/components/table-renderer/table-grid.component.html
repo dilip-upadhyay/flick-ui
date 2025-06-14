@@ -10,14 +10,12 @@
         </button>
       </mat-form-field>
     </div>
-    
-    <button *ngIf="collapsible" 
-            mat-icon-button 
+      <button mat-icon-button 
             (click)="toggleCollapse()" 
             [attr.aria-label]="collapsed ? 'Expand table' : 'Collapse table'"
             matTooltip="{{ collapsed ? 'Expand table' : 'Collapse table' }}">
       <mat-icon>{{ collapsed ? 'expand_more' : 'expand_less' }}</mat-icon>
-    </button>  </div>
+    </button></div>
   
   <!-- Table Content with Collapse Animation -->
   <div class="table-content" 

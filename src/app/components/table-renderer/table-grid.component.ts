@@ -18,9 +18,8 @@ export class TableGridComponent implements OnInit, AfterViewInit {
   @Input() data: any[] = [];
   @Input() serverSide: boolean = false;
   @Input() theme: string = 'default';
-  @Input() alternateRowColor: string = '';
-  @Input() collapsible: boolean = false;
-  @Input() collapsed: boolean = false;
+  @Input() alternateRowColor: string = '';  @Input() collapsible: boolean = true;  // Default to collapsible
+  @Input() collapsed: boolean = true;   // Default to collapsed
   @Output() pageChange = new EventEmitter<PageEvent>();
   @Output() rowSelect = new EventEmitter<any[]>();
   @Output() selectAll = new EventEmitter<boolean>();
@@ -42,15 +41,10 @@ export class TableGridComponent implements OnInit, AfterViewInit {
   columnFilters: { [key: string]: string } = {};
 
   filterValue: string = '';
-
   ngOnInit() {
-    // Initialize collapse state from config if provided
-    if (this.config?.collapsed !== undefined) {
-      this.collapsed = this.config.collapsed;
-    }
-    if (this.config?.collapsible !== undefined) {
-      this.collapsible = this.config.collapsible;
-    }
+    // Initialize collapse state from config with defaults
+    this.collapsible = this.config?.collapsible ?? true;  // Default to true
+    this.collapsed = this.config?.collapsed ?? true;      // Default to true
     
     this.displayedColumns = this.config?.columns?.map((col: TableGridColumnConfig) => col.key) || [];
     if (this.config?.selectable) {
