@@ -16,10 +16,9 @@ import { MaterialModule } from '../../shared/material.module';
 export class TableGridComponent implements OnInit, AfterViewInit {
   @Input() config!: TableGridComponentProps;
   @Input() data: any[] = [];
-  @Input() serverSide: boolean = false;
-  @Input() theme: string = 'default';
+  @Input() serverSide: boolean = false;  @Input() theme: string = 'default';
   @Input() alternateRowColor: string = '';  @Input() collapsible: boolean = true;  // Default to collapsible
-  @Input() collapsed: boolean = true;   // Default to collapsed
+  @Input() collapsed: boolean = false;  // Default to expanded
   @Output() pageChange = new EventEmitter<PageEvent>();
   @Output() rowSelect = new EventEmitter<any[]>();
   @Output() selectAll = new EventEmitter<boolean>();
@@ -40,11 +39,10 @@ export class TableGridComponent implements OnInit, AfterViewInit {
   // Store per-column filter values
   columnFilters: { [key: string]: string } = {};
 
-  filterValue: string = '';
-  ngOnInit() {
+  filterValue: string = '';  ngOnInit() {
     // Initialize collapse state from config with defaults
     this.collapsible = this.config?.collapsible ?? true;  // Default to true
-    this.collapsed = this.config?.collapsed ?? true;      // Default to true
+    this.collapsed = this.config?.collapsed ?? false;     // Default to expanded
     
     this.displayedColumns = this.config?.columns?.map((col: TableGridColumnConfig) => col.key) || [];
     if (this.config?.selectable) {

@@ -68,23 +68,22 @@
 </head>
 <body>
     <div class="test-container">
-        <h1>🔽 Table Grid - Collapsible by Default Test</h1>
-        
-        <div class="instructions">
+        <h1>📊 Table Grid - Collapsible (Expanded by Default) Test</h1>
+          <div class="instructions">
             <h3>🔍 Test Instructions:</h3>
             <ol>
                 <li>Click the "Test with Updated Layout" button to load the table component</li>
-                <li>The table should load in a <strong>collapsed state by default</strong> (you should only see the header)</li>
-                <li>Look for the <strong>expand button (arrow down icon)</strong> in the top-right corner of the table header</li>
-                <li>Click the expand button to see the table content appear with animation</li>
-                <li>Click the collapse button (arrow up icon) to hide the table content again</li>
+                <li>The table should load in an <strong>expanded state by default</strong> (you should see the full table content)</li>
+                <li>Look for the <strong>collapse button (arrow up icon)</strong> in the top-right corner of the table header</li>
+                <li>Click the collapse button to hide the table content with animation</li>
+                <li>Click the expand button (arrow down icon) to show the table content again</li>
                 <li>Test both expanding and collapsing multiple times to ensure smooth animation</li>
-                <li>Verify that the table remembers its collapsed state</li>
+                <li>Verify that the table shows content by default but can be collapsed when needed</li>
             </ol>
         </div>
 
         <div class="status success">
-            ✅ <strong>Updated:</strong> Table grid component now defaults to collapsible=true and collapsed=true
+            ✅ <strong>Updated:</strong> Table grid component now defaults to collapsible=true and collapsed=false (expanded by default)
         </div>
 
         <div style="margin: 20px 0;">
@@ -109,11 +108,9 @@
             const iframe = document.getElementById('testFrame');
             iframe.src = 'http://localhost:4200/preview?config=table-collapse-test.json';
             updateStatus('Testing original table collapse functionality for comparison...', 'info');
-        }
-
-        function refreshTest() {
+        }        function refreshTest() {
             const iframe = document.getElementById('testFrame');
-            iframe.src = iframe.src;
+            iframe.src = iframe.src + '?refresh=' + Date.now();
             updateStatus('Refreshing current test...', 'info');
         }
 
