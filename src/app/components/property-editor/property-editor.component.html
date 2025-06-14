@@ -363,8 +363,7 @@
                         <mat-label>Link/Action</mat-label>
                         <input matInput formControlName="href">
                       </mat-form-field>
-                      
-                      <mat-form-field appearance="outline" *ngIf="prop.key === 'fields'">
+                        <mat-form-field appearance="outline" *ngIf="prop.key === 'fields'">
                         <mat-label>Type</mat-label>
                         <mat-select formControlName="type">
                           <mat-option value="text">Text</mat-option>
@@ -374,6 +373,47 @@
                           <mat-option value="tel">Phone</mat-option>
                         </mat-select>
                       </mat-form-field>
+                      
+                      <!-- Row Actions specific fields -->
+                      <ng-container *ngIf="prop.key === 'rowActions'">
+                        <mat-form-field appearance="outline">
+                          <mat-label>Action ID</mat-label>
+                          <input matInput formControlName="id" placeholder="unique-action-id">
+                        </mat-form-field>
+                        
+                        <mat-form-field appearance="outline">
+                          <mat-label>Material Icon</mat-label>
+                          <input matInput formControlName="icon" placeholder="edit, delete, visibility">
+                        </mat-form-field>
+                        
+                        <mat-form-field appearance="outline">
+                          <mat-label>Action Type</mat-label>
+                          <mat-select formControlName="type">
+                            <mat-option value="update">Update</mat-option>
+                            <mat-option value="delete">Delete</mat-option>
+                            <mat-option value="custom">Custom</mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                        
+                        <mat-form-field appearance="outline">
+                          <mat-label>Button Color</mat-label>
+                          <mat-select formControlName="color">
+                            <mat-option value="primary">Primary</mat-option>
+                            <mat-option value="accent">Accent</mat-option>
+                            <mat-option value="warn">Warning</mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                        
+                        <mat-form-field appearance="outline">
+                          <mat-label>Tooltip</mat-label>
+                          <input matInput formControlName="tooltip" placeholder="Helpful tooltip text">
+                        </mat-form-field>
+                        
+                        <mat-form-field appearance="outline">
+                          <mat-label>Confirmation Message (Optional)</mat-label>
+                          <input matInput formControlName="confirmMessage" placeholder="Are you sure?">
+                        </mat-form-field>
+                      </ng-container>
                     </div>
                     
                     <button mat-icon-button type="button" 

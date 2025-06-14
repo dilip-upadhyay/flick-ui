@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter, OnInit, AfterViewInit, ViewChil
 import { MatTableDataSource } from '@angular/material/table';
 import { PageEvent, MatPaginator } from '@angular/material/paginator';
 import { MatSort, Sort } from '@angular/material/sort';
-import { TableGridComponentProps, TableGridColumnConfig } from '../../models/ui-config.interface';
+import { TableGridComponentProps, TableGridColumnConfig, TableGridRowAction } from '../../models/ui-config.interface';
 import { CommonModule } from '@angular/common';
 import { MaterialModule } from '../../shared/material.module';
 
@@ -16,15 +16,17 @@ import { MaterialModule } from '../../shared/material.module';
 export class TableGridComponent implements OnInit, AfterViewInit {
   @Input() config!: TableGridComponentProps;
   @Input() data: any[] = [];
-  @Input() serverSide: boolean = false;  @Input() theme: string = 'default';
-  @Input() alternateRowColor: string = '';  @Input() collapsible: boolean = true;  // Default to collapsible
+  @Input() serverSide: boolean = false;  @Input() theme: string = 'default';  @Input() alternateRowColor: string = '';  @Input() collapsible: boolean = true;  // Default to collapsible
   @Input() collapsed: boolean = false;  // Default to expanded
+  @Input() rowActions: TableGridRowAction[] = [];
+  @Input() showActionsColumn: boolean = true;
   @Output() pageChange = new EventEmitter<PageEvent>();
   @Output() rowSelect = new EventEmitter<any[]>();
   @Output() selectAll = new EventEmitter<boolean>();
   @Output() filterChange = new EventEmitter<string>();
   @Output() sortChange = new EventEmitter<Sort>();
   @Output() collapseToggle = new EventEmitter<boolean>();
+  @Output() rowAction = new EventEmitter<{action: TableGridRowAction, row: any}>();
 
   displayedColumns: string[] = [];
   filterColumns: string[] = [];
@@ -44,15 +46,29 @@ export class TableGridComponent implements OnInit, AfterViewInit {
     this.collapsible = this.config?.collapsible ?? true;  // Default to true
     this.collapsed = this.config?.collapsed ?? false;     // Default to expanded
     
+    // Initialize row actions from config
+    this.rowActions = this.config?.rowActions || [];
+    this.showActionsColumn = this.config?.showActionsColumn ?? (this.rowActions.length > 0);
+    
     this.displayedColumns = this.config?.columns?.map((col: TableGridColumnConfig) => col.key) || [];
     if (this.config?.selectable) {
       this.displayedColumns.unshift('select');
+    }
+    
+    // Add actions column if needed
+    if (this.showActionsColumn && this.rowActions.length > 0) {
+      this.displayedColumns.push('actions');
     }
     
     // Setup filter columns
     this.filterColumns = this.config?.columns?.map((col: TableGridColumnConfig) => col.key + '-filter') || [];
     if (this.config?.selectable) {
       this.filterColumns.unshift('select-filter');
+    }
+    
+    // Add filter column for actions if needed
+    if (this.showActionsColumn && this.rowActions.length > 0) {
+      this.filterColumns.push('actions-filter');
     }
     // Store full data
     this.fullData = this.data as Record<string, any>[];
@@ -163,8 +179,40 @@ export class TableGridComponent implements OnInit, AfterViewInit {
     this.collapsed = !this.collapsed;
     this.collapseToggle.emit(this.collapsed);
   }
-
   shouldShowColumnFilters(): boolean {
     return !!(this.config?.columns?.length);
+  }
+  onRowAction(action: TableGridRowAction, row: any, event?: Event): void {
+    if (event) {
+      event.stopPropagation();
+    }
+
+    // Check if action is disabled for this row
+    if (action.disabled?.(row)) {
+      return;
+    }
+
+    // Handle confirmation if needed
+    if (action.confirmMessage) {
+      const confirmed = window.confirm(action.confirmMessage);
+      if (!confirmed) {
+        return;
+      }
+    }
+
+    // Emit the action event
+    this.rowAction.emit({ action, row });
+  }
+
+  isActionDisabled(action: TableGridRowAction, row: any): boolean {
+    return action.disabled?.(row) ?? false;
+  }
+
+  getActionColor(action: TableGridRowAction): string {
+    return action.color ?? 'primary';
+  }
+
+  getActionTooltip(action: TableGridRowAction): string {
+    return action.tooltip ?? action.label;
   }
 }

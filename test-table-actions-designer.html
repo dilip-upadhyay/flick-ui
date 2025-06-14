@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Table Actions Designer Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #2196f3;
+            padding-bottom: 10px;
+        }
+        .instructions {
+            background: #e3f2fd;
+            padding: 15px;
+            border-left: 4px solid #2196f3;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .test-button {
+            background: #2196f3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px 5px;
+            font-size: 14px;
+        }
+        .test-button:hover {
+            background: #1976d2;
+        }
+        iframe {
+            width: 100%;
+            height: 700px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+        .status {
+            margin: 15px 0;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .status.success {
+            background: #e8f5e8;
+            color: #2e7d32;
+            border: 1px solid #4caf50;
+        }
+        .status.info {
+            background: #e3f2fd;
+            color: #1976d2;
+            border: 1px solid #2196f3;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🔧 Table Grid Actions in Designer Test</h1>
+        
+        <div class="instructions">
+            <h3>🔍 Designer Test Instructions:</h3>
+            <ol>
+                <li>Click "Open Designer" to go to the designer interface</li>
+                <li>From the component palette, drag a "Table Grid" component onto the canvas</li>
+                <li>Click on the table grid component to select it</li>
+                <li>Look for row actions configuration in the property editor on the right</li>
+                <li>Expected to see:
+                    <ul>
+                        <li><strong>Show Actions Column</strong> - Toggle switch</li>
+                        <li><strong>Row Actions</strong> - Array editor with + button</li>
+                        <li>When adding row action: fields for ID, Label, Icon, Type, Color, Tooltip, Confirmation Message</li>
+                    </ul>
+                </li>
+                <li>Test adding a row action and configuring its properties</li>
+                <li>Preview the table to verify actions appear</li>
+            </ol>
+        </div>
+
+        <div class="status info">
+            🔧 <strong>Testing:</strong> Row actions configuration in the visual designer interface
+        </div>
+
+        <div style="margin: 20px 0;">
+            <button class="test-button" onclick="openDesigner()">Open Designer</button>
+            <button class="test-button" onclick="openPresetTable()">Load Preset Table with Actions</button>
+            <button class="test-button" onclick="refreshTest()">🔄 Refresh Test</button>
+        </div>
+
+        <iframe id="testFrame" src="about:blank"></iframe>
+    </div>
+
+    <script>
+        function openDesigner() {
+            const iframe = document.getElementById('testFrame');
+            iframe.src = 'http://localhost:4200/designer';
+            updateStatus('Opening visual designer interface...', 'info');
+        }
+        
+        function openPresetTable() {
+            const iframe = document.getElementById('testFrame');
+            iframe.src = 'http://localhost:4200/preview?config=table-grid-actions-demo.json';
+            updateStatus('Loading preset table with configured row actions...', 'info');
+        }
+
+        function refreshTest() {
+            const iframe = document.getElementById('testFrame');
+            iframe.src = iframe.src + (iframe.src.includes('?') ? '&' : '?') + 'refresh=' + Date.now();
+            updateStatus('Refreshing current test...', 'info');
+        }
+
+        function updateStatus(message, type) {
+            const status = document.querySelector('.status');
+            status.textContent = message;
+            status.className = `status ${type}`;
+        }
+
+        // Auto-load the designer on page load
+        window.onload = function() {
+            setTimeout(openDesigner, 1000);
+        }
+    </script>
+</body>
+</html>

@@ -50,3 +50,65 @@
     width: 100%;
   }
 }
+
+/* Actions column styling */
+.actions-cell {
+  padding: 8px 16px;
+  width: 120px;
+  min-width: 120px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  justify-content: center;
+}
+
+.action-button {
+  width: 32px;
+  height: 32px;
+  line-height: 32px;
+  min-width: 32px;
+}
+
+.action-button mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+.action-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Action button color variants */
+.action-button.mat-primary {
+  color: #1976d2;
+}
+
+.action-button.mat-accent {
+  color: #ff4081;
+}
+
+.action-button.mat-warn {
+  color: #f44336;
+}
+
+/* Hover effects */
+.action-button:hover:not(:disabled) {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.action-button.mat-primary:hover:not(:disabled) {
+  background-color: rgba(25, 118, 210, 0.1);
+}
+
+.action-button.mat-accent:hover:not(:disabled) {
+  background-color: rgba(255, 64, 129, 0.1);
+}
+
+.action-button.mat-warn:hover:not(:disabled) {
+  background-color: rgba(244, 67, 54, 0.1);
+}

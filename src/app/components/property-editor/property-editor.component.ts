@@ -328,9 +328,7 @@ export class PropertyEditorComponent implements OnInit, OnDestroy, OnChanges {
             ]
           },
           { key: 'disabled', label: 'Disabled', type: 'boolean', description: 'Disable the button' }
-        ];
-
-      case 'table-grid':
+        ];      case 'table-grid':
         // Only show columns array editor, not form field configuration
         return [
           {
@@ -344,6 +342,24 @@ export class PropertyEditorComponent implements OnInit, OnDestroy, OnChanges {
               { value: 'type', label: 'Type' },
               { value: 'options', label: 'Options' },
               { value: 'buttonLabel', label: 'Button Label' }
+            ]
+          },
+          { key: 'collapsible', label: 'Collapsible', type: 'boolean', description: 'Allow table to be collapsed', defaultValue: true },
+          { key: 'collapsed', label: 'Initially Collapsed', type: 'boolean', description: 'Start with table collapsed', defaultValue: false },
+          { key: 'showActionsColumn', label: 'Show Actions Column', type: 'boolean', description: 'Display actions column with row action buttons', defaultValue: true },
+          {
+            key: 'rowActions',
+            label: 'Row Actions',
+            type: 'array',
+            description: 'Configure row action buttons (edit, delete, custom actions)',
+            options: [
+              { value: 'id', label: 'Action ID' },
+              { value: 'label', label: 'Action Label' },
+              { value: 'icon', label: 'Material Icon' },
+              { value: 'type', label: 'Action Type' },
+              { value: 'color', label: 'Button Color' },
+              { value: 'tooltip', label: 'Tooltip Text' },
+              { value: 'confirmMessage', label: 'Confirmation Message' }
             ]
           }
         ];
@@ -430,8 +446,7 @@ export class PropertyEditorComponent implements OnInit, OnDestroy, OnChanges {
         takeUntil(this.destroy$)
       )
       .subscribe(values => this.handleFormChange('specific', values));
-  }
-  private createArrayItemFormGroup(arrayKey: string, item: any): FormGroup {
+  }  private createArrayItemFormGroup(arrayKey: string, item: any): FormGroup {
     if (arrayKey === 'fields') {
       return this.fb.group({
         label: [item.label ?? ''],
@@ -452,6 +467,16 @@ export class PropertyEditorComponent implements OnInit, OnDestroy, OnChanges {
         type: [item.type ?? 'text'],
         options: [item.options ?? []],
         buttonLabel: [item.buttonLabel ?? '']
+      });
+    } else if (arrayKey === 'rowActions') {
+      return this.fb.group({
+        id: [item.id ?? ''],
+        label: [item.label ?? ''],
+        icon: [item.icon ?? ''],
+        type: [item.type ?? 'custom'],
+        color: [item.color ?? 'primary'],
+        tooltip: [item.tooltip ?? ''],
+        confirmMessage: [item.confirmMessage ?? '']
       });
     }    
     return this.fb.group({

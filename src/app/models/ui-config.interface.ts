@@ -61,6 +61,17 @@ export interface TableGridColumnConfig {
   buttonLabel?: string;
 }
 
+export interface TableGridRowAction {
+  id: string;
+  label: string;
+  icon: string;
+  type: 'delete' | 'update' | 'custom';
+  color?: 'primary' | 'accent' | 'warn';
+  tooltip?: string;
+  confirmMessage?: string; // For actions that need confirmation
+  disabled?: (row: any) => boolean; // Function to determine if action should be disabled for a row
+}
+
 export interface TableGridComponentProps {
   columns: TableGridColumnConfig[];
   data: any[];
@@ -73,6 +84,8 @@ export interface TableGridComponentProps {
   alternateRowColor?: string;
   collapsible?: boolean;
   collapsed?: boolean;
+  rowActions?: TableGridRowAction[]; // New row actions configuration
+  showActionsColumn?: boolean; // Whether to show the actions column
 }
 
 export interface LayoutConfig {

@@ -209,12 +209,15 @@
           [alternateRowColor]="component.props.alternateRowColor"
           [collapsible]="component.props.collapsible"
           [collapsed]="component.props.collapsed"
+          [rowActions]="component.props.rowActions"
+          [showActionsColumn]="component.props.showActionsColumn"
           (pageChange)="onComponentEvent({ action: 'pageChange', data: $event }, component)"
           (rowSelect)="onComponentEvent({ action: 'rowSelect', data: $event }, component)"
           (selectAll)="onComponentEvent({ action: 'selectAll', data: $event }, component)"
           (filterChange)="onComponentEvent({ action: 'filterChange', data: $event }, component)"
           (sortChange)="onComponentEvent({ action: 'sortChange', data: $event }, component)"
-          (collapseToggle)="onComponentEvent({ action: 'collapseToggle', data: $event }, component)">
+          (collapseToggle)="onComponentEvent({ action: 'collapseToggle', data: $event }, component)"
+          (rowAction)="onComponentEvent({ action: 'rowAction', data: $event }, component)">
         </app-table-grid>
         <!-- Responsive Grid Component -->
         <app-responsive-grid
